@@ -12,7 +12,10 @@ class Client(db.Model):
     is_male = db.Column(db.Boolean, nullable=False)
     photo = db.Column(db.LargeBinary)
 
-    favourite_masters = db.relationship("Master", secondary='favourite_master', back_populates="favourite_clients")
+    favourite_masters = db.relationship(
+        "Master", secondary='favourite_master', back_populates="favourite_clients")
+    favourite_procedures = db.relationship(
+        "Procedure", secondary='favourite_procedure', back_populates="favourite_clients")
 
     def __repr__(self):
         return f'{self.surname} {self.fist_name} {self.second_name}, +38{self.phone}'
@@ -30,8 +33,12 @@ class Master(db.Model):
     is_hired = db.Column(db.Boolean, nullable=False)
     photo = db.Column(db.LargeBinary)
 
-    favourite_clients = db.relationship("Client", secondary='favourite_master', back_populates="favourite_masters")
-    schedule_changes = db.relationship("ScheduleChange", back_populates="master")
+    favourite_clients = db.relationship(
+        "Client", secondary='favourite_master', back_populates="favourite_masters")
+    procedures = db.relationship(
+        "Procedure", secondary='master_procedure', back_populates="masters")
+    schedule_changes = db.relationship(
+        "ScheduleChange", back_populates="master")
 
     def __repr__(self):
         return f'{self.surname} {self.fist_name} {self.second_name}, +38{self.phone}'
@@ -44,13 +51,48 @@ class ScheduleChange(db.Model):
     end_time = db.Column(db.DateTime, nullable=False)
     is_working = db.Column(db.Boolean)
 
-    master_id = db.Column(db.Integer,
-                          db.ForeignKey('master.id', onupdate='RESTRICT', ondelete='RESTRICT'), nullable=False)
-    master = db.relationship("Master", back_populates="schedule_changes")
+    master_id = db.Column(
+        db.Integer, db.ForeignKey('master.id', onupdate='RESTRICT', ondelete='RESTRICT'), nullable=False)
+
+    master = db.relationship(
+        "Master", back_populates="schedule_changes")
 
     def __repr__(self):
         return f'{self.master}, ' \
                f'{self.start_time.strftime("%h:%m")} - {self.end_time.strftime("%h:%m")}'
+
+
+class Category(db.Model):
+    __tablename__ = 'category'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(75), nullable=False, unique=True)
+
+    procedures = db.relationship("Procedure", back_populates="category")
+
+    def __repr__(self):
+        return f'{self.name}'
+
+
+class Procedure(db.Model):
+    __tablename__ = 'procedure'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(75), nullable=False, unique=True)
+    price_min = db.Column(db.Numeric(precision=14, scale=2), nullable=False)
+    price_max = db.Column(db.Numeric(precision=14, scale=2))
+    info = db.Column(db.String(300))
+
+    category_id = db.Column(
+        db.Integer, db.ForeignKey('category.id', onupdate='RESTRICT', ondelete='RESTRICT'), nullable=False)
+
+    category = db.relationship(
+        "Category", back_populates="procedures")
+    favourite_clients = db.relationship(
+        "Client", secondary='favourite_procedure', back_populates="favourite_procedures")
+    masters = db.relationship(
+        "Master", secondary='master_procedure', back_populates="procedures")
+
+    def __repr__(self):
+        return f'{self.name}'
 
 
 db.Table('favourite_master',
@@ -58,4 +100,18 @@ db.Table('favourite_master',
                    db.ForeignKey('client.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True),
          db.Column('master_id', db.Integer,
                    db.ForeignKey('master.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True)
+         )
+
+db.Table('favourite_procedure',
+         db.Column('client_id', db.Integer,
+                   db.ForeignKey('client.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True),
+         db.Column('procedure_id', db.Integer,
+                   db.ForeignKey('procedure.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True)
+         )
+
+db.Table('master_procedure',
+         db.Column('master_id', db.Integer,
+                   db.ForeignKey('master.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True),
+         db.Column('procedure_id', db.Integer,
+                   db.ForeignKey('procedure.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True)
          )

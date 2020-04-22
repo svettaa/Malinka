@@ -18,3 +18,5 @@ from app.admin_views import *
 admin.add_view(ClientView(Client, db.session))
 admin.add_view(MasterView(Master, db.session))
 admin.add_view(ScheduleChangeView(ScheduleChange, db.session))
+admin.add_view(CategoryView(Category, db.session))
+admin.add_view(ProcedureView(Procedure, db.session))

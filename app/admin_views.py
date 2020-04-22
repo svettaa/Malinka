@@ -14,4 +14,11 @@ class MasterView(ModelView):
 
 class ScheduleChangeView(ModelView):
     pass
-    # inline_models = [Master]
+
+
+class CategoryView(ModelView):
+    inline_models = [Procedure]
+
+
+class ProcedureView(ModelView):
+    pass
