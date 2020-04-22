@@ -22,3 +22,19 @@ class CategoryView(ModelView):
 
 class ProcedureView(ModelView):
     pass
+
+
+class AppointmentView(ModelView):
+    pass
+
+
+class AppointmentPaintView(ModelView):
+    pass
+
+
+class PaintView(ModelView):
+    inline_models = [PaintSupply]
+
+
+class PaintSupplyView(ModelView):
+    pass

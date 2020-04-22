@@ -16,6 +16,8 @@ class Client(db.Model):
         "Master", secondary='favourite_master', back_populates="favourite_clients")
     favourite_procedures = db.relationship(
         "Procedure", secondary='favourite_procedure', back_populates="favourite_clients")
+    appointments = db.relationship(
+        "Appointment", back_populates="client")
 
     def __repr__(self):
         return f'{self.surname} {self.fist_name} {self.second_name}, +38{self.phone}'
@@ -39,6 +41,8 @@ class Master(db.Model):
         "Procedure", secondary='master_procedure', back_populates="masters")
     schedule_changes = db.relationship(
         "ScheduleChange", back_populates="master")
+    appointments = db.relationship(
+        "Appointment", back_populates="master")
 
     def __repr__(self):
         return f'{self.surname} {self.fist_name} {self.second_name}, +38{self.phone}'
@@ -90,9 +94,96 @@ class Procedure(db.Model):
         "Client", secondary='favourite_procedure', back_populates="favourite_procedures")
     masters = db.relationship(
         "Master", secondary='master_procedure', back_populates="procedures")
+    appointments = db.relationship(
+        "Appointment", back_populates="procedure")
 
     def __repr__(self):
         return f'{self.name}'
+
+
+class Appointment(db.Model):
+    __tablename__ = 'appointment'
+    id = db.Column(db.Integer, primary_key=True)
+    appoint_date = db.Column(db.Date, nullable=False)
+    start_time = db.Column(db.Time, nullable=False)
+    end_time = db.Column(db.Time, nullable=False)
+    preferences = db.Column(db.String(300))
+    status = db.Column(db.Boolean, nullable=False)
+    price = db.Column(db.Numeric(precision=14, scale=2), nullable=False)
+
+    client_id = db.Column(
+        db.Integer, db.ForeignKey('client.id', onupdate='RESTRICT', ondelete='RESTRICT'), nullable=False)
+    master_id = db.Column(
+        db.Integer, db.ForeignKey('master.id', onupdate='RESTRICT', ondelete='RESTRICT'), nullable=False)
+    procedure_id = db.Column(
+        db.Integer, db.ForeignKey('procedure.id', onupdate='RESTRICT', ondelete='RESTRICT'), nullable=False)
+
+    client = db.relationship(
+        "Client", back_populates="appointments")
+    master = db.relationship(
+        "Master", back_populates="appointments")
+    procedure = db.relationship(
+        "Procedure", back_populates="appointments")
+    paints = db.relationship(
+        "AppointmentPaint", back_populates="appointment")
+
+    __table_args__ = (
+        db.UniqueConstraint('start_time', 'client_id', name='unique_client_time'),
+        db.UniqueConstraint('start_time', 'master_id', name='unique_master_time')
+    )
+
+    def __repr__(self):
+        return f'{self.start_time} - {self.master} - {self.procedure} - {self.client}'
+
+
+class Paint(db.Model):
+    __tablename__ = 'paint'
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(10), nullable=False, unique=True)
+    name = db.Column(db.String(75), nullable=False)
+    left_ml = db.Column(db.Integer, nullable=False, default=0)
+
+    paint_supplies = db.relationship(
+        "PaintSupply", back_populates="paint")
+    appointments = db.relationship(
+        "AppointmentPaint", back_populates="paint")
+
+    def __repr__(self):
+        return f'{self.code} - {self.name}'
+
+
+class PaintSupply(db.Model):
+    __tablename__ = 'paint_supply'
+    id = db.Column(db.Integer, primary_key=True)
+    supply_date = db.Column(db.Date, nullable=False)
+    amount = db.Column(db.Integer, nullable=False)
+
+    paint_id = db.Column(
+        db.Integer, db.ForeignKey('paint.id', onupdate='RESTRICT', ondelete='RESTRICT'), nullable=False)
+
+    paint = db.relationship(
+        "Paint", back_populates="paint_supplies")
+
+    def __repr__(self):
+        return f'{self.supply_date} - {self.paint}'
+
+
+class AppointmentPaint(db.Model):
+    __tablename__ = 'appointment_paint'
+    volume_ml = db.Column(db.Integer, nullable=False)
+
+    paint_id = db.Column(
+        db.Integer, db.ForeignKey('paint.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True)
+    appointment_id = db.Column(
+        db.Integer, db.ForeignKey('appointment.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True)
+
+    paint = db.relationship(
+        "Paint", back_populates="appointments")
+    appointment = db.relationship(
+        "Appointment", back_populates="paints")
+
+    def __repr__(self):
+        return f'{self.volume_ml}ml {self.paint} {self.appointment}'
 
 
 db.Table('favourite_master',
