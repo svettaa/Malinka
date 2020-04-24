@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../node_modules/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../node_modules/bootstrap-social/bootstrap-social.css">
-    <title>Init</title>
+    <link href="../static/styles.css" rel="stylesheet">
+    <title>Malinka</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 <body>
@@ -22,27 +23,27 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="#">Головна <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Procedures</a>
+                <a class="nav-link" href="#">Процедури</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Masters</a>
+                <a class="nav-link" href="#">Майстри</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Contacts</a>
+                <a class="nav-link" href="#">Контакти</a>
             </li>
         </ul>
         <ul class="navbar-nav d-flex justify-content-end">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="fa fa-user-circle fa-lg mr-3"></span>Profile
+                    <span class="fa fa-user-circle fa-lg mr-3"></span>Профіль
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarProfile">
-                    <a class="dropdown-item" href="#">My profile</a>
-                    <a class="dropdown-item" href="#">Favourites</a>
-                    <a class="dropdown-item" href="#">Log out</a>
+                    <a class="dropdown-item" href="#">Мій профіль</a>
+                    <a class="dropdown-item" href="#">Обране</a>
+                    <a class="dropdown-item" href="#">Вийти з акаунту</a>
                 </div>
             </li>
         </ul>
@@ -50,7 +51,123 @@
 </nav>
 
 
+<header class="jumbotron">
+    <div class="container">
+        <div class="row row-header">
+            <div class="col-12">
+                <h1 class="d-flex justify-content-center">MALINKA</h1>
+                <p class="d-flex justify-content-center">The best beauty salon in Kyiv, Ukraine</p>
+            </div>
+        </div>
+    </div>
+</header>
 
+<div class="container">
+    <div class="row mt-5 mb-5">
+        <div class="col-md-4">
+            <label for="bookButton" class="col-form-label d-flex justify-content-center">Створити запис:</label>
+        </div>
+        <button type="button" id="bookButton" class="d-flex justify-content-center btn btn-secondary col-md-4">ЗАПИСАТИСЯ</button>
+    </div>
+
+
+    <div class="row align-items-center">
+        <div class="col-12 d-flex justify-content-center myHeader">
+            <h4>Процедури</h4>
+        </div>
+    </div>
+        <table class="table">
+            <thead class=" table-asc">
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Назва категорії</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>
+                    <h6>Назва процедури<br></h6>
+                    <p>Додаткова інформація</p>
+                </td>
+                <td></td>
+                <td >
+                    <h5>250грн</h5>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>
+                    <h6>Назва процедури<br></h6>
+                    <p>Додаткова інформація</p>
+                </td>
+                <td></td>
+                <td>
+                    <h5>250грн</h5>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>
+                    <h6>Назва процедури<br></h6>
+                    <p>Додаткова інформація</p>
+                </td>
+                <td></td>
+                <td>
+                    <h5>250грн</h5>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    <table class="table">
+        <thead class=" table-desc">
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Назва категорії</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td>
+                <h6>Назва процедури<br></h6>
+                <p>Додаткова інформація</p>
+            </td>
+            <td></td>
+            <td>
+                <h5>250грн</h5>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>
+                <h6>Назва процедури<br></h6>
+                <p>Додаткова інформація</p>
+            </td>
+            <td></td>
+            <td>
+                <h5>250грн</h5>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>
+                <h6>Назва процедури<br></h6>
+                <p>Додаткова інформація</p>
+            </td>
+            <td></td>
+            <td>
+                <h5>250грн</h5>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 
 

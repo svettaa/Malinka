@@ -1,0 +1,21 @@
+.jumbotron{
+    background-color: #F6CED8;
+}
+
+#bookButton{
+    margin: 0 15px;
+}
+
+.myHeader{
+    border-top: 1px solid #e5e5e5;
+    padding: 20px 0;
+    margin-bottom: 20px;
+}
+
+.table-asc{
+    background-color: #FBEFF2;
+}
+
+.table-desc{
+    background-color: #F2F2F2;
+}
