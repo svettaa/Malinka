@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -10,6 +10,7 @@ app.config.from_pyfile('config.py')
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 admin = Admin(app, template_mode='bootstrap3')
+bootstrap = Bootstrap(app)
 
 from app.routes import *
 from app.models import *
