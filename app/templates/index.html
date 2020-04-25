@@ -35,97 +35,46 @@ Malinka
             <h4>Процедури</h4>
         </div>
     </div>
+
+    {% for category in categories %}
+
     <table class="table">
         <thead class=" table-asc">
         <tr>
             <th scope="col"></th>
-            <th scope="col">Назва категорії</th>
+            <th scope="col">{{ category.name }}</th>
             <th scope="col"></th>
             <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>
-                <h6>Назва процедури<br></h6>
-                <p>Додаткова інформація</p>
-            </td>
-            <td></td>
-            <td>
-                <h5>250грн</h5>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>
-                <h6>Назва процедури<br></h6>
-                <p>Додаткова інформація</p>
-            </td>
-            <td></td>
-            <td>
-                <h5>250грн</h5>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td>
-                <h6>Назва процедури<br></h6>
-                <p>Додаткова інформація</p>
-            </td>
-            <td></td>
-            <td>
-                <h5>250грн</h5>
-            </td>
-        </tr>
-        </tbody>
-    </table>
 
-    <table class="table">
-        <thead class=" table-desc">
+        {% for procedure in category.procedures %}
         <tr>
-            <th scope="col"></th>
-            <th scope="col">Назва категорії</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th scope="row">1</th>
+            <th scope="row"></th>
             <td>
-                <h6>Назва процедури<br></h6>
-                <p>Додаткова інформація</p>
+                <h6>{{ procedure.name }}<br></h6>
+                {% if procedure.info %}
+                <p>{{ procedure.info }}</p>
+                {% endif %}
             </td>
             <td></td>
             <td>
-                <h5>250грн</h5>
+                <h5>
+                    {{ procedure.price_min }}грн
+                    {% if procedure.price_max %}
+                    &nbsp;-&nbsp;
+                    {{ procedure.price_max }}грн
+                    {% endif %}
+                </h5>
             </td>
         </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>
-                <h6>Назва процедури<br></h6>
-                <p>Додаткова інформація</p>
-            </td>
-            <td></td>
-            <td>
-                <h5>250грн</h5>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td>
-                <h6>Назва процедури<br></h6>
-                <p>Додаткова інформація</p>
-            </td>
-            <td></td>
-            <td>
-                <h5>250грн</h5>
-            </td>
-        </tr>
+        {% endfor %}
+
         </tbody>
     </table>
+    {% endfor %}
+
 </div>
 
 <div class="jumbotron jumbotron-fluid m-0">
@@ -142,39 +91,27 @@ Malinka
     </div>
 
     <div class="row card-deck mb-5">
+
+        {% for master in masters %}
         <div class="card">
             <img class="card-img-top" src="http://placehold.it/150x100" alt="Card image cap">
             <div class="card-body">
-                <h5 class="card-title">Ім'я майстра</h5>
-                <p class="card-text">Інформація про майстра</p>
+                <h5 class="card-title">
+                    {{ master.surname }}
+                    {{ master.first_name }}
+                    {% if master.second_name %}
+                    {{ master.second_name }}
+                    {% endif %}
+                </h5>
+<!--                <p class="card-text">Інформація про майстра</p>-->
             </div>
             <div class="card-footer">
                 <a href="#" class="card-link text-info">Профіль</a><br>
                 <a href="#" class="card-link text-info">Записатися до майстра</a>
             </div>
         </div>
-        <div class="card">
-            <img class="card-img-top" src="http://placehold.it/150x100" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">Ім'я майстра</h5>
-                <p class="card-text">Інформація про майстра</p>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="card-link text-info">Профіль</a><br>
-                <a href="#" class="card-link text-info">Записатися до майстра</a>
-            </div>
-        </div>
-        <div class="card">
-            <img class="card-img-top" src="http://placehold.it/150x100" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">Ім'я майстра</h5>
-                <p class="card-text">Інформація про майстра</p>
-            </div>
-            <div class="card-footer">
-                <a href="#" class="card-link text-info">Профіль</a><br>
-                <a href="#" class="card-link text-info">Записатися до майстра</a>
-            </div>
-        </div>
+        {% endfor %}
+
     </div>
 </div>
 
