@@ -21,6 +21,8 @@ Categories
             </tr>
             </thead>
             <tbody>
+
+            {% for category in categories %}
             <tr>
                 <th scope="row">
                     <div class="form-check">
@@ -28,23 +30,13 @@ Categories
                     </div>
                 </th>
                 <td>
-                    <a class="btnEdit" href="#">Змінити</a>
-                    <a href="#">Видалити</a>
+                    <a class="btnEdit" href="{{ url_for('category', category_id=category.id) }}">Змінити</a>
+                    <a href="{{ url_for('category_delete', category_id=category.id) }}">Видалити</a>
                 </td>
-                <td>Манікюр</td>
+                <td>{{ category.name }}</td>
             </tr>
-            <tr>
-                <th scope="row">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" name="check" value="">
-                    </div>
-                </th>
-                <td>
-                    <a href="#">Змінити</a>
-                    <a href="#">Видалити</a>
-                </td>
-                <td>Покраска</td>
-            </tr>
+            {% endfor %}
+
             </tbody>
         </table>
     </div>
@@ -52,7 +44,7 @@ Categories
 
 <div class="row">
     <div class="col-md-10 offset-md-1">
-        <button type="submit" class="btn btn-primary">Додати</button>
+        <a href="{{ url_for('category_new') }}"><button class="btn btn-primary">Додати</button></a>
     </div>
 </div>
 
