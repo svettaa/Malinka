@@ -1,4 +1,5 @@
 from flask import render_template, request, redirect, url_for
+from sqlalchemy.exc import IntegrityError
 
 from app import app, db
 from app.models import *
@@ -25,22 +26,6 @@ def index():
     return render_template('index.html', categories=categories, masters=masters)
 
 
-def exists_category_name(name, category_id=-1):
-    scalar = db.engine.execute('SELECT * '
-                               'FROM Category '
-                               'WHERE name = %s AND id <> %s;',
-                               name, category_id).scalar()
-    return scalar is not None
-
-
-def exists_category_procedures(category_id):
-    scalar = db.engine.execute('SELECT * '
-                               'FROM Procedure '
-                               'WHERE category_id = %s;',
-                               category_id).scalar()
-    return scalar is not None
-
-
 @app.route('/categories')
 def categories():
     categories = db.engine.execute('SELECT id, name '
@@ -52,7 +37,6 @@ def categories():
 @app.route('/categories/<int:category_id>', methods=['POST', 'GET'])
 def category(category_id):
     if request.method == 'GET':
-
         category = db.engine.execute('SELECT id, name '
                                      'FROM Category '
                                      'WHERE id = %s;',
@@ -65,13 +49,13 @@ def category(category_id):
 
         new_name = request.form['categName']
 
-        if exists_category_name(new_name, category_id):
+        try:
+            db.engine.execute('UPDATE Category '
+                              'SET name = %s '
+                              'WHERE id = %s;',
+                              (new_name, category_id))
+        except IntegrityError:
             return 'EXISTS'
-
-        db.engine.execute('UPDATE Category '
-                          'SET name = %s '
-                          'WHERE id = %s;',
-                          (new_name, category_id))
 
         return redirect(url_for('categories'))
 
@@ -85,26 +69,25 @@ def category_new():
     if request.method == 'POST':
         new_name = request.form['categName']
 
-        if exists_category_name(new_name):
+        try:
+            db.engine.execute('INSERT INTO Category (name) '
+                              'VALUES (%s);',
+                              new_name)
+        except IntegrityError:
             return 'EXISTS'
-
-        db.engine.execute('INSERT INTO Category (name) '
-                          'VALUES (%s);',
-                          new_name)
 
         return redirect(url_for('categories'))
 
 
 @app.route('/categories/delete/<int:category_id>')
 def category_delete(category_id):
-
-    if exists_category_procedures(category_id):
+    try:
+        db.engine.execute('DELETE '
+                          'FROM Category '
+                          'WHERE id = %s',
+                          category_id)
+    except IntegrityError:
         return "CATEGORY HAS PROCEDURES"
-
-    db.engine.execute('DELETE '
-                      'FROM Category '
-                      'WHERE id = %s',
-                      category_id)
 
     return redirect(url_for('categories'))
 
