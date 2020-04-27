@@ -140,7 +140,7 @@ def procedure(procedure_id):
                               (new_category_id, new_name, new_price_min,
                                new_price_max, new_info, procedure_id))
         except IntegrityError:
-            return 'EXISTS'
+            return 'EXISTS or ILLEGAL CATEGORY'
         except DataError:
             return 'ILLEGAL DATA'
 
@@ -173,7 +173,7 @@ def procedure_new():
                               (new_category_id, new_name, new_price_min,
                                new_price_max, new_info))
         except IntegrityError:
-            return 'EXISTS'
+            return 'EXISTS or ILLEGAL CATEGORY'
         except DataError:
             return 'ILLEGAL DATA'
 
