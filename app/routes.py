@@ -26,3 +26,13 @@ def index():
         categories.append(new_item)
 
     return render_template('index.html', categories=categories, masters=masters)
+
+
+@app.route('/categories')
+def categories():
+    return render_template('categories.html')
+
+
+@app.route('/categories/<int:category_id>')
+def category(category_id):
+    return render_template('category.html')
