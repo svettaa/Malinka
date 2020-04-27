@@ -2,7 +2,7 @@
 
 
 {% block title %}
-Categories
+Procedure
 {% endblock %}
 
 
@@ -12,11 +12,55 @@ Categories
     <div class="col-12 col-sm-10 mx-auto">
         <form>
             <div class="form-group row">
-                <label for="categEditName" class="col-md-2 col-form-label">Назва категорії</label>
+                <label for="procCategName" class="col-md-2 col-form-label">Назва категорії</label>
                 <div class="col-md-10">
-                    <input type="text" class="form-control"id="categEditName" name="categName">
+                    <select class="form-control" id="procCategName">
+                        <option selected>Choose...</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
                 </div>
             </div>
+            <div class="form-group row">
+                <label for="procName" class="col-md-2 col-form-label">Назва процедури</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control"id="procName" name="procName">
+                </div>
+            </div>
+            <div class="form-group row ">
+                <label for="procMin" class="col-md-2 col-form-label">Мінімальна ціна</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control"id="procMin" name="procMin">
+                </div>
+                <label for="procMax" class="col-md-2 col-form-label">Максимальна ціна</label>
+                <div class="col-md-2">
+                    <input type="text" class="form-control"id="procMax" name="procMax">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="procMasters" class="col-md-2 col-form-label">Майстри</label>
+                <div class="col-md-10">
+                    <select class="form-control" id="procMasters" multiple>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label for="procInfo" class="col-md-2 col-form-label">Додаткова інформація</label>
+                <div class="col-md-10">
+                    <textarea class="form-control" id="procInfo" name="procInfo" rows="5"></textarea>
+                </div>
+            </div>
+
             <div class="form-group row">
                 <div class="col-md-10 offset-md-2">
                     <button type="submit" class="btn btn-primary">Зберегти</button>

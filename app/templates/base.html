@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome.min.css') }}">
 <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+
 <title>{% block title %}Malinka{% endblock %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 {% endblock %}
@@ -17,7 +18,7 @@
 {% block body %}
 
 {% block nav %}
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
     <a class="navbar-brand" href="#">MALINKA</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -29,13 +30,13 @@
                 <a class="nav-link" href="{{ url_for('index') }}">Головна <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Процедури</a>
+                <a class="nav-link" href="{{ url_for('index') }}">Процедури</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Майстри</a>
+                <a class="nav-link" href="{{ url_for('index') }}">Майстри</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Контакти</a>
+                <a class="nav-link" href="{{ url_for('index') }}">Контакти</a>
             </li>
         </ul>
         <ul class="navbar-nav d-flex justify-content-end">
@@ -77,6 +78,8 @@
 <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
 <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
+
+
 {% endblock %}
 
 {% endblock %}

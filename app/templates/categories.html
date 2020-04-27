@@ -10,12 +10,11 @@ Categories
 
 
 <!-- Table - list of categories -->
-<div class="row">
+<div class="row mt-5">
     <div class="col-12 col-sm-10 mx-auto">
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th style="width: 5%" scope="col"></th>
                 <th style="width: 10%" scope="col"></th>
                 <th scope="col">Назва категорії</th>
             </tr>
@@ -24,11 +23,6 @@ Categories
 
             {% for category in categories %}
             <tr>
-                <th scope="row">
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" name="check" value="">
-                    </div>
-                </th>
                 <td>
                     <a class="btnEdit" href="{{ url_for('category', category_id=category.id) }}">Змінити</a>
                     <a href="{{ url_for('category_delete', category_id=category.id) }}">Видалити</a>
