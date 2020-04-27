@@ -20,35 +20,33 @@ Procedures
                 <th scope="col">Процедура</th>
                 <th scope="col">Мін. ціна</th>
                 <th scope="col">Макс. ціна</th>
-                <th scope="col">Майстри</th>
                 <th scope="col">Додаткова інформація</th>
             </tr>
             </thead>
             <tbody>
+
+            {% for procedure in procedures %}
             <tr>
                 <td>
-                    <a class="btnEdit" href="#">Змінити</a>
-                    <a href="#">Видалити</a>
+                    <a class="btnEdit" href="{{ url_for('procedure', procedure_id=procedure.id) }}">Змінити</a>
+                    <a href="{{ url_for('procedure_delete', procedure_id=procedure.id) }}">Видалити</a>
                 </td>
-                <td>Манікюр</td>
-                <td>Класичний манікюр</td>
-                <td>100</td>
-                <td>150</td>
-                <td>Катя, Маша</td>
-                <td></td>
-            </tr>
-            <tr>
+                <td>{{ procedure.category_name }}</td>
+                <td>{{ procedure.procedure_name }}</td>
+                <td>{{ procedure.price_min }}</td>
                 <td>
-                    <a href="#">Змінити</a>
-                    <a href="#">Видалити</a>
+                    {% if procedure.price_max %}
+                    {{ procedure.price_max }}
+                    {% endif %}
                 </td>
-                <td>Манікюр</td>
-                <td>Покриття лаком</td>
-                <td>300</td>
-                <td>500</td>
-                <td>Іра, Лера</td>
-                <td></td>
+                <td>
+                    {% if procedure.info %}
+                    {{ procedure.info }}
+                    {% endif %}
+                </td>
             </tr>
+            {% endfor %}
+
             </tbody>
         </table>
     </div>
@@ -56,7 +54,9 @@ Procedures
 
 <div class="row">
     <div class="col-md-10 offset-md-1">
-        <button type="submit" class="btn btn-primary">Додати</button>
+        <a href="{{ url_for('procedure_new') }}">
+            <button type="submit" class="btn btn-primary">Додати</button>
+        </a>
     </div>
 </div>
 
