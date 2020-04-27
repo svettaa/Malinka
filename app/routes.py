@@ -33,14 +33,6 @@ def exists_category_name(name, category_id=-1):
     return scalar is not None
 
 
-def exists_category_id(category_id):
-    scalar = db.engine.execute('SELECT * '
-                               'FROM Category '
-                               'WHERE id = %s;',
-                               category_id).scalar()
-    return scalar is not None
-
-
 def exists_category_procedures(category_id):
     scalar = db.engine.execute('SELECT * '
                                'FROM Procedure '
@@ -61,9 +53,6 @@ def categories():
 def category(category_id):
     if request.method == 'GET':
 
-        if not exists_category_id(category_id):
-            return "WRONG ID"
-
         category = db.engine.execute('SELECT id, name '
                                      'FROM Category '
                                      'WHERE id = %s;',
@@ -75,9 +64,6 @@ def category(category_id):
     if request.method == 'POST':
 
         new_name = request.form['categName']
-
-        if not exists_category_id(category_id):
-            return "WRONG ID"
 
         if exists_category_name(new_name, category_id):
             return 'EXISTS'
@@ -111,8 +97,6 @@ def category_new():
 
 @app.route('/categories/delete/<int:category_id>')
 def category_delete(category_id):
-    if not exists_category_id(category_id):
-        return "WRONG ID"
 
     if exists_category_procedures(category_id):
         return "CATEGORY HAS PROCEDURES"
