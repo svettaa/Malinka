@@ -36,3 +36,13 @@ def categories():
 @app.route('/categories/<int:category_id>')
 def category(category_id):
     return render_template('category.html')
+
+
+@app.route('/procedures')
+def procedures():
+    return render_template('procedures.html')
+
+
+@app.route('/procedures/<int:procedure_id>')
+def procedure(procedure_id):
+    return render_template('procedure.html')
