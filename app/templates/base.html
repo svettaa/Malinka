@@ -59,6 +59,14 @@
 </nav>
 {% endblock %}
 
+{% block header_div %}
+<div class="row mt-3 mb-3">
+    <div class="container">
+        <h4 class="d-flex justify-content-center">{% block header %}{% endblock %}</h4>
+    </div>
+</div>
+{% endblock %}
+
 {% block messages %}
 
 {% if error %}
