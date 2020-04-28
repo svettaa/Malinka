@@ -7,6 +7,45 @@
 
 
 {% block content %}
+<div class="row mt-3 mb-3">
+    <div class="container">
+        <h4 class="d-flex justify-content-center">Змінити/додати фарбу</h4>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12 col-sm-10 mx-auto">
+        <form action="{{ action }}" method="POST">
+            <div class="form-group row">
+                <label for="paintNum" class="col-md-2 col-form-label">Номер фарби *</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="paintNum" name="paintNum">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="paintName" class="col-md-2 col-form-label">Назва *</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="paintName" name="paintName">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="paintLeft" class="col-md-2 col-form-label">Залишок *</label>
+                <div class="col-md-2">
+                    <input type="number" value="100" min="0" max="5000" step="10" class="form-control" id="paintLeft" name="paintLeft">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-10 offset-md-2">
+                    <button type="submit" class="btn btn-primary">Зберегти</button>
+                    <a href="{{ url_for('paints') }}"><button type="button" class="btn btn-secondary">Назад</button></a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 
 
 {% endblock %}

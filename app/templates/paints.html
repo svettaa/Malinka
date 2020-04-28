@@ -8,5 +8,74 @@
 
 {% block content %}
 
+<!-- Table - list of paints -->
+<div class="row">
+    <div class="col-12 col-sm-10 mx-auto">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th style="width: 6%" scope="col"></th>
+                <th style="width: 15%" scope="col">Номер фарби</th>
+                <th scope="col">Назва</th>
+                <th scope="col">Залишок, мл</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <a class="btnEdit">
+                        <span class="fa fa-edit"></span>
+                    </a>
+                    <a>
+                        <span class="fa fa-trash"></span>
+                    </a>
+                </td>
+                <td>ua011</td>
+                <td>Блонд</td>
+                <td class="paint_left">150</td>
+            </tr>
+            <tr>
+                <td>
+                    <a class="btnEdit">
+                        <span class="fa fa-edit"></span>
+                    </a>
+                    <a>
+                        <span class="fa fa-trash"></span>
+                    </a>
+                </td>
+                <td>ua012</td>
+                <td>Рудий</td>
+                <td class="paint_left">90</td>
+            </tr>
+            <tr>
+                <td>
+                    <a class="btnEdit">
+                        <span class="fa fa-edit"></span>
+                    </a>
+                    <a>
+                        <span class="fa fa-trash"></span>
+                    </a>
+                </td>
+                <td>ua013</td>
+                <td>Чорний</td>
+                <td class="paint_left">100</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <a href="{{ url_for('procedure_new') }}">
+            <button type="submit" class="btn btn-primary">Додати</button>
+        </a>
+    </div>
+</div>
+
+
+
+
+
 
 {% endblock %}

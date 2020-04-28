@@ -7,12 +7,18 @@
 
 
 {% block content %}
+<div class="row mt-3 mb-3">
+    <div class="container">
+        <h4 class="d-flex justify-content-center">Змінити/додати категорію</h4>
+    </div>
+</div>
 
-<div class="row mt-5">
+
+<div class="row">
     <div class="col-12 col-sm-10 mx-auto">
         <form action="{{ action }}" method="POST">
             <div class="form-group row">
-                <label for="categEditName" class="col-md-2 col-form-label">Назва категорії</label>
+                <label for="categEditName" class="col-md-2 col-form-label">Назва категорії *</label>
                 <div class="col-md-10">
                     <input type="text" class="form-control" id="categEditName" name="categName"
                     value="{{ category.name }}">
@@ -21,6 +27,7 @@
             <div class="form-group row">
                 <div class="col-md-10 offset-md-2">
                     <button type="submit" class="btn btn-primary">Зберегти</button>
+                    <a href="{{ url_for('categories') }}"><button type="button" class="btn btn-secondary">Назад</button></a>
                 </div>
             </div>
         </form>
