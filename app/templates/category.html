@@ -20,13 +20,15 @@
                 <label for="categEditName" class="col-md-2 col-form-label">Назва категорії *</label>
                 <div class="col-md-10">
                     <input type="text" class="form-control" id="categEditName" name="categName"
-                    value="{{ category.name }}">
+                           value="{{ category.name }}">
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-md-10 offset-md-2">
                     <button type="submit" class="btn btn-primary">Зберегти</button>
-                    <a href="{{ url_for('categories') }}"><button type="button" class="btn btn-secondary">Назад</button></a>
+                    <a href="{{ url_for('categories_get') }}">
+                        <button type="button" class="btn btn-secondary">Назад</button>
+                    </a>
                 </div>
             </div>
         </form>
