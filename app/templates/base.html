@@ -55,6 +55,22 @@
 </nav>
 {% endblock %}
 
+{% block messages %}
+
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+{% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %}
+
+{% endblock %}
+
 {% block content %}
 
 {% endblock %}
