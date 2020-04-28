@@ -26,45 +26,25 @@
             </tr>
             </thead>
             <tbody>
+
+            {% for paint in paints %}
             <tr>
                 <td>
-                    <a class="btnEdit">
+                    <a class="btnEdit"
+                       href="{{ url_for('edit_paint_get', paint_id=paint.id) }}">
                         <span class="fa fa-edit"></span>
                     </a>
-                    <a>
+                    <a
+                       href="{{ url_for('delete_paint_get', paint_id=paint.id) }}">
                         <span class="fa fa-trash"></span>
                     </a>
                 </td>
-                <td>ua011</td>
-                <td>Блонд</td>
-                <td class="paint_left">150</td>
+                <td>{{ paint.code }}</td>
+                <td>{{ paint.name }}</td>
+                <td class="paint_left">{{ paint.left_ml }}</td>
             </tr>
-            <tr>
-                <td>
-                    <a class="btnEdit">
-                        <span class="fa fa-edit"></span>
-                    </a>
-                    <a>
-                        <span class="fa fa-trash"></span>
-                    </a>
-                </td>
-                <td>ua012</td>
-                <td>Рудий</td>
-                <td class="paint_left">90</td>
-            </tr>
-            <tr>
-                <td>
-                    <a class="btnEdit">
-                        <span class="fa fa-edit"></span>
-                    </a>
-                    <a>
-                        <span class="fa fa-trash"></span>
-                    </a>
-                </td>
-                <td>ua013</td>
-                <td>Чорний</td>
-                <td class="paint_left">100</td>
-            </tr>
+            {% endfor %}
+
             </tbody>
         </table>
     </div>
@@ -72,15 +52,11 @@
 
 <div class="row">
     <div class="col-md-10 offset-md-1">
-        <a href="{{ url_for('procedure_new') }}">
+        <a href="{{ url_for('new_paint_get') }}">
             <button type="submit" class="btn btn-primary">Додати</button>
         </a>
     </div>
 </div>
-
-
-
-
 
 
 {% endblock %}

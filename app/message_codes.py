@@ -8,6 +8,9 @@ class Success(Enum):
     UPDATED_PROCEDURE = 4
     DELETED_CATEGORY = 5
     DELETED_PROCEDURE = 6
+    ADDED_PAINT = 7
+    UPDATED_PAINT = 8
+    DELETED_PAINT = 9
 
 
 class Error(Enum):
@@ -16,6 +19,9 @@ class Error(Enum):
     PROCEDURE_NAME_EXISTS = 3
     PROCEDURE_ILLEGAL_DATA = 4
     PROCEDURE_HAS_APPOINTMENTS = 5
+    PAINT_CODE_EXISTS = 6
+    PAINT_ILLEGAL_DATA = 7
+    PAINT_HAS_APPOINTMENTS = 7
 
 
 message = {Success.ADDED_CATEGORY: 'Успішно додано категорію',
@@ -24,6 +30,9 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
            Success.UPDATED_PROCEDURE: 'Успішно змінено процедуру',
            Success.DELETED_CATEGORY: 'Успішно видалено категорію',
            Success.DELETED_PROCEDURE: 'Успішно видалено процедуру',
+           Success.ADDED_PAINT: 'Успішно додано фарбу',
+           Success.UPDATED_PAINT: 'Успішно змінено фарбу',
+           Success.DELETED_PAINT: 'Успішно видалено фарбу',
            Error.CATEGORY_HAS_PROCEDURES: 'Неможливо видалити категорію, що містить процедури',
            Error.CATEGORY_NAME_EXISTS: 'Неможливо змінити або додати категорію, '
                                        'категорія з такою назваю вже існує',
@@ -33,7 +42,13 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
                                          'через неправильно введені дані. Можливі причини: '
                                          'Некоректний числовий формат для ціни '
                                          'Не вказана мінімальна ціна',
-           Error.PROCEDURE_HAS_APPOINTMENTS: 'Неможливо видалити процедуру, що міститься у записах'
+           Error.PAINT_ILLEGAL_DATA: 'Неможливо змінити або додати фарбу '
+                                         'через неправильно введені дані. Можливі причини: '
+                                         'Не вказано залишок',
+           Error.PROCEDURE_HAS_APPOINTMENTS: 'Неможливо видалити процедуру, що міститься у записах',
+           Error.PAINT_HAS_APPOINTMENTS: 'Неможливо видалити фарбу, що міститься у записах',
+           Error.PAINT_CODE_EXISTS: 'Неможливо змінити або додати фарбу, '
+                                    'фарба з таким номером вже існує'
            }
 
 

@@ -48,8 +48,7 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarProfile">
                     <a class="dropdown-item" href="{{ url_for('categories') }}">Категорії</a>
                     <a class="dropdown-item" href="{{ url_for('procedures') }}">Процедури</a>
-                    <a class="dropdown-item" href="{{ url_for('paints') }}">Фарби</a>
-                    <a class="dropdown-item" href="{{ url_for('paint', paint_id=1) }}">Фарбa 1</a>
+                    <a class="dropdown-item" href="{{ url_for('paints_get') }}">Фарби</a>
                     <a class="dropdown-item" href="{{ url_for('supplies') }}">Поставки</a>
                     <a class="dropdown-item" href="{{ url_for('supply', supply_id=1) }}">Поставка 1</a>
                 </div>
@@ -57,14 +56,6 @@
         </ul>
     </div>
 </nav>
-{% endblock %}
-
-{% block header_div %}
-<div class="row mt-3 mb-3">
-    <div class="container">
-        <h4 class="d-flex justify-content-center">{% block header %}{% endblock %}</h4>
-    </div>
-</div>
 {% endblock %}
 
 {% block messages %}
@@ -81,6 +72,14 @@
 </div>
 {% endif %}
 
+{% endblock %}
+
+{% block header_div %}
+<div class="row mt-3 mb-3">
+    <div class="container">
+        <h4 class="d-flex justify-content-center">{% block header %}{% endblock %}</h4>
+    </div>
+</div>
 {% endblock %}
 
 {% block content %}
