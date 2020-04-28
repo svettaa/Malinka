@@ -29,24 +29,24 @@
             </thead>
             <tbody>
 
-
+            {% for supply in supplies %}
             <tr>
                 <td>
                     <div class="d-flex justify-content-between">
-                    <a class="btnEdit">
+                    <a class="btnEdit" href="{{ url_for('edit_supply_post', supply_id=supply.id) }}">
                         <span class="fa fa-edit"></span>
                     </a>
-                    <a>
+                    <a href="{{ url_for('delete_supply_get', supply_id=supply.id) }}">
                         <span class="fa fa-trash"></span>
                     </a>
                     </div>
                 </td>
-                <td>28/04/2020</td>
-                <td>ua1</td>
-                <td>Блонд</td>
-                <td>500</td>
+                <td>{{ supply.supply_date }}</td>
+                <td>{{ supply.paint_code }}</td>
+                <td>{{ supply.paint_name }}</td>
+                <td>{{ supply.amount }}</td>
             </tr>
-
+            {% endfor %}
 
             </tbody>
         </table>
@@ -55,7 +55,7 @@
 
 <div class="row">
     <div class="col-md-10 offset-md-1">
-        <a href="{{ url_for('new_paint_get') }}">
+        <a href="{{ url_for('new_supply_get') }}">
             <button type="submit" class="btn btn-primary">Додати</button>
         </a>
     </div>

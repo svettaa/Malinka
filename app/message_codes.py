@@ -11,6 +11,9 @@ class Success(Enum):
     ADDED_PAINT = 7
     UPDATED_PAINT = 8
     DELETED_PAINT = 9
+    ADDED_SUPPLY = 10
+    UPDATED_SUPPLY = 11
+    DELETED_SUPPLY = 12
 
 
 class Error(Enum):
@@ -21,7 +24,8 @@ class Error(Enum):
     PROCEDURE_HAS_APPOINTMENTS = 5
     PAINT_CODE_EXISTS = 6
     PAINT_ILLEGAL_DATA = 7
-    PAINT_HAS_APPOINTMENTS = 7
+    PAINT_HAS_APPOINTMENTS = 8
+    SUPPLY_ILLEGAL_DATA = 9
 
 
 message = {Success.ADDED_CATEGORY: 'Успішно додано категорію',
@@ -33,6 +37,9 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
            Success.ADDED_PAINT: 'Успішно додано фарбу',
            Success.UPDATED_PAINT: 'Успішно змінено фарбу',
            Success.DELETED_PAINT: 'Успішно видалено фарбу',
+           Success.ADDED_SUPPLY: 'Успішно додано поставку',
+           Success.UPDATED_SUPPLY: 'Успішно змінено поставку',
+           Success.DELETED_SUPPLY: 'Успішно видалено поставку',
            Error.CATEGORY_HAS_PROCEDURES: 'Неможливо видалити категорію, що містить процедури',
            Error.CATEGORY_NAME_EXISTS: 'Неможливо змінити або додати категорію, '
                                        'категорія з такою назваю вже існує',
@@ -48,7 +55,11 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
            Error.PROCEDURE_HAS_APPOINTMENTS: 'Неможливо видалити процедуру, що міститься у записах',
            Error.PAINT_HAS_APPOINTMENTS: 'Неможливо видалити фарбу, що міститься у записах',
            Error.PAINT_CODE_EXISTS: 'Неможливо змінити або додати фарбу, '
-                                    'фарба з таким номером вже існує'
+                                    'фарба з таким номером вже існує',
+           Error.SUPPLY_ILLEGAL_DATA: 'Неможливо змінити або додати поставку. '
+                                      'Можливі причини: '
+                                      'Неправильно вказана дата '
+                                      'Не вказано кількість'
            }
 
 
