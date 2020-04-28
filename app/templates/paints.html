@@ -19,7 +19,7 @@
         <table class="table table-bordered">
             <thead>
             <tr>
-                <th style="width: 6%" scope="col"></th>
+                <th style="width: 70px" scope="col"></th>
                 <th style="width: 15%" scope="col">Номер фарби</th>
                 <th scope="col">Назва</th>
                 <th scope="col">Залишок, мл</th>
@@ -30,6 +30,7 @@
             {% for paint in paints %}
             <tr>
                 <td>
+                    <div class="d-flex justify-content-between">
                     <a class="btnEdit"
                        href="{{ url_for('edit_paint_get', paint_id=paint.id) }}">
                         <span class="fa fa-edit"></span>
@@ -38,6 +39,7 @@
                        href="{{ url_for('delete_paint_get', paint_id=paint.id) }}">
                         <span class="fa fa-trash"></span>
                     </a>
+                    </div>
                 </td>
                 <td>{{ paint.code }}</td>
                 <td>{{ paint.name }}</td>
@@ -51,7 +53,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-10 offset-md-1">
+    <div class="col-md-10 offset-1">
         <a href="{{ url_for('new_paint_get') }}">
             <button type="submit" class="btn btn-primary">Додати</button>
         </a>

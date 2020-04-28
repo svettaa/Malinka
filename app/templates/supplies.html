@@ -14,4 +14,51 @@
 {% block content %}
 
 
+<!-- Table - list of supplies -->
+<div class="row">
+    <div class="col-12 col-sm-10 mx-auto">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th style="width: 70px" scope="col"></th>
+                <th style="width: 15%" scope="col">Дата поставки</th>
+                <th scope="col">Код фарби</th>
+                <th scope="col">Назва фарби</th>
+                <th scope="col">Кількість, мл</th>
+            </tr>
+            </thead>
+            <tbody>
+
+
+            <tr>
+                <td>
+                    <div class="d-flex justify-content-between">
+                    <a class="btnEdit">
+                        <span class="fa fa-edit"></span>
+                    </a>
+                    <a>
+                        <span class="fa fa-trash"></span>
+                    </a>
+                    </div>
+                </td>
+                <td>28/04/2020</td>
+                <td>ua1</td>
+                <td>Блонд</td>
+                <td>500</td>
+            </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <a href="{{ url_for('new_paint_get') }}">
+            <button type="submit" class="btn btn-primary">Додати</button>
+        </a>
+    </div>
+</div>
+
 {% endblock %}
