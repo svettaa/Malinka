@@ -48,6 +48,10 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarProfile">
                     <a class="dropdown-item" href="{{ url_for('categories') }}">Категорії</a>
                     <a class="dropdown-item" href="{{ url_for('procedures') }}">Процедури</a>
+                    <a class="dropdown-item" href="{{ url_for('paints') }}">Фарби</a>
+                    <a class="dropdown-item" href="{{ url_for('paint', paint_id=1) }}">Фарбa 1</a>
+                    <a class="dropdown-item" href="{{ url_for('supplies') }}">Поставки</a>
+                    <a class="dropdown-item" href="{{ url_for('supply', supply_id=1) }}">Поставка 1</a>
                 </div>
             </li>
         </ul>

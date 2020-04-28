@@ -218,3 +218,23 @@ def procedure_delete(procedure_id):
                                 error=Error.CATEGORY_HAS_PROCEDURES.value))
 
     return redirect(url_for('procedures', success=Success.DELETED_PROCEDURE.value))
+
+
+@app.route('/paints')
+def paints():
+    return render_template('paints.html')
+
+
+@app.route('/paints/<int:paint_id>')
+def paint(paint_id):
+    return render_template('paint.html')
+
+
+@app.route('/supplies')
+def supplies():
+    return render_template('supplies.html')
+
+
+@app.route('/supplies/<int:supply_id>')
+def supply(supply_id):
+    return render_template('supply.html')
