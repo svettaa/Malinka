@@ -39,9 +39,15 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
 
 def get_error_message(code):
     if code is not None:
-        return message[Error(int(code))]
+        try:
+            return message[Error(int(code))]
+        except ValueError:
+            pass
 
 
 def get_success_message(code):
     if code is not None:
-        return message[Success(int(code))]
+        try:
+            return message[Success(int(code))]
+        except ValueError:
+            pass
