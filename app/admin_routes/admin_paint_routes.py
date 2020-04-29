@@ -30,15 +30,14 @@ def edit_paint_get(paint_id):
 @app.route('/paints/<int:paint_id>', methods=['POST'])
 def edit_paint_post(paint_id):
     paint = Paint(id=paint_id, code=request.form['paintNum'],
-                  name=request.form['paintName'], left_ml=request.form['paintLeft'])
+                  name=request.form['paintName'])
 
     try:
         db.engine.execute('UPDATE Paint '
                           'SET code = %s,'
-                          '    name = %s,'
-                          '    left_ml = %s '
+                          '    name = %s '
                           'WHERE id = %s;',
-                          (paint.code, paint.name, paint.left_ml, paint.id))
+                          (paint.code, paint.name, paint.id))
     except IntegrityError:
         return render_template('paint.html', paint=paint,
                                action=url_for('edit_paint_post', paint_id=paint_id),
@@ -59,13 +58,12 @@ def new_paint_get():
 
 @app.route('/paints/new', methods=['POST'])
 def new_paint_post():
-    paint = Paint(code=request.form['paintNum'],
-                  name=request.form['paintName'], left_ml=request.form['paintLeft'])
+    paint = Paint(code=request.form['paintNum'], name=request.form['paintName'])
 
     try:
         db.engine.execute('INSERT INTO Paint (code, name, left_ml) '
                           'VALUES (%s, %s, %s);',
-                          (paint.code, paint.name, paint.left_ml))
+                          (paint.code, paint.name, 0))
     except IntegrityError:
         return render_template('paint.html', paint=paint,
                                action=url_for('new_paint_post', paint_id=paint.id),
