@@ -8,12 +8,17 @@ $(document).ready(function () {
         };
     });
 
-    $(function () {
+
+
+
+
+
+    /*$(function () {
         $('#datetimepicker').datetimepicker({
             format: 'L'
         });
     });
-
+*/
 
 
 

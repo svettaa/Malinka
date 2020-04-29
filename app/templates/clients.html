@@ -13,5 +13,54 @@
 
 {% block content %}
 <div class="content">
+    <div class="row">
+        <div class="col-12 col-sm-10 mx-auto">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th style="width: 70px" scope="col"></th>
+                    <th scope="col">Прізвище</th>
+                    <th scope="col">Ім'я</th>
+                    <th scope="col">По-батькові</th>
+                    <th scope="col">Стать</th>
+                    <th scope="col">Номер телефону</th>
+                    <th scope="col">E-mail</th>
+                </tr>
+                </thead>
+                <tbody>
+
+
+                <tr>
+                    <td>
+                        <div class="d-flex justify-content-between">
+                            <a>
+                                <span class="fa fa-edit"></span>
+                            </a>
+                            <a>
+                                <span class="fa fa-trash"></span>
+                            </a>
+                        </div>
+                    </td>
+                    <td>Петренко</td>
+                    <td>Олена</td>
+                    <td>Василівна</td>
+                    <td>Ж</td>
+                    <td>095 000 0000</td>
+                    <td>petrenko@mail.ua</td>
+                </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <a href="{{ url_for('new_procedure_get') }}">
+                <button type="submit" class="btn btn-primary">Додати</button>
+            </a>
+        </div>
+    </div>
 </div>
 {% endblock %}
