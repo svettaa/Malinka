@@ -6,7 +6,7 @@ class Client(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     phone = db.Column(db.String(10), nullable=False, unique=True)
     surname = db.Column(db.String(20), nullable=False)
-    fist_name = db.Column(db.String(20), nullable=False)
+    first_name = db.Column(db.String(20), nullable=False)
     second_name = db.Column(db.String(20))
     email = db.Column(db.String(30))
     is_male = db.Column(db.Boolean, nullable=False)
@@ -20,7 +20,7 @@ class Client(db.Model):
         "Appointment", back_populates="client")
 
     def __repr__(self):
-        return f'{self.surname} {self.fist_name} {self.second_name}, +38{self.phone}'
+        return f'{self.surname} {self.first_name} {self.second_name}, +38{self.phone}'
 
 
 class Master(db.Model):

@@ -14,6 +14,9 @@ class Success(Enum):
     ADDED_SUPPLY = 10
     UPDATED_SUPPLY = 11
     DELETED_SUPPLY = 12
+    ADDED_USER = 13
+    UPDATED_USER = 14
+    DELETED_USER = 15
 
 
 class Error(Enum):
@@ -26,6 +29,9 @@ class Error(Enum):
     PAINT_ILLEGAL_DATA = 7
     PAINT_HAS_APPOINTMENTS = 8
     SUPPLY_ILLEGAL_DATA = 9
+    USER_PHONE_EXISTS = 10
+    USER_HAS_APPOINTMENTS = 11
+    USER_ILLEGAL_DATA = 12
 
 
 message = {Success.ADDED_CATEGORY: 'Успішно додано категорію',
@@ -40,6 +46,9 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
            Success.ADDED_SUPPLY: 'Успішно додано поставку',
            Success.UPDATED_SUPPLY: 'Успішно змінено поставку',
            Success.DELETED_SUPPLY: 'Успішно видалено поставку',
+           Success.ADDED_USER: 'Успішно додано користувача',
+           Success.UPDATED_USER: 'Успішно змінено користувача',
+           Success.DELETED_USER: 'Успішно видалено користувача',
            Error.CATEGORY_HAS_PROCEDURES: 'Неможливо видалити категорію, що містить процедури',
            Error.CATEGORY_NAME_EXISTS: 'Неможливо змінити або додати категорію, '
                                        'категорія з такою назваю вже існує',
@@ -50,16 +59,22 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
                                          'Некоректний числовий формат для ціни '
                                          'Не вказана мінімальна ціна',
            Error.PAINT_ILLEGAL_DATA: 'Неможливо змінити або додати фарбу '
-                                         'через неправильно введені дані. Можливі причини: '
-                                         'Не вказано залишок',
+                                     'через неправильно введені дані. Можливі причини: '
+                                     'Не вказано залишок',
            Error.PROCEDURE_HAS_APPOINTMENTS: 'Неможливо видалити процедуру, що міститься у записах',
-           Error.PAINT_HAS_APPOINTMENTS: 'Неможливо видалити фарбу, що міститься у записах',
+           Error.PAINT_HAS_APPOINTMENTS: 'Неможливо видалити фарбу, що міститься у записах '
+                                         'або для якої є поставки',
+           Error.USER_HAS_APPOINTMENTS: 'Неможливо видалити клієнта, що міститься у записах',
+           Error.USER_PHONE_EXISTS: 'Неможливо додати або змінити користувача, '
+                                    'користувач з таким номером вже існує',
            Error.PAINT_CODE_EXISTS: 'Неможливо змінити або додати фарбу, '
                                     'фарба з таким номером вже існує',
            Error.SUPPLY_ILLEGAL_DATA: 'Неможливо змінити або додати поставку. '
                                       'Можливі причини: '
                                       'Неправильно вказана дата '
-                                      'Не вказано кількість'
+                                      'Не вказано кількість',
+           Error.USER_ILLEGAL_DATA: 'Неможливо додати або змінити користувача, '
+                                    'неправильно введені дані'
            }
 
 

@@ -121,6 +121,6 @@ def delete_procedure_get(procedure_id):
                           procedure_id)
     except IntegrityError:
         return redirect(url_for('procedures_get',
-                                error=Error.CATEGORY_HAS_PROCEDURES.value))
+                                error=Error.PROCEDURE_HAS_APPOINTMENTS.value))
 
     return redirect(url_for('procedures_get', success=Success.DELETED_PROCEDURE.value))

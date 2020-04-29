@@ -29,26 +29,26 @@
                 </thead>
                 <tbody>
 
-
+                {% for client in clients %}
                 <tr>
                     <td>
                         <div class="d-flex justify-content-between">
-                            <a>
+                            <a href="{{ url_for('edit_client_get', client_id=client.id) }}">
                                 <span class="fa fa-edit"></span>
                             </a>
-                            <a>
+                            <a href="{{ url_for('delete_client_get', client_id=client.id) }}">
                                 <span class="fa fa-trash"></span>
                             </a>
                         </div>
                     </td>
-                    <td>Петренко</td>
-                    <td>Олена</td>
-                    <td>Василівна</td>
-                    <td>Ж</td>
-                    <td>095 000 0000</td>
-                    <td>petrenko@mail.ua</td>
+                    <td>{{ client.surname }}</td>
+                    <td>{{ client.first_name }}</td>
+                    <td>{% if client.second_name %}{{ client.second_name }}{% endif %}</td>
+                    <td>{% if client.is_male %}Чол{% else %}Жін{% endif %}</td>
+                    <td>+38{{ client.phone }}</td>
+                    <td>{% if client.email %}{{ client.email }}{% endif %}</td>
                 </tr>
-
+                {% endfor %}
 
                 </tbody>
             </table>
@@ -57,7 +57,7 @@
 
     <div class="row">
         <div class="col-md-10 offset-md-1">
-            <a href="{{ url_for('new_procedure_get') }}">
+            <a href="{{ url_for('new_client_get') }}">
                 <button type="submit" class="btn btn-primary">Додати</button>
             </a>
         </div>

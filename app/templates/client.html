@@ -14,74 +14,79 @@
 {% block content %}
 <div class="container content">
     <div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
-        <form>
-            <div class="form-group row">
-                <label for="clientSurname" class="col-lg-2 col-form-label">Прізвище *</label>
-                <div class="col-lg-10">
-                    <input type="text" class="form-control" id="clientSurname" name="clientSurname" required>
+        <div class="col-12 col-sm-10 mx-auto">
+            <form method="POST" action="{{ action }}">
+                <div class="form-group row">
+                    <label for="clientSurname" class="col-lg-2 col-form-label">Прізвище *</label>
+                    <div class="col-lg-10">
+                        <input type="text" class="form-control" id="clientSurname" name="clientSurname" required
+                               value="{{ client.surname }}">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="clientName" class="col-lg-2 col-form-label">Ім'я *</label>
-                <div class="col-lg-10">
-                    <input type="text" class="form-control" id="clientName" name="clientName" required>
+                <div class="form-group row">
+                    <label for="clientName" class="col-lg-2 col-form-label">Ім'я *</label>
+                    <div class="col-lg-10">
+                        <input type="text" class="form-control" id="clientName" name="clientName" required
+                               value="{{ client.first_name }}">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="clientSecond" class="col-lg-2 col-form-label">По-батькові *</label>
-                <div class="col-lg-10">
-                    <input type="text" class="form-control" id="clientSecond" name="clientSecond" required>
+                <div class="form-group row">
+                    <label for="clientSecond" class="col-lg-2 col-form-label">По-батькові</label>
+                    <div class="col-lg-10">
+                        <input type="text" class="form-control" id="clientSecond" name="clientSecond"
+                               value="{% if client.second_name %}{{ client.second_name }}{% endif %}">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="clientIsMan" class="col-lg-2 col-form-label">Стать *</label>
-                <div class="col-lg-10">
-                    <select class="form-control" id="clientIsMan" name="clientIsMan" required>
-                        <option selected>Choose...</option>
-                        <option>Жіноча</option>
-                        <option>Чоловіча</option>
-                    </select>
+                <div class="form-group row">
+                    <label for="clientIsMan" class="col-lg-2 col-form-label">Стать *</label>
+                    <div class="col-lg-10">
+                        <select class="form-control" id="clientIsMan" name="clientIsMan" required>
+                            <option {% if not client.is_male %}selected{% endif %} value="">Оберіть стать</option>
+                            <option {% if client.is_male== False %}selected{% endif %} value="0">Жіноча</option>
+                            <option {% if client.is_male== True %}selected{% endif %} value="1">Чоловіча</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="clientTel" class="col-lg-2 col-form-label">Номер телефону *</label>
-                <div class="col-lg-10">
-                    <input type="tel" class="form-control" id="clientTel" name="clientTel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                           placeholder="050 000 0000" required>
+                <div class="form-group row">
+                    <label for="clientTel" class="col-lg-2 col-form-label">Номер телефону *</label>
+                    <div class="col-lg-10">
+                        <input type="tel" class="form-control" id="clientTel" name="clientTel"
+                               placeholder="050 000 0000" required
+                               pattern="[0-9]{10}"
+                               value="{{ client.phone }}">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="clientEmail" class="col-lg-2 col-form-label">Email </label>
-                <div class="col-lg-10">
-                    <input type="tel" class="form-control" id="clientEmail" name="clientEmail"
-                           placeholder="you@example.com">
+                <div class="form-group row">
+                    <label for="clientEmail" class="col-lg-2 col-form-label">Email </label>
+                    <div class="col-lg-10">
+                        <input type="tel" class="form-control" id="clientEmail" name="clientEmail"
+                               placeholder="you@example.com"
+                               value="{% if client.email %}{{ client.email }}{% endif %}">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label for="clientPhoto" class="col-lg-2 col-form-label">Фото </label>
-                <div class="col-lg-10">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="clientPhoto">
-                            <label class="custom-file-label" for="clientPhoto">Choose file</label>
-                        </div>
+                <!--            <div class="form-group row">-->
+                <!--                <label for="clientPhoto" class="col-lg-2 col-form-label">Фото </label>-->
+                <!--                <div class="col-lg-10">-->
+                <!--                        <div class="custom-file">-->
+                <!--                            <input type="file" class="custom-file-input" id="clientPhoto">-->
+                <!--                            <label class="custom-file-label" for="clientPhoto">Choose file</label>-->
+                <!--                        </div>-->
 
-                </div>
-            </div>
+                <!--                </div>-->
+                <!--            </div>-->
 
-            <div class="form-group row">
-                <div class="col-lg-10 offset-lg-2">
-                    <button type="submit" class="btn btn-primary">Зберегти</button>
-                    <a>
-                        <button type="button" class="btn btn-secondary">Назад</button>
-                    </a>
+                <div class="form-group row">
+                    <div class="col-lg-10 offset-lg-2">
+                        <button type="submit" class="btn btn-primary">Зберегти</button>
+                        <a href="{{ url_for('clients_get') }}">
+                            <button type="button" class="btn btn-secondary">Назад</button>
+                        </a>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
-</div>
-
 
 
 {% endblock %}
