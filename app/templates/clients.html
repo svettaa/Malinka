@@ -12,55 +12,53 @@
 
 
 {% block content %}
-<div class="container content">
-    <div class="row">
-        <div class="col-12 col-sm-10 mx-auto">
-            <table class="table table-bordered">
-                <thead>
-                <tr>
-                    <th style="width: 70px" scope="col"></th>
-                    <th scope="col">Прізвище</th>
-                    <th scope="col">Ім'я</th>
-                    <th scope="col">По-батькові</th>
-                    <th scope="col">Стать</th>
-                    <th scope="col">Номер телефону</th>
-                    <th scope="col">E-mail</th>
-                </tr>
-                </thead>
-                <tbody>
+<div class="row">
+    <div class="col-12 col-sm-10 mx-auto">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th style="width: 70px" scope="col"></th>
+                <th scope="col">Прізвище</th>
+                <th scope="col">Ім'я</th>
+                <th scope="col">По-батькові</th>
+                <th scope="col">Стать</th>
+                <th scope="col">Номер телефону</th>
+                <th scope="col">E-mail</th>
+            </tr>
+            </thead>
+            <tbody>
 
-                {% for client in clients %}
-                <tr>
-                    <td>
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ url_for('edit_client_get', client_id=client.id) }}">
-                                <span class="fa fa-edit"></span>
-                            </a>
-                            <a href="{{ url_for('delete_client_get', client_id=client.id) }}">
-                                <span class="fa fa-trash"></span>
-                            </a>
-                        </div>
-                    </td>
-                    <td>{{ client.surname }}</td>
-                    <td>{{ client.first_name }}</td>
-                    <td>{% if client.second_name %}{{ client.second_name }}{% endif %}</td>
-                    <td>{% if client.is_male %}Чол{% else %}Жін{% endif %}</td>
-                    <td>+38{{ client.phone }}</td>
-                    <td>{% if client.email %}{{ client.email }}{% endif %}</td>
-                </tr>
-                {% endfor %}
+            {% for client in clients %}
+            <tr>
+                <td>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('edit_client_get', client_id=client.id) }}">
+                            <span class="fa fa-edit"></span>
+                        </a>
+                        <a href="{{ url_for('delete_client_get', client_id=client.id) }}">
+                            <span class="fa fa-trash"></span>
+                        </a>
+                    </div>
+                </td>
+                <td>{{ client.surname }}</td>
+                <td>{{ client.first_name }}</td>
+                <td>{% if client.second_name %}{{ client.second_name }}{% endif %}</td>
+                <td>{% if client.is_male %}Чол{% else %}Жін{% endif %}</td>
+                <td>+38{{ client.phone }}</td>
+                <td>{% if client.email %}{{ client.email }}{% endif %}</td>
+            </tr>
+            {% endfor %}
 
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-md-10 offset-md-1">
-            <a href="{{ url_for('new_client_get') }}">
-                <button type="submit" class="btn btn-primary">Додати</button>
-            </a>
-        </div>
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <a href="{{ url_for('new_client_get') }}">
+            <button type="submit" class="btn btn-primary">Додати</button>
+        </a>
     </div>
 </div>
 {% endblock %}
