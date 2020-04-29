@@ -83,6 +83,15 @@
                 </div>
             </div>
         </form>
+
+        <h2>Улюблені процедури</h2>
+        {% for procedure in favourite_procedures %}
+        <a href="{{ url_for('edit_procedure_get', procedure_id=procedure.id) }}">
+            {{ procedure.name }}
+        </a>
+        <br>
+        {% endfor %}
+
     </div>
 </div>
 

@@ -25,7 +25,13 @@ def edit_client_get(client_id):
                                'WHERE id = %s;',
                                client_id).fetchone()
 
-    return render_template('client.html', client=client,
+    favourite_procedures = db.engine.execute('SELECT id, name '
+                                             'FROM Favourite_Procedure INNER JOIN Procedure '
+                                             '     ON procedure_id = id '
+                                             'WHERE client_id = %s;',
+                                             client_id).fetchall()
+
+    return render_template('client.html', client=client, favourite_procedures=favourite_procedures,
                            action=url_for('edit_client_post', client_id=client_id))
 
 
