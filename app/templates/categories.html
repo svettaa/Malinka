@@ -13,10 +13,11 @@
 
 {% block content %}
 
-<div class="content">
+<div class="container content">
 <!-- Table - list of categories -->
+
 <div class="row ">
-    <div class="col-12 col-sm-10 mx-auto">
+    <div class="col-12 col-md-10 mx-auto">
         <table class="table table-bordered">
             <thead>
             <tr>
@@ -48,11 +49,12 @@
 </div>
 
 <div class="row">
-    <div class="col-md-10 offset-md-1">
+    <div class="col-12 col-md-10 offset-md-1">
         <a href="{{ url_for('new_category_get') }}"><button class="btn btn-primary">Додати</button></a>
     </div>
 </div>
 </div>
+
 
 
 

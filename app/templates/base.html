@@ -65,7 +65,9 @@
 {% endblock %}
 
 {% block messages %}
-
+<div class="container">
+<div class="row">
+    <div class="col-10 mx-auto">
 {% if error %}
 <div class="alert alert-danger" role="alert">
     {{ error }}
@@ -77,13 +79,15 @@
     {{ success }}
 </div>
 {% endif %}
-
+    </div>
+</div>
+</div>
 {% endblock %}
 
 {% block header_div %}
-<div class="row mt-3 mb-3">
-    <div class="container">
-        <h4 class="d-flex justify-content-center">{% block header %}{% endblock %}</h4>
+<div class="container">
+    <div class="row mt-3 mb-3">
+        <h4 class="mx-auto">{% block header %}{% endblock %}</h4>
     </div>
 </div>
 {% endblock %}
@@ -95,7 +99,7 @@
 {% block footer %}
 <footer class="footer font-small bg-light mt-5 pt-4">
 
-    <div class="footer-copyright text-center py-3">© 2020 Copyright:
+    <div class="footer-copyright text-center">© 2020 Copyright:
         <a href="#"> Malinka</a>
     </div>
 
