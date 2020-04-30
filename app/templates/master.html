@@ -66,7 +66,8 @@
                         </option>
                         {% for user in users %}
                         <option value="{{ user.id }}">
-                            {{ user.surname }} {{ user.first_name }} {{ user.second_name }},
+                            {{ user.surname }} {{ user.first_name }}
+                            {% if user.second_name %}{{ user.second_name }}{% endif %},
                             +38{{ user.phone }}
                         </option>
                         {% endfor %}

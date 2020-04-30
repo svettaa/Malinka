@@ -31,7 +31,15 @@ def edit_client_get(client_id):
                                              'WHERE client_id = %s;',
                                              client_id).fetchall()
 
+    favourite_masters = db.engine.execute('SELECT Master.id, surname, first_name, second_name, phone '
+                                          'FROM (Favourite_Master INNER JOIN Master '
+                                          '     ON master_id = id) INNER JOIN Client '
+                                          '     ON Master.id = Client.id '
+                                          'WHERE client_id = %s;',
+                                          client_id).fetchall()
+
     return render_template('client.html', client=client, favourite_procedures=favourite_procedures,
+                           favourite_masters=favourite_masters,
                            action=url_for('edit_client_post', client_id=client_id))
 
 
@@ -59,11 +67,41 @@ def edit_client_post(client_id):
                           (client.surname, client.first_name, client.second_name,
                            client.is_male, client.phone, client.email, client.id))
     except IntegrityError:
+
+        favourite_procedures = db.engine.execute('SELECT id, name '
+                                                 'FROM Favourite_Procedure INNER JOIN Procedure '
+                                                 '     ON procedure_id = id '
+                                                 'WHERE client_id = %s;',
+                                                 client_id).fetchall()
+
+        favourite_masters = db.engine.execute('SELECT Master.id, surname, first_name, second_name, phone '
+                                              'FROM (Favourite_Master INNER JOIN Master '
+                                              '     ON master_id = id) INNER JOIN Client '
+                                              '     ON Master.id = Client.id '
+                                              'WHERE client_id = %s;',
+                                              client_id).fetchall()
         return render_template('client.html', client=client,
+                               favourite_masters=favourite_masters,
+                               favourite_procedures=favourite_procedures,
                                action=url_for('edit_client_post', client_id=client_id),
                                error=get_error_message(Error.USER_PHONE_EXISTS.value))
     except DataError:
+
+        favourite_procedures = db.engine.execute('SELECT id, name '
+                                                 'FROM Favourite_Procedure INNER JOIN Procedure '
+                                                 '     ON procedure_id = id '
+                                                 'WHERE client_id = %s;',
+                                                 client_id).fetchall()
+
+        favourite_masters = db.engine.execute('SELECT Master.id, surname, first_name, second_name, phone '
+                                              'FROM (Favourite_Master INNER JOIN Master '
+                                              '     ON master_id = id) INNER JOIN Client '
+                                              '     ON Master.id = Client.id '
+                                              'WHERE client_id = %s;',
+                                              client_id).fetchall()
         return render_template('client.html', client=client,
+                               favourite_masters=favourite_masters,
+                               favourite_procedures=favourite_procedures,
                                action=url_for('edit_client_post', client_id=client_id),
                                error=get_error_message(Error.USER_ILLEGAL_DATA.value))
 
