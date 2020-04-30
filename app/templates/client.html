@@ -40,7 +40,7 @@
                 <label for="clientIsMan" class="col-lg-2 col-form-label">Стать *</label>
                 <div class="col-lg-10">
                     <select class="form-control" id="clientIsMan" name="clientIsMan" required>
-                        <option {% if not client.is_male %}selected{% endif %} value="">Оберіть стать</option>
+                        <option {% if not client %}selected{% endif %} value="">Оберіть стать</option>
                         <option {% if client.is_male== False %}selected{% endif %} value="0">Жіноча</option>
                         <option {% if client.is_male== True %}selected{% endif %} value="1">Чоловіча</option>
                     </select>

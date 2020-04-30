@@ -17,6 +17,9 @@ class Success(Enum):
     ADDED_USER = 13
     UPDATED_USER = 14
     DELETED_USER = 15
+    ADDED_MASTER = 16
+    UPDATED_MASTER = 17
+    DELETED_MASTER = 18
 
 
 class Error(Enum):
@@ -32,6 +35,8 @@ class Error(Enum):
     USER_PHONE_EXISTS = 10
     USER_HAS_APPOINTMENTS = 11
     USER_ILLEGAL_DATA = 12
+    MASTER_HAS_APPOINTMENTS = 13
+    MASTER_ILLEGAL_DATA = 14
 
 
 message = {Success.ADDED_CATEGORY: 'Успішно додано категорію',
@@ -49,6 +54,9 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
            Success.ADDED_USER: 'Успішно додано користувача',
            Success.UPDATED_USER: 'Успішно змінено користувача',
            Success.DELETED_USER: 'Успішно видалено користувача',
+           Success.ADDED_MASTER: 'Успішно додано майстра',
+           Success.UPDATED_MASTER: 'Успішно змінено майстра',
+           Success.DELETED_MASTER: 'Успішно видалено майстра',
            Error.CATEGORY_HAS_PROCEDURES: 'Неможливо видалити категорію, що містить процедури',
            Error.CATEGORY_NAME_EXISTS: 'Неможливо змінити або додати категорію, '
                                        'категорія з такою назваю вже існує',
@@ -61,7 +69,8 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
            Error.PAINT_ILLEGAL_DATA: 'Неможливо змінити або додати фарбу '
                                      'через неправильно введені дані. Можливі причини: '
                                      'Не вказано залишок',
-           Error.PROCEDURE_HAS_APPOINTMENTS: 'Неможливо видалити процедуру, що міститься у записах',
+           Error.PROCEDURE_HAS_APPOINTMENTS: 'Неможливо видалити процедуру, що міститься у записах '
+                                             'або улюблених',
            Error.PAINT_HAS_APPOINTMENTS: 'Неможливо видалити фарбу, що міститься у записах '
                                          'або для якої є поставки',
            Error.USER_HAS_APPOINTMENTS: 'Неможливо видалити клієнта, що міститься у записах',
@@ -74,7 +83,11 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
                                       'Неправильно вказана дата '
                                       'Не вказано кількість',
            Error.USER_ILLEGAL_DATA: 'Неможливо додати або змінити користувача, '
-                                    'неправильно введені дані'
+                                    'неправильно введені дані',
+           Error.MASTER_ILLEGAL_DATA: 'Неможливо додати або змінити майстра, '
+                                      'неправильно введені дані',
+           Error.MASTER_HAS_APPOINTMENTS: 'Неможливо видалити майстра, що міститься у записах, '
+                                          'улюблених або у змінах графіку',
            }
 
 

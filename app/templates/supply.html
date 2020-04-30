@@ -19,7 +19,10 @@
             <div class="form-group row">
                 <label for="supplyPaint" class="col-md-2 col-form-label">Фарба *</label>
                 <div class="col-md-10">
-                    <select class="form-control" id="supplyPaint" name="supplyPaint">
+                    <select class="form-control" id="supplyPaint" name="supplyPaint" required>
+                        <option {% if not supply %}selected{% endif %} value="">
+                            Оберіть фарбу
+                        </option>
 
                         {% for paint in paints %}
                         <option value="{{ paint.id }}"

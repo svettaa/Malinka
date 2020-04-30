@@ -19,7 +19,10 @@
             <div class="form-group row">
                 <label for="procCategID" class="col-md-2 col-form-label">Назва категорії *</label>
                 <div class="col-md-10">
-                    <select class="form-control" id="procCategID" name="procCategID">
+                    <select class="form-control" id="procCategID" name="procCategID" required>
+                        <option {% if not procedure %}selected{% endif %} value="">
+                            Оберіть категорію
+                        </option>
 
                         {% for category in categories %}
                         <option value="{{ category.id }}"
