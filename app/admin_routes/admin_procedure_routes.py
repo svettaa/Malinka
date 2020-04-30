@@ -30,7 +30,13 @@ def edit_procedure_get(procedure_id):
     categories = db.engine.execute('SELECT id, name '
                                    'FROM Category').fetchall()
 
+    favourite_clients_amount = db.engine.execute('SELECT COUNT(*) '
+                                                 'FROM Favourite_Procedure '
+                                                 'WHERE procedure_id = %s;',
+                                                 procedure_id).scalar()
+
     return render_template('procedure.html', procedure=procedure, categories=categories,
+                           favourite_clients_amount=favourite_clients_amount,
                            action=url_for('edit_procedure_post', procedure_id=procedure_id))
 
 

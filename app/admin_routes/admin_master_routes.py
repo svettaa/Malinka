@@ -25,7 +25,13 @@ def edit_master_get(master_id):
                                'WHERE Master.id = %s;',
                                master_id).fetchone()
 
+    favourite_clients_amount = db.engine.execute('SELECT COUNT(*) '
+                                                 'FROM Favourite_Master '
+                                                 'WHERE master_id = %s;',
+                                                 master_id).scalar()
+
     return render_template('master.html', master=master, new_master=False,
+                           favourite_clients_amount=favourite_clients_amount,
                            action=url_for('edit_master_post', master_id=master_id))
 
 
