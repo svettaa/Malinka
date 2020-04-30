@@ -6,7 +6,7 @@ from app import app, db
 @app.route('/')
 def index():
     masters = db.engine.execute('SELECT surname, first_name, second_name '
-                                'FROM Master;').fetchall()
+                                'FROM Master INNER JOIN Client ON Master.id = Client.id;').fetchall()
 
     categories_proxy = db.engine.execute('SELECT id, name '
                                          'FROM Category;').fetchall()

@@ -18,6 +18,8 @@ class Client(db.Model):
         "Procedure", secondary='favourite_procedure', back_populates="favourite_clients")
     appointments = db.relationship(
         "Appointment", back_populates="client")
+    master_data = db.relationship(
+        "Master", back_populates="data")
 
     def __repr__(self):
         return f'{self.surname} {self.first_name} {self.second_name}, +38{self.phone}'
@@ -25,27 +27,26 @@ class Client(db.Model):
 
 class Master(db.Model):
     __tablename__ = 'master'
-    id = db.Column(db.Integer, primary_key=True)
-    phone = db.Column(db.String(10), nullable=False, unique=True)
-    surname = db.Column(db.String(20), nullable=False)
-    first_name = db.Column(db.String(20), nullable=False)
-    second_name = db.Column(db.String(20))
-    email = db.Column(db.String(30))
     even_schedule = db.Column(db.Boolean, nullable=False)
     is_hired = db.Column(db.Boolean, nullable=False)
-    photo = db.Column(db.LargeBinary)
+
+    id = db.Column(
+        db.Integer, db.ForeignKey('client.id', onupdate='RESTRICT', ondelete='RESTRICT'),
+        nullable=False, primary_key=True)
 
     favourite_clients = db.relationship(
         "Client", secondary='favourite_master', back_populates="favourite_masters")
     procedures = db.relationship(
         "Procedure", secondary='master_procedure', back_populates="masters")
+    data = db.relationship(
+        "Client", back_populates="master_data")
     schedule_changes = db.relationship(
         "ScheduleChange", back_populates="master")
     appointments = db.relationship(
         "Appointment", back_populates="master")
 
     def __repr__(self):
-        return f'{self.surname} {self.first_name} {self.second_name}, +38{self.phone}'
+        return f'{self.data.surname} {self.data.first_name} {self.data.second_name}, +38{self.data.phone}'
 
 
 class ScheduleChange(db.Model):
