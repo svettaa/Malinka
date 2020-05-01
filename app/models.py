@@ -1,3 +1,5 @@
+from sqlalchemy import CheckConstraint
+
 from app import db
 
 
@@ -99,6 +101,10 @@ class Procedure(db.Model):
         "MasterProcedure", back_populates="procedure")
     appointments = db.relationship(
         "Appointment", back_populates="procedure")
+
+    __table_args__ = (
+        db.CheckConstraint('price_max IS NULL OR price_max > price_min', name='price_max_greater_min'),
+    )
 
     def __repr__(self):
         return f'{self.name}'
