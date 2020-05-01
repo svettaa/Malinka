@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError, DataError
 from app import app
 from app.models import *
 from app.message_codes import *
+from app.forms import AdminSupplyForm
 
 
 @app.route('/supplies')
@@ -29,43 +30,48 @@ def edit_supply_get(supply_id):
     paints = db.engine.execute('SELECT id, code, name '
                                'FROM Paint').fetchall()
 
-    return render_template('supply.html', supply=supply, paints=paints,
+    form = AdminSupplyForm(data=supply)
+    form.paint_id.choices = [(paint['id'], paint['code'] + ' - ' + paint['name']) for paint in paints]
+
+    return render_template('supply.html', form=form,
                            action=url_for('edit_supply_post', supply_id=supply_id))
 
 
 @app.route('/supplies/<int:supply_id>', methods=['POST'])
 def edit_supply_post(supply_id):
-    supply = PaintSupply(id=supply_id, paint_id=request.form['supplyPaint'],
-                         amount=request.form['supplyHowMuch'], supply_date=request.form['supplyDate'])
+    form = AdminSupplyForm()
 
-    try:
-        old_amount = db.engine.execute('SELECT amount '
-                                       'FROM Paint_Supply '
-                                       'WHERE id = %s;',
-                                       supply_id).fetchone()['amount']
-        db.engine.execute('UPDATE Paint_Supply '
-                          'SET paint_id = %s,'
-                          '    amount = %s,'
-                          '    supply_date = %s '
-                          'WHERE id = %s;',
-                          (supply.paint_id, supply.amount,
-                           supply.supply_date, supply.id))
+    paints = db.engine.execute('SELECT id, code, name '
+                               'FROM Paint').fetchall()
+    form.paint_id.choices = [(paint['id'], paint['code'] + ' - ' + paint['name']) for paint in paints]
 
-        db.engine.execute('UPDATE Paint '
-                          'SET left_ml = left_ml - %s '
-                          'WHERE id = %s',
-                          (old_amount, supply.paint_id))
-        db.engine.execute('UPDATE Paint '
-                          'SET left_ml = left_ml + %s '
-                          'WHERE id = %s',
-                          (supply.amount, supply.paint_id))
-    except (DataError, IntegrityError):
+    if not form.validate_on_submit():
+        return render_template('supply.html', form=form,
+                               action=url_for('edit_supply_post', supply_id=supply_id))
 
-        paints = db.engine.execute('SELECT id, code, name '
-                                   'FROM Paint').fetchall()
-        return render_template('supply.html', supply=supply, paints=paints,
-                               action=url_for('edit_supply_post', supply_id=supply_id),
-                               error=get_error_message(Error.SUPPLY_ILLEGAL_DATA.value))
+    supply = PaintSupply(id=supply_id)
+    form.populate_obj(supply)
+
+    old_amount = db.engine.execute('SELECT amount '
+                                   'FROM Paint_Supply '
+                                   'WHERE id = %s;',
+                                   supply_id).fetchone()['amount']
+    db.engine.execute('UPDATE Paint_Supply '
+                      'SET paint_id = %s,'
+                      '    amount = %s,'
+                      '    supply_date = %s '
+                      'WHERE id = %s;',
+                      (supply.paint_id, supply.amount,
+                       supply.supply_date, supply.id))
+
+    db.engine.execute('UPDATE Paint '
+                      'SET left_ml = left_ml - %s '
+                      'WHERE id = %s',
+                      (old_amount, supply.paint_id))
+    db.engine.execute('UPDATE Paint '
+                      'SET left_ml = left_ml + %s '
+                      'WHERE id = %s',
+                      (supply.amount, supply.paint_id))
 
     return redirect(url_for('supplies_get', success=Success.UPDATED_SUPPLY.value))
 
@@ -75,30 +81,35 @@ def new_supply_get():
     paints = db.engine.execute('SELECT id, code, name '
                                'FROM Paint').fetchall()
 
-    return render_template('supply.html', supply=None, paints=paints,
+    form = AdminSupplyForm()
+    form.paint_id.choices = [(paint['id'], paint['code'] + ' - ' + paint['name']) for paint in paints]
+
+    return render_template('supply.html', form=form,
                            action=url_for('new_supply_post'))
 
 
 @app.route('/supplies/new', methods=['POST'])
 def new_supply_post():
-    supply = PaintSupply(paint_id=request.form['supplyPaint'],
-                         amount=request.form['supplyHowMuch'], supply_date=request.form['supplyDate'])
+    form = AdminSupplyForm()
 
-    try:
-        db.engine.execute('INSERT INTO Paint_Supply (paint_id, amount, supply_date) '
-                          'VALUES (%s, %s, %s);',
-                          (supply.paint_id, supply.amount, supply.supply_date))
-        db.engine.execute('UPDATE Paint '
-                          'SET left_ml = left_ml + %s '
-                          'WHERE id = %s',
-                          (supply.amount, supply.paint_id))
-    except (DataError, IntegrityError):
+    paints = db.engine.execute('SELECT id, code, name '
+                               'FROM Paint').fetchall()
+    form.paint_id.choices = [(paint['id'], paint['code'] + ' - ' + paint['name']) for paint in paints]
 
-        paints = db.engine.execute('SELECT id, code, name '
-                                   'FROM Paint').fetchall()
-        return render_template('supply.html', supply=supply, paints=paints,
-                               action=url_for('new_supply_post'),
-                               error=get_error_message(Error.SUPPLY_ILLEGAL_DATA.value))
+    if not form.validate_on_submit():
+        return render_template('supply.html', form=form,
+                               action=url_for('new_supply_post'))
+
+    supply = PaintSupply()
+    form.populate_obj(supply)
+
+    db.engine.execute('INSERT INTO Paint_Supply (paint_id, amount, supply_date) '
+                      'VALUES (%s, %s, %s);',
+                      (supply.paint_id, supply.amount, supply.supply_date))
+    db.engine.execute('UPDATE Paint '
+                      'SET left_ml = left_ml + %s '
+                      'WHERE id = %s',
+                      (supply.amount, supply.paint_id))
 
     return redirect(url_for('supplies_get', success=Success.ADDED_SUPPLY.value))
 
