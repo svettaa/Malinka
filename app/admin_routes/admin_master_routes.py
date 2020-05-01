@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError, DataError
 from app import app
 from app.models import *
 from app.message_codes import *
+from app.forms import AdminEditMasterForm, AdminNewMasterForm
 
 
 @app.route('/masters', methods=['GET'])
@@ -24,6 +25,7 @@ def edit_master_get(master_id):
                                'FROM Client INNER JOIN Master ON Master.id = Client.id '
                                'WHERE Master.id = %s;',
                                master_id).fetchone()
+    form = AdminEditMasterForm(data=master)
 
     favourite_clients_amount = db.engine.execute('SELECT COUNT(*) '
                                                  'FROM Favourite_Master '
@@ -33,7 +35,8 @@ def edit_master_get(master_id):
     procedures = db.engine.execute('SELECT * '
                                    'FROM Procedure;').fetchall()
 
-    return render_template('master.html', master=master, new_master=False,
+    return render_template('master.html', master=master, form=form,
+                           new_master=False,
                            favourite_clients_amount=favourite_clients_amount,
                            procedures=procedures,
                            action=url_for('edit_master_post', master_id=master_id))
@@ -41,24 +44,37 @@ def edit_master_get(master_id):
 
 @app.route('/masters/<int:master_id>', methods=['POST'])
 def edit_master_post(master_id):
-    master = Master(id=master_id, even_schedule=request.form['masterSchedule'],
-                    is_hired=request.form['masterHired'])
+    form = AdminEditMasterForm()
 
-    try:
-        db.engine.execute('UPDATE Master '
-                          'SET even_schedule = %s,'
-                          '    is_hired = %s '
-                          'WHERE id = %s;',
-                          (master.even_schedule, master.is_hired, master.id))
-    except DataError:
-        master = db.engine.execute('SELECT Master.id, surname, first_name, second_name, phone, '
-                                   '       even_schedule, is_hired '
-                                   'FROM Client INNER JOIN Master ON Master.id = Client.id '
-                                   'WHERE Master.id = %s;',
-                                   master_id).fetchone()
-        return render_template('master.html', master=master, new_master=False,
-                               action=url_for('edit_master_post', master_id=master_id),
-                               error=get_error_message(Error.MASTER_ILLEGAL_DATA.value))
+    favourite_clients_amount = db.engine.execute('SELECT COUNT(*) '
+                                                 'FROM Favourite_Master '
+                                                 'WHERE master_id = %s;',
+                                                 master_id).scalar()
+
+    procedures = db.engine.execute('SELECT * '
+                                   'FROM Procedure;').fetchall()
+
+    master = db.engine.execute('SELECT Master.id, surname, first_name, second_name, phone, '
+                               '       even_schedule, is_hired '
+                               'FROM Client INNER JOIN Master ON Master.id = Client.id '
+                               'WHERE Master.id = %s;',
+                               master_id).fetchone()
+
+    if not form.validate_on_submit():
+        return render_template('master.html', master=master, form=form,
+                               new_master=False,
+                               favourite_clients_amount=favourite_clients_amount,
+                               procedures=procedures,
+                               action=url_for('edit_master_post', master_id=master_id))
+
+    master = Master(id=master_id)
+    form.populate_obj(master)
+
+    db.engine.execute('UPDATE Master '
+                      'SET even_schedule = %s,'
+                      '    is_hired = %s '
+                      'WHERE id = %s;',
+                      (bool(master.even_schedule), bool(master.is_hired), master.id))
 
     return redirect(url_for('masters_get', success=Success.UPDATED_MASTER.value))
 
@@ -71,29 +87,35 @@ def new_master_get():
                               '                  FROM Master '
                               '                  WHERE Master.id = Client.id) '
                               'ORDER BY surname, first_name, second_name, phone;').fetchall()
-    return render_template('master.html', master=None, users=users, new_master=True,
+    form = AdminNewMasterForm()
+    form.id.choices = [(user['id'], user['surname'] + ' ' + user['first_name'] + ', +38' + user['phone'])
+                       for user in users]
+
+    return render_template('master.html', form=form, new_master=True,
                            action=url_for('new_master_post'))
 
 
 @app.route('/masters/new', methods=['POST'])
 def new_master_post():
-    master = Master(id=request.form['MasterUser'], even_schedule=request.form['masterSchedule'],
-                    is_hired=request.form['masterHired'])
+    form = AdminNewMasterForm()
+    users = db.engine.execute('SELECT id, surname, first_name, second_name, phone '
+                              'FROM Client '
+                              'WHERE NOT EXISTS (SELECT *'
+                              '                  FROM Master '
+                              '                  WHERE Master.id = Client.id) '
+                              'ORDER BY surname, first_name, second_name, phone;').fetchall()
+    form.id.choices = [(user['id'], user['surname'] + user['first_name'] + ', +38' + user['phone']) for user in users]
 
-    try:
-        db.engine.execute('INSERT INTO Master (id, even_schedule, is_hired) '
-                          'VALUES (%s, %s, %s);',
-                          (master.id, master.even_schedule, master.is_hired))
-    except (IntegrityError, DataError):
-        users = db.engine.execute('SELECT id, surname, first_name, second_name, phone '
-                                  'FROM Client '
-                                  'WHERE NOT EXISTS (SELECT *'
-                                  '                  FROM Master '
-                                  '                  WHERE Master.id = Client.id) '
-                                  'ORDER BY surname, first_name, second_name, phone;').fetchall()
-        return render_template('master.html', master=master, users=users, new_master=True,
-                               action=url_for('new_master_post'),
-                               error=get_error_message(Error.MASTER_ILLEGAL_DATA.value))
+    if not form.validate_on_submit():
+        return render_template('master.html', form=form, new_master=True,
+                               action=url_for('new_master_post'))
+
+    master = Master()
+    form.populate_obj(master)
+
+    db.engine.execute('INSERT INTO Master (id, even_schedule, is_hired) '
+                      'VALUES (%s, %s, %s);',
+                      (master.id, bool(master.even_schedule), bool(master.is_hired)))
 
     return redirect(url_for('masters_get', success=Success.ADDED_MASTER.value))
 

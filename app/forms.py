@@ -46,3 +46,15 @@ class AdminClientForm(BaseForm):
                          choices=[(1, 'Чоловіча'), (0, 'Жіноча')], coerce=int)
     phone = TelField('Телефон', validators=[InputRequired('Введіть телефон')])
     email = EmailField('Email', validators=[Optional()])
+
+
+class AdminEditMasterForm(BaseForm):
+    even_schedule = RadioField('Графік', validators=[InputRequired('Оберіть графік')],
+                               choices=[(1, 'Парний'), (0, 'Непарний')], coerce=int)
+    is_hired = RadioField('Статус', validators=[InputRequired('Оберіть статус')],
+                          choices=[(1, 'Працює'), (0, 'Звільнено')], coerce=int)
+
+
+class AdminNewMasterForm(AdminEditMasterForm):
+    id = SelectField('Користувач', validators=[InputRequired('Виберіть користувача')],
+                     coerce=int)

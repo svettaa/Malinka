@@ -15,6 +15,7 @@
 <div class="row">
     <div class="col-12 col-sm-10 mx-auto">
         <form method="POST" action="{{ action }}">
+            {{ form.csrf_token }}
 
             {% if not new_master %}
             <div class="form-group row">
@@ -58,42 +59,32 @@
 
             <!-- IF NEW MASTER -->
             <div class="form-group row">
-                <label for="MasterUser" class="col-lg-2 col-form-label">Користувач </label>
+                {{ form.id.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    <select class="form-control" id="MasterUser" name="MasterUser" required>
-                        <option selected value="">
-                            Оберіть користувача
-                        </option>
-                        {% for user in users %}
-                        <option value="{{ user.id }}">
-                            {{ user.surname }} {{ user.first_name }}
-                            {% if user.second_name %}{{ user.second_name }}{% endif %},
-                            +38{{ user.phone }}
-                        </option>
-                        {% endfor %}
-                    </select>
+                    {{ form.id(class="form-control") }}
                 </div>
             </div>
+
             {% endif %}
 
             <div class="form-group row">
-                <label for="masterSchedule" class="col-lg-2 col-form-label">Графік </label>
+                {{ form.even_schedule.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    <select class="form-control" id="masterSchedule" name="masterSchedule" required>
-                        <option {% if not master %}selected{% endif %} value="">Оберіть графік</option>
-                        <option {% if master.even_schedule== False %}selected{% endif %} value="0">Непарний</option>
-                        <option {% if master.even_schedule== True %}selected{% endif %} value="1">Парний</option>
-                    </select>
+                    {% for option in form.even_schedule %}
+                    {{ option }}
+                    {{ option.label }}
+                    <br>
+                    {% endfor %}
                 </div>
             </div>
             <div class="form-group row">
-                <label for="masterHired" class="col-lg-2 col-form-label">Статус </label>
+                {{ form.is_hired.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    <select class="form-control" id="masterHired" name="masterHired" required>
-                        <option {% if not master %}selected{% endif %} value="">Оберіть статус</option>
-                        <option {% if master.is_hired== True %}selected{% endif %} value="1">Працює</option>
-                        <option {% if master.is_hired== False %}selected{% endif %} value="0">Звільнено</option>
-                    </select>
+                    {% for option in form.is_hired %}
+                    {{ option }}
+                    {{ option.label }}
+                    <br>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -106,9 +97,11 @@
                 </div>
             </div>
 
+            {% if not new_master %}
             <div class="form-group row">
                 Улюблена у {{ favourite_clients_amount }} користувачів(а)
             </div>
+            {% endif %}
 
             <div class="form-group row">
                 <table>
@@ -117,8 +110,8 @@
                         <td><input type="checkbox" checked></td>
                         <td>{{ procedure.name }}</td>
                         <td><input type="number" min="1" max="660" step="5" class="form-control" id="duration"
-                           name="duration"
-                           value="1"></td>
+                                   name="duration"
+                                   value="1"></td>
                     </tr>
                     {% endfor %}
                 </table>
