@@ -30,8 +30,12 @@ def edit_master_get(master_id):
                                                  'WHERE master_id = %s;',
                                                  master_id).scalar()
 
+    procedures = db.engine.execute('SELECT * '
+                                   'FROM Procedure;').fetchall()
+
     return render_template('master.html', master=master, new_master=False,
                            favourite_clients_amount=favourite_clients_amount,
+                           procedures=procedures,
                            action=url_for('edit_master_post', master_id=master_id))
 
 

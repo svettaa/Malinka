@@ -109,6 +109,21 @@
             <div class="form-group row">
                 Улюблена у {{ favourite_clients_amount }} користувачів(а)
             </div>
+
+            <div class="form-group row">
+                <table>
+                    {% for procedure in procedures %}
+                    <tr>
+                        <td><input type="checkbox" checked></td>
+                        <td>{{ procedure.name }}</td>
+                        <td><input type="number" min="1" max="660" step="5" class="form-control" id="duration"
+                           name="duration"
+                           value="1"></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
         </form>
 
     </div>
