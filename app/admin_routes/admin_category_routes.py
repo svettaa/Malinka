@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from app import app
 from app.models import *
 from app.message_codes import *
+from app.forms import AdminCategoryForm
 
 
 @app.route('/categories')
@@ -23,13 +24,22 @@ def edit_category_get(category_id):
                                  'WHERE id = %s;',
                                  category_id).fetchone()
 
-    return render_template('category.html', category=category,
+    form = AdminCategoryForm(data=category)
+
+    return render_template('category.html', form=form,
                            action=url_for('edit_category_post', category_id=category_id))
 
 
 @app.route('/categories/<int:category_id>', methods=['POST'])
 def edit_category_post(category_id):
-    category = Category(id=category_id, name=request.form['categName'])
+    form = AdminCategoryForm()
+
+    if not form.validate_on_submit():
+        return render_template('category.html', form=form,
+                               action=url_for('edit_category_post', category_id=category_id))
+
+    category = Category(id=category_id)
+    form.populate_obj(category)
 
     try:
         db.engine.execute('UPDATE Category '
@@ -37,7 +47,7 @@ def edit_category_post(category_id):
                           'WHERE id = %s;',
                           (category.name, category.id))
     except IntegrityError:
-        return render_template('category.html', category=category,
+        return render_template('category.html', form=form,
                                action=url_for('edit_category_post', category_id=category_id),
                                error=get_error_message(Error.CATEGORY_NAME_EXISTS.value))
 
@@ -46,20 +56,29 @@ def edit_category_post(category_id):
 
 @app.route('/categories/new', methods=['GET'])
 def new_category_get():
-    return render_template('category.html', category=None,
+    form = AdminCategoryForm()
+
+    return render_template('category.html', form=form,
                            action=url_for('new_category_post'))
 
 
 @app.route('/categories/new', methods=['POST'])
 def new_category_post():
-    category = Category(name=request.form['categName'])
+    form = AdminCategoryForm()
+
+    if not form.validate_on_submit():
+        return render_template('category.html', form=form,
+                               action=url_for('new_category_post'))
+
+    category = Category()
+    form.populate_obj(category)
 
     try:
         db.engine.execute('INSERT INTO Category (name) '
                           'VALUES (%s);',
                           category.name)
     except IntegrityError:
-        return render_template('category.html', category=category,
+        return render_template('category.html', form=form,
                                action=url_for('new_category_post'),
                                error=get_error_message(Error.CATEGORY_NAME_EXISTS.value))
 

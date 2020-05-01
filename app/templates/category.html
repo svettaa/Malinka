@@ -15,11 +15,11 @@
 <div class="row">
     <div class="col-12 col-sm-10 mx-auto">
         <form action="{{ action }}" method="POST">
+            {{ form.csrf_token }}
             <div class="form-group row">
-                <label for="categEditName" class="col-lg-2 col-form-label">Назва категорії *</label>
+                {{ form.name.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    <input type="text" class="form-control" id="categEditName" name="categName"
-                           value="{{ category.name }}">
+                    {{ form.name(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row">
