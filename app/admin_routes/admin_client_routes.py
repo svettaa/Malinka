@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError, DataError
 from app import app
 from app.models import *
 from app.message_codes import *
+from app.forms import AdminClientForm
 
 
 @app.route('/clients', methods=['GET'])
@@ -25,6 +26,8 @@ def edit_client_get(client_id):
                                'WHERE id = %s;',
                                client_id).fetchone()
 
+    form = AdminClientForm(data=client)
+
     favourite_procedures = db.engine.execute('SELECT id, name '
                                              'FROM Favourite_Procedure INNER JOIN Procedure '
                                              '     ON procedure_id = id '
@@ -38,17 +41,37 @@ def edit_client_get(client_id):
                                           'WHERE client_id = %s;',
                                           client_id).fetchall()
 
-    return render_template('client.html', client=client, favourite_procedures=favourite_procedures,
+    return render_template('client.html', form=form,
+                           favourite_procedures=favourite_procedures,
                            favourite_masters=favourite_masters,
                            action=url_for('edit_client_post', client_id=client_id))
 
 
 @app.route('/clients/<int:client_id>', methods=['POST'])
 def edit_client_post(client_id):
-    client = Client(id=client_id, surname=request.form['clientSurname'],
-                    first_name=request.form['clientName'], second_name=request.form['clientSecond'],
-                    is_male=request.form['clientIsMan'], phone=request.form['clientTel'],
-                    email=request.form['clientEmail'])
+    form = AdminClientForm()
+
+    favourite_procedures = db.engine.execute('SELECT id, name '
+                                             'FROM Favourite_Procedure INNER JOIN Procedure '
+                                             '     ON procedure_id = id '
+                                             'WHERE client_id = %s;',
+                                             client_id).fetchall()
+
+    favourite_masters = db.engine.execute('SELECT Master.id, surname, first_name, second_name, phone '
+                                          'FROM (Favourite_Master INNER JOIN Master '
+                                          '     ON master_id = id) INNER JOIN Client '
+                                          '     ON Master.id = Client.id '
+                                          'WHERE client_id = %s;',
+                                          client_id).fetchall()
+
+    if not form.validate_on_submit():
+        return render_template('client.html', form=form,
+                               favourite_procedures=favourite_procedures,
+                               favourite_masters=favourite_masters,
+                               action=url_for('edit_client_post', client_id=client_id))
+
+    client = Client(id=client_id)
+    form.populate_obj(client)
 
     if client.second_name.strip() == '':
         client.second_name = None
@@ -65,61 +88,35 @@ def edit_client_post(client_id):
                           '    email = %s '
                           'WHERE id = %s;',
                           (client.surname, client.first_name, client.second_name,
-                           client.is_male, client.phone, client.email, client.id))
+                           bool(client.is_male), client.phone, client.email, client.id))
     except IntegrityError:
-
-        favourite_procedures = db.engine.execute('SELECT id, name '
-                                                 'FROM Favourite_Procedure INNER JOIN Procedure '
-                                                 '     ON procedure_id = id '
-                                                 'WHERE client_id = %s;',
-                                                 client_id).fetchall()
-
-        favourite_masters = db.engine.execute('SELECT Master.id, surname, first_name, second_name, phone '
-                                              'FROM (Favourite_Master INNER JOIN Master '
-                                              '     ON master_id = id) INNER JOIN Client '
-                                              '     ON Master.id = Client.id '
-                                              'WHERE client_id = %s;',
-                                              client_id).fetchall()
-        return render_template('client.html', client=client,
+        return render_template('client.html', form=form,
                                favourite_masters=favourite_masters,
                                favourite_procedures=favourite_procedures,
                                action=url_for('edit_client_post', client_id=client_id),
                                error=get_error_message(Error.USER_PHONE_EXISTS.value))
-    except DataError:
-
-        favourite_procedures = db.engine.execute('SELECT id, name '
-                                                 'FROM Favourite_Procedure INNER JOIN Procedure '
-                                                 '     ON procedure_id = id '
-                                                 'WHERE client_id = %s;',
-                                                 client_id).fetchall()
-
-        favourite_masters = db.engine.execute('SELECT Master.id, surname, first_name, second_name, phone '
-                                              'FROM (Favourite_Master INNER JOIN Master '
-                                              '     ON master_id = id) INNER JOIN Client '
-                                              '     ON Master.id = Client.id '
-                                              'WHERE client_id = %s;',
-                                              client_id).fetchall()
-        return render_template('client.html', client=client,
-                               favourite_masters=favourite_masters,
-                               favourite_procedures=favourite_procedures,
-                               action=url_for('edit_client_post', client_id=client_id),
-                               error=get_error_message(Error.USER_ILLEGAL_DATA.value))
 
     return redirect(url_for('clients_get', success=Success.UPDATED_USER.value))
 
 
 @app.route('/clients/new', methods=['GET'])
 def new_client_get():
-    return render_template('client.html', client=None,
+    form = AdminClientForm()
+
+    return render_template('client.html', form=form,
                            action=url_for('new_client_post'))
 
 
 @app.route('/clients/new', methods=['POST'])
 def new_client_post():
-    client = Client(surname=request.form['clientSurname'],
-                    first_name=request.form['clientName'], second_name=request.form['clientSecond'],
-                    is_male=request.form['clientIsMan'], phone=request.form['clientTel'],
-                    email=request.form['clientEmail'])
+    form = AdminClientForm()
+
+    if not form.validate_on_submit():
+        return render_template('client.html', form=form,
+                               action=url_for('new_client_post'))
+
+    client = Client()
+    form.populate_obj(client)
 
     if client.second_name.strip() == '':
         client.second_name = None
@@ -131,15 +128,11 @@ def new_client_post():
                           '                    phone, email) '
                           'VALUES (%s, %s, %s, %s, %s, %s);',
                           (client.surname, client.first_name, client.second_name,
-                           client.is_male, client.phone, client.email))
+                           bool(client.is_male), client.phone, client.email))
     except IntegrityError:
-        return render_template('client.html', client=client,
+        return render_template('client.html', form=form,
                                action=url_for('new_client_post'),
                                error=get_error_message(Error.USER_PHONE_EXISTS.value))
-    except DataError:
-        return render_template('client.html', client=client,
-                               action=url_for('new_client_post'),
-                               error=get_error_message(Error.USER_ILLEGAL_DATA.value))
 
     return redirect(url_for('clients_get', success=Success.ADDED_USER.value))
 

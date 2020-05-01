@@ -65,6 +65,9 @@ def edit_procedure_post(procedure_id):
     procedure = Procedure(id=procedure_id)
     form.populate_obj(procedure)
 
+    if procedure.info.strip() == '':
+        procedure.info = None
+
     try:
         db.engine.execute('UPDATE Procedure '
                           'SET category_id = %s,'
@@ -109,6 +112,9 @@ def new_procedure_post():
 
     procedure = Procedure()
     form.populate_obj(procedure)
+
+    if procedure.info.strip() == '':
+        procedure.info = None
 
     try:
         db.engine.execute('INSERT INTO Procedure (category_id, name, price_min, price_max, info) '

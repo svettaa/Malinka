@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, IntegerField, TextAreaField
+from wtforms import StringField, SelectField, IntegerField, TextAreaField, RadioField
 from wtforms.validators import InputRequired, Optional, NumberRange
-from wtforms.fields.html5 import DateField
+from wtforms.fields.html5 import DateField, TelField, EmailField
 
 
 class BaseForm(FlaskForm):
@@ -36,3 +36,13 @@ class AdminSupplyForm(BaseForm):
     amount = IntegerField('Кількість, мл', validators=[InputRequired('Введіть кількість фарби'),
                                                        NumberRange(min=1, message='Кількість має бути більше нуля')])
     supply_date = DateField('Дата', validators=[InputRequired('Введіть дату')])
+
+
+class AdminClientForm(BaseForm):
+    surname = StringField('Прізвище', validators=[InputRequired('Введіть прізвище')])
+    first_name = StringField('Ім\'я', validators=[InputRequired('Введіть ім\'я')])
+    second_name = StringField('По-батькові', validators=[Optional()])
+    is_male = RadioField('Стать', validators=[InputRequired('Виберіть стать')],
+                         choices=[(1, 'Чоловіча'), (0, 'Жіноча')], coerce=int)
+    phone = TelField('Телефон', validators=[InputRequired('Введіть телефон')])
+    email = EmailField('Email', validators=[Optional()])

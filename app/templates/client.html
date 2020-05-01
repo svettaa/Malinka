@@ -15,52 +15,45 @@
 <div class="row">
     <div class="col-12 col-sm-10 mx-auto">
         <form method="POST" action="{{ action }}">
+            {{ form.csrf_token }}
             <div class="form-group row">
-                <label for="clientSurname" class="col-lg-2 col-form-label">Прізвище *</label>
+                {{ form.surname.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    <input type="text" class="form-control" id="clientSurname" name="clientSurname" required
-                           value="{{ client.surname }}">
+                    {{ form.surname(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row">
-                <label for="clientName" class="col-lg-2 col-form-label">Ім'я *</label>
+                {{ form.first_name.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    <input type="text" class="form-control" id="clientName" name="clientName" required
-                           value="{{ client.first_name }}">
+                    {{ form.first_name(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row">
-                <label for="clientSecond" class="col-lg-2 col-form-label">По-батькові</label>
+                {{ form.second_name.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    <input type="text" class="form-control" id="clientSecond" name="clientSecond"
-                           value="{% if client.second_name %}{{ client.second_name }}{% endif %}">
+                    {{ form.second_name(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row">
-                <label for="clientIsMan" class="col-lg-2 col-form-label">Стать *</label>
+                {{ form.is_male.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    <select class="form-control" id="clientIsMan" name="clientIsMan" required>
-                        <option {% if not client %}selected{% endif %} value="">Оберіть стать</option>
-                        <option {% if client.is_male== False %}selected{% endif %} value="0">Жіноча</option>
-                        <option {% if client.is_male== True %}selected{% endif %} value="1">Чоловіча</option>
-                    </select>
+                    {% for option in form.is_male %}
+                    {{ option }}
+                    {{ option.label }}
+                    <br>
+                    {% endfor %}
                 </div>
             </div>
             <div class="form-group row">
-                <label for="clientTel" class="col-lg-2 col-form-label">Номер телефону *</label>
+                {{ form.phone.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    <input type="tel" class="form-control" id="clientTel" name="clientTel"
-                           placeholder="050 000 0000" required
-                           pattern="[0-9]{10}"
-                           value="{{ client.phone }}">
+                    {{ form.phone(class="form-control") }}
                 </div>
             </div>
             <div class="form-group row">
-                <label for="clientEmail" class="col-lg-2 col-form-label">Email </label>
+                {{ form.email.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    <input type="tel" class="form-control" id="clientEmail" name="clientEmail"
-                           placeholder="you@example.com"
-                           value="{% if client.email %}{{ client.email }}{% endif %}">
+                    {{ form.email(class="form-control") }}
                 </div>
             </div>
             <!--            <div class="form-group row">-->
