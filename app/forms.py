@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, IntegerField, TextAreaField, RadioField
+from wtforms import StringField, SelectField, TextAreaField, RadioField
 from wtforms.validators import InputRequired, Optional, NumberRange
-from wtforms.fields.html5 import DateField, TelField, EmailField
+from wtforms.fields.html5 import DateField, TelField, EmailField, IntegerField
 
 
 class BaseForm(FlaskForm):
@@ -16,12 +16,13 @@ class AdminProcedureForm(BaseForm):
     category_id = SelectField('Назва категорії', validators=[InputRequired('Виберіть категорію')],
                               coerce=int)
     name = StringField('Назва процедури', validators=[InputRequired('Введіть назву процедури')])
-    price_min = IntegerField('Мінімальна ціна', validators=[InputRequired('Введіть мінімальну ціну'),
-                                                            NumberRange(min=0,
-                                                                        message='Ціна не може бути від\'ємною')])
-    price_max = IntegerField('Максимальна ціна', validators=[Optional(),
-                                                             NumberRange(min=0,
-                                                                         message='Ціна не може бути від\'ємною')])
+    price_min = IntegerField('Мінімальна ціна',
+                             default=100,
+                             validators=[InputRequired('Введіть мінімальну ціну'),
+                                         NumberRange(min=0, message='Ціна не може бути від\'ємною')])
+    price_max = IntegerField('Максимальна ціна',
+                             validators=[Optional(),
+                                         NumberRange(min=0, message='Ціна не може бути від\'ємною')])
     info = TextAreaField('Додаткова інформація', validators=[Optional()])
 
 
@@ -33,8 +34,10 @@ class AdminPaintForm(BaseForm):
 class AdminSupplyForm(BaseForm):
     paint_id = SelectField('Фарба', validators=[InputRequired('Виберіть фарбу')],
                            coerce=int)
-    amount = IntegerField('Кількість, мл', validators=[InputRequired('Введіть кількість фарби'),
-                                                       NumberRange(min=1, message='Кількість має бути більше нуля')])
+    amount = IntegerField('Кількість, мл',
+                          default=100,
+                          validators=[InputRequired('Введіть кількість фарби'),
+                                      NumberRange(min=1, message='Кількість має бути більше нуля')])
     supply_date = DateField('Дата', validators=[InputRequired('Введіть дату')])
 
 
