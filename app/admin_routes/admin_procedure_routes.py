@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError, DataError
 from app import app
 from app.models import *
 from app.message_codes import *
+from app.forms import AdminProcedureForm
 
 
 @app.route('/procedures')
@@ -35,19 +36,34 @@ def edit_procedure_get(procedure_id):
                                                  'WHERE procedure_id = %s;',
                                                  procedure_id).scalar()
 
-    return render_template('procedure.html', procedure=procedure, categories=categories,
+    form = AdminProcedureForm(data=procedure)
+    form.category_id.choices = [(category['id'], category['name']) for category in categories]
+
+    return render_template('procedure.html', form=form,
                            favourite_clients_amount=favourite_clients_amount,
                            action=url_for('edit_procedure_post', procedure_id=procedure_id))
 
 
 @app.route('/procedures/<int:procedure_id>', methods=['POST'])
 def edit_procedure_post(procedure_id):
-    procedure = Procedure(id=procedure_id, category_id=request.form['procCategID'],
-                          name=request.form['procName'], price_min=request.form['procMin'],
-                          price_max=request.form['procMax'], info=request.form['procInfo'])
+    form = AdminProcedureForm()
 
-    if procedure.price_max.strip() == '':
-        procedure.price_max = None
+    categories = db.engine.execute('SELECT id, name '
+                                   'FROM Category').fetchall()
+
+    favourite_clients_amount = db.engine.execute('SELECT COUNT(*) '
+                                                 'FROM Favourite_Procedure '
+                                                 'WHERE procedure_id = %s;',
+                                                 procedure_id).scalar()
+    form.category_id.choices = [(category['id'], category['name']) for category in categories]
+
+    if not form.validate_on_submit():
+        return render_template('procedure.html', form=form,
+                               favourite_clients_amount=favourite_clients_amount,
+                               action=url_for('edit_procedure_post', procedure_id=procedure_id))
+
+    procedure = Procedure(id=procedure_id)
+    form.populate_obj(procedure)
 
     try:
         db.engine.execute('UPDATE Procedure '
@@ -60,19 +76,10 @@ def edit_procedure_post(procedure_id):
                           (procedure.category_id, procedure.name, procedure.price_min,
                            procedure.price_max, procedure.info, procedure.id))
     except IntegrityError:
-
-        categories = db.engine.execute('SELECT id, name '
-                                       'FROM Category').fetchall()
-        return render_template('procedure.html', procedure=procedure, categories=categories,
+        return render_template('procedure.html', form=form,
+                               favourite_clients_amount=favourite_clients_amount,
                                action=url_for('edit_procedure_post', procedure_id=procedure_id),
                                error=get_error_message(Error.PROCEDURE_NAME_EXISTS.value))
-    except DataError:
-
-        categories = db.engine.execute('SELECT id, name '
-                                       'FROM Category').fetchall()
-        return render_template('procedure.html', procedure=procedure, categories=categories,
-                               action=url_for('edit_procedure_post', procedure_id=procedure_id),
-                               error=get_error_message(Error.PROCEDURE_ILLEGAL_DATA.value))
 
     return redirect(url_for('procedures_get', success=Success.UPDATED_PROCEDURE.value))
 
@@ -82,18 +89,26 @@ def new_procedure_get():
     categories = db.engine.execute('SELECT id, name '
                                    'FROM Category').fetchall()
 
-    return render_template('procedure.html', procedure=None, categories=categories,
+    form = AdminProcedureForm()
+    form.category_id.choices = [(category['id'], category['name']) for category in categories]
+
+    return render_template('procedure.html', form=form,
                            action=url_for('new_procedure_post'))
 
 
 @app.route('/procedures/new', methods=['POST'])
 def new_procedure_post():
-    procedure = Procedure(category_id=request.form['procCategID'],
-                          name=request.form['procName'], price_min=request.form['procMin'],
-                          price_max=request.form['procMax'], info=request.form['procInfo'])
+    form = AdminProcedureForm()
+    categories = db.engine.execute('SELECT id, name '
+                                   'FROM Category').fetchall()
+    form.category_id.choices = [(category['id'], category['name']) for category in categories]
 
-    if procedure.price_max.strip() == '':
-        procedure.price_max = None
+    if not form.validate_on_submit():
+        return render_template('procedure.html', form=form,
+                               action=url_for('new_procedure_post'))
+
+    procedure = Procedure()
+    form.populate_obj(procedure)
 
     try:
         db.engine.execute('INSERT INTO Procedure (category_id, name, price_min, price_max, info) '
@@ -101,19 +116,9 @@ def new_procedure_post():
                           (procedure.category_id, procedure.name, procedure.price_min,
                            procedure.price_max, procedure.info))
     except IntegrityError:
-
-        categories = db.engine.execute('SELECT id, name '
-                                       'FROM Category').fetchall()
-        return render_template('procedure.html', procedure=procedure, categories=categories,
+        return render_template('procedure.html', form=form,
                                action=url_for('new_procedure_post'),
                                error=get_error_message(Error.PROCEDURE_NAME_EXISTS.value))
-    except DataError:
-
-        categories = db.engine.execute('SELECT id, name '
-                                       'FROM Category').fetchall()
-        return render_template('procedure.html', procedure=procedure, categories=categories,
-                               action=url_for('new_procedure_post'),
-                               error=get_error_message(Error.PROCEDURE_ILLEGAL_DATA.value))
 
     return redirect(url_for('procedures_get', success=Success.ADDED_PROCEDURE.value))
 

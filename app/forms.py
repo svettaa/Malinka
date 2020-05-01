@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField
-from wtforms.validators import InputRequired
+from wtforms import StringField, SelectField, IntegerField, TextAreaField
+from wtforms.validators import InputRequired, Optional
 
 
 class BaseForm(FlaskForm):
@@ -9,3 +9,12 @@ class BaseForm(FlaskForm):
 
 class AdminCategoryForm(BaseForm):
     name = StringField('Назва категорії', validators=[InputRequired('Введіть назву категорії')])
+
+
+class AdminProcedureForm(BaseForm):
+    category_id = SelectField('Назва категорії', validators=[InputRequired('Виберіть категорію')],
+                              coerce=int)
+    name = StringField('Назва процедури', validators=[InputRequired('Введіть назву процедури')])
+    price_min = IntegerField('Мінімальна ціна', validators=[InputRequired('Введіть мінімальну ціну')])
+    price_max = IntegerField('Максимальна ціна', validators=[Optional()])
+    info = TextAreaField('Додаткова інформація', validators=[Optional()])

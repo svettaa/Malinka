@@ -16,64 +16,38 @@
 <div class="row">
     <div class="col-12 col-sm-10 mx-auto">
         <form action="{{ action }}" method="POST">
+
+            {{ form.csrf_token }}
+
             <div class="form-group row">
-                <label for="procCategID" class="col-md-2 col-form-label">Назва категорії *</label>
+                {{ form.category_id.label(class="col-md-2 col-form-label") }}
                 <div class="col-md-10">
-                    <select class="form-control" id="procCategID" name="procCategID" required>
-                        <option {% if not procedure %}selected{% endif %} value="">
-                            Оберіть категорію
-                        </option>
-
-                        {% for category in categories %}
-                        <option value="{{ category.id }}"
-                                {% if category.id== procedure.category_id %}
-                                selected
-                                {% endif %}>
-                            {{ category.name }}
-                        </option>
-                        {% endfor %}
-
-                    </select>
+                    {{ form.category_id(class="form-control") }}
                 </div>
             </div>
+
             <div class="form-group row">
-                <label for="procName" class="col-md-2 col-form-label">Назва процедури *</label>
+                {{ form.name.label(class="col-md-2 col-form-label") }}
                 <div class="col-md-10">
-                    <input type="text" class="form-control" id="procName" name="procName"
-                           value="{{ procedure.name }}">
+                    {{ form.name(class="form-control") }}
                 </div>
             </div>
-            <div class="form-group row ">
-                <label for="procMin" class="col-md-2 col-form-label">Мінімальна ціна *</label>
+
+            <div class="form-group row">
+                {{ form.price_min.label(class="col-md-2 col-form-label") }}
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="procMin" name="procMin"
-                           value="{{ procedure.price_min }}">
+                    {{ form.price_min(class="form-control") }}
                 </div>
-                <label for="procMax" class="col-md-2 col-form-label">Максимальна ціна</label>
+                {{ form.price_max.label(class="col-md-2 col-form-label") }}
                 <div class="col-md-4">
-                    <input type="text" class="form-control" id="procMax" name="procMax"
-                           value="{% if procedure.price_max %}{{ procedure.price_max }}{% endif %}">
+                    {{ form.price_max(class="form-control") }}
                 </div>
             </div>
-            <!--<div class="form-group row">
-                <label for="procMasters" class="col-md-2 col-form-label">Майстри</label>
-                <div class="col-md-10">
-                    <select class="form-control" id="procMasters" multiple>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                    </select>
-                </div>
-            </div>-->
-
 
             <div class="form-group row">
-                <label for="procInfo" class="col-md-2 col-form-label">Додаткова інформація</label>
+                {{ form.info.label(class="col-md-2 col-form-label") }}
                 <div class="col-md-10">
-                    <textarea class="form-control" id="procInfo" name="procInfo" rows="5">
-{% if procedure.info %}{{ procedure.info }}{% endif %}</textarea>
+                    {{ form.info(class="form-control", rows=3) }}
                 </div>
             </div>
 
