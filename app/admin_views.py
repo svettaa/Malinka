@@ -38,3 +38,7 @@ class PaintView(ModelView):
 
 class PaintSupplyView(ModelView):
     pass
+
+
+class MasterProcedureView(ModelView):
+    pass

@@ -99,19 +99,24 @@
 
             {% if not new_master %}
             <div class="form-group row">
-                Улюблена у {{ favourite_clients_amount }} користувачів(а)
+                Улюблений у {{ favourite_clients_amount }} користувачів(а)
             </div>
             {% endif %}
 
             <div class="form-group row">
                 <table>
-                    {% for procedure in procedures %}
+                    {% for procedure in form.procedures %}
                     <tr>
-                        <td><input type="checkbox" checked></td>
-                        <td>{{ procedure.name }}</td>
-                        <td><input type="number" min="1" max="660" step="5" class="form-control" id="duration"
-                                   name="duration"
-                                   value="1"></td>
+                        {{ procedure.procedure_id }}
+                        <td>
+                            {{ procedure.category_name.data }}
+                        </td>
+                        <td>
+                            {{ procedure.procedure_name.data }}
+                        </td>
+                        <td>
+                            {{ procedure.duration(class="form-control") }}
+                        </td>
                     </tr>
                     {% endfor %}
                 </table>

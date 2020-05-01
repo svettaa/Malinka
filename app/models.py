@@ -37,7 +37,7 @@ class Master(db.Model):
     favourite_clients = db.relationship(
         "Client", secondary='favourite_master', back_populates="favourite_masters")
     procedures = db.relationship(
-        "Procedure", secondary='master_procedure', back_populates="masters")
+        "MasterProcedure", back_populates="master")
     data = db.relationship(
         "Client", back_populates="master_data")
     schedule_changes = db.relationship(
@@ -96,7 +96,7 @@ class Procedure(db.Model):
     favourite_clients = db.relationship(
         "Client", secondary='favourite_procedure', back_populates="favourite_procedures")
     masters = db.relationship(
-        "Master", secondary='master_procedure', back_populates="procedures")
+        "MasterProcedure", back_populates="procedure")
     appointments = db.relationship(
         "Appointment", back_populates="procedure")
 
@@ -203,9 +203,20 @@ db.Table('favourite_procedure',
                    db.ForeignKey('procedure.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True)
          )
 
-db.Table('master_procedure',
-         db.Column('master_id', db.Integer,
-                   db.ForeignKey('master.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True),
-         db.Column('procedure_id', db.Integer,
-                   db.ForeignKey('procedure.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True)
-         )
+
+class MasterProcedure(db.Model):
+    __tablename__ = 'master_procedure'
+    duration = db.Column(db.Integer, nullable=False)
+
+    master_id = db.Column(
+        db.Integer, db.ForeignKey('master.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True)
+    procedure_id = db.Column(
+        db.Integer, db.ForeignKey('procedure.id', onupdate='RESTRICT', ondelete='RESTRICT'), primary_key=True)
+
+    master = db.relationship(
+        "Master", back_populates="procedures")
+    procedure = db.relationship(
+        "Procedure", back_populates="masters")
+
+    def __repr__(self):
+        return f'{self.master} - {self.procedure}: {self.duration}min'

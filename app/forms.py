@@ -1,11 +1,16 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, TextAreaField, RadioField
+from wtforms import StringField, SelectField, TextAreaField, RadioField, HiddenField, FormField, FieldList
 from wtforms.validators import InputRequired, Optional, NumberRange
 from wtforms.fields.html5 import DateField, TelField, EmailField, IntegerField
 
 
 class BaseForm(FlaskForm):
     pass
+
+
+class NoCsrfBaseForm(BaseForm):
+    def __init__(self, *args, **kwargs):
+        super(NoCsrfBaseForm, self).__init__(meta={'csrf': False}, *args, **kwargs)
 
 
 class AdminCategoryForm(BaseForm):
@@ -51,11 +56,21 @@ class AdminClientForm(BaseForm):
     email = EmailField('Email', validators=[Optional()])
 
 
+class AdminMasterProceduresForm(NoCsrfBaseForm):
+    procedure_id = HiddenField('')
+    procedure_name = HiddenField('')
+    category_name = HiddenField('')
+    duration = IntegerField('Тривалість',
+                            validators=[Optional(),
+                                        NumberRange(min=1, message='Тривалість має бути більше нуля')])
+
+
 class AdminEditMasterForm(BaseForm):
     even_schedule = RadioField('Графік', validators=[InputRequired('Оберіть графік')],
                                choices=[(1, 'Парний'), (0, 'Непарний')], coerce=int)
     is_hired = RadioField('Статус', validators=[InputRequired('Оберіть статус')],
                           choices=[(1, 'Працює'), (0, 'Звільнено')], coerce=int)
+    procedures = FieldList(FormField(AdminMasterProceduresForm))
 
 
 class AdminNewMasterForm(AdminEditMasterForm):

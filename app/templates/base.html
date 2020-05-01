@@ -77,9 +77,24 @@
             {% if form %}
             {% for field in form %}
             {% for error in field.errors %}
+
+
+            {% if error is not mapping %}
             <div class="alert alert-danger" role="alert">
                 {{ error }}
             </div>
+            {% else %}
+
+            {% for inner_field_errors in error.values() %}
+            {% for inner_field_error in inner_field_errors %}
+            <div class="alert alert-danger" role="alert">
+                {{ inner_field_error }}
+            </div>
+            {% endfor %}
+            {% endfor %}
+            {% endif %}
+
+
             {% endfor %}
             {% endfor %}
             {% endif %}
