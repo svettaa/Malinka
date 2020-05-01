@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError, DataError
 from app import app
 from app.models import *
 from app.message_codes import *
+from app.forms import AdminPaintForm
 
 
 @app.route('/paints', methods=['GET'])
@@ -23,14 +24,22 @@ def edit_paint_get(paint_id):
                               'WHERE id = %s;',
                               paint_id).fetchone()
 
-    return render_template('paint.html', paint=paint,
+    form = AdminPaintForm(data=paint)
+
+    return render_template('paint.html', form=form,
                            action=url_for('edit_paint_post', paint_id=paint_id))
 
 
 @app.route('/paints/<int:paint_id>', methods=['POST'])
 def edit_paint_post(paint_id):
-    paint = Paint(id=paint_id, code=request.form['paintNum'],
-                  name=request.form['paintName'])
+    form = AdminPaintForm()
+
+    if not form.validate_on_submit():
+        return render_template('paint.html', form=form,
+                               action=url_for('edit_paint_post', paint_id=paint_id))
+
+    paint = Paint(id=paint_id)
+    form.populate_obj(paint)
 
     try:
         db.engine.execute('UPDATE Paint '
@@ -39,39 +48,40 @@ def edit_paint_post(paint_id):
                           'WHERE id = %s;',
                           (paint.code, paint.name, paint.id))
     except IntegrityError:
-        return render_template('paint.html', paint=paint,
+        return render_template('paint.html', form=form,
                                action=url_for('edit_paint_post', paint_id=paint_id),
                                error=get_error_message(Error.PAINT_CODE_EXISTS.value))
-    except DataError:
-        return render_template('paint.html', paint=paint,
-                               action=url_for('edit_paint_post', paint_id=paint.id),
-                               error=get_error_message(Error.PAINT_ILLEGAL_DATA.value))
 
     return redirect(url_for('paints_get', success=Success.UPDATED_PAINT.value))
 
 
 @app.route('/paints/new', methods=['GET'])
 def new_paint_get():
-    return render_template('paint.html', paint=None,
+    form = AdminPaintForm()
+
+    return render_template('paint.html', form=form,
                            action=url_for('new_paint_post'))
 
 
 @app.route('/paints/new', methods=['POST'])
 def new_paint_post():
-    paint = Paint(code=request.form['paintNum'], name=request.form['paintName'])
+    form = AdminPaintForm()
+
+    if not form.validate_on_submit():
+        return render_template('paint.html', form=form,
+                               action=url_for('new_paint_post'))
+
+    paint = Paint()
+    form.populate_obj(paint)
 
     try:
         db.engine.execute('INSERT INTO Paint (code, name, left_ml) '
                           'VALUES (%s, %s, %s);',
                           (paint.code, paint.name, 0))
     except IntegrityError:
-        return render_template('paint.html', paint=paint,
-                               action=url_for('new_paint_post', paint_id=paint.id),
+        return render_template('paint.html', form=form,
+                               action=url_for('new_paint_post'),
                                error=get_error_message(Error.PAINT_CODE_EXISTS.value))
-    except DataError:
-        return render_template('paint.html', paint=paint,
-                               action=url_for('new_paint_post', paint_id=paint.id),
-                               error=get_error_message(Error.PAINT_ILLEGAL_DATA.value))
 
     return redirect(url_for('paints_get', success=Success.ADDED_PAINT.value))
 

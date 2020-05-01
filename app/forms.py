@@ -18,3 +18,8 @@ class AdminProcedureForm(BaseForm):
     price_min = IntegerField('Мінімальна ціна', validators=[InputRequired('Введіть мінімальну ціну')])
     price_max = IntegerField('Максимальна ціна', validators=[Optional()])
     info = TextAreaField('Додаткова інформація', validators=[Optional()])
+
+
+class AdminPaintForm(BaseForm):
+    code = StringField('Номер фарби', validators=[InputRequired('Введіть номер фарби')])
+    name = StringField('Назва фарби', validators=[InputRequired('Введіть назву фарби')])
