@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, TextAreaField, RadioField, HiddenField, FormField, FieldList
+from wtforms import StringField, SelectField, TextAreaField, \
+    RadioField, HiddenField, FormField, FieldList, BooleanField
 from wtforms.validators import InputRequired, Optional, NumberRange
-from wtforms.fields.html5 import DateField, TelField, EmailField, IntegerField
+from wtforms.fields.html5 import DateField, TelField, EmailField, IntegerField, DateTimeField
 
 
 class BaseForm(FlaskForm):
@@ -76,3 +77,16 @@ class AdminEditMasterForm(BaseForm):
 class AdminNewMasterForm(AdminEditMasterForm):
     id = SelectField('Користувач', validators=[InputRequired('Виберіть користувача')],
                      coerce=int)
+
+
+class AdminScheduleChangeForm(BaseForm):
+    master_id = SelectField('Майстер', validators=[InputRequired('Виберіть майстра')],
+                            coerce=int)
+    change_start = DateTimeField('Початок', validators=[InputRequired('Введіть початок зміни в графіку')],
+                                 render_kw={'data-target': '#change_start_datetimepicker'},
+                                 format='%d.%m.%Y %H:%M')
+    change_end = DateTimeField('Кінець', validators=[InputRequired('Введіть кінець зміни в графіку')],
+                               render_kw={'data-target': '#change_end_datetimepicker'},
+                               format='%d.%m.%Y %H:%M')
+    is_working = RadioField('Працює', validators=[InputRequired('Оберіть тип зміни')],
+                            choices=[(1, 'Так'), (0, 'Ні')], coerce=int)

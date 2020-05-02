@@ -20,6 +20,9 @@ class Success(Enum):
     ADDED_MASTER = 16
     UPDATED_MASTER = 17
     DELETED_MASTER = 18
+    ADDED_SCHEDULE = 19
+    UPDATED_SCHEDULE = 20
+    DELETED_SCHEDULE = 21
 
 
 class Error(Enum):
@@ -37,6 +40,8 @@ class Error(Enum):
     USER_ILLEGAL_DATA = 12
     MASTER_HAS_APPOINTMENTS = 13
     MASTER_ILLEGAL_DATA = 14
+    SCHEDULE_INTEGRITY = 15
+    SCHEDULE_DELETE_INTEGRITY = 16
 
 
 message = {Success.ADDED_CATEGORY: 'Успішно додано категорію',
@@ -57,6 +62,9 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
            Success.ADDED_MASTER: 'Успішно додано майстра',
            Success.UPDATED_MASTER: 'Успішно змінено майстра',
            Success.DELETED_MASTER: 'Успішно видалено майстра',
+           Success.ADDED_SCHEDULE: 'Успішно додано зміну в графіку',
+           Success.UPDATED_SCHEDULE: 'Успішно змінено зміну в графіку',
+           Success.DELETED_SCHEDULE: 'Успішно видалено зміну в графіку',
            Error.CATEGORY_HAS_PROCEDURES: 'Неможливо видалити категорію, що містить процедури',
            Error.CATEGORY_NAME_EXISTS: 'Неможливо змінити або додати категорію, '
                                        'категорія з такою назваю вже існує',
@@ -90,6 +98,11 @@ message = {Success.ADDED_CATEGORY: 'Успішно додано категорі
                                       'неправильно введені дані',
            Error.MASTER_HAS_APPOINTMENTS: 'Неможливо видалити майстра, що міститься у записах, '
                                           'улюблених або у змінах графіку',
+           Error.SCHEDULE_INTEGRITY: 'Неможливо оновити зміну в графіку, можливі причини: '
+                                     'Дати перетинаються з іншими змінами в графіку даного майстра, '
+                                     'Існує запис в дані дати',
+           Error.SCHEDULE_DELETE_INTEGRITY: 'Неможливо видалити зміну в графіку, можливі причини: '
+                                            'Вже існує запис в дані дати для даного майстра',
            }
 
 

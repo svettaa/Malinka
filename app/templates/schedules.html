@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+Список змін у графіку
+{% endblock %}
+
+
+{% block header %}
+Список змін у графіку
+{% endblock %}
+
+
+{% block content %}
+
+<!-- Table - list of schedule changes -->
+<div class="row">
+    <div class="col-12 col-sm-10 mx-auto">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th style="width: 70px" scope="col"></th>
+                <th style="width: 15%" scope="col">Майстер</th>
+                <th scope="col">Початок</th>
+                <th scope="col">Кінець</th>
+                <th scope="col">Працює</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for schedule in schedules %}
+            <tr>
+                <td>
+                    <div class="d-flex justify-content-between">
+                        <a class="btnEdit" href="{{ url_for('edit_schedule_post', schedule_id=schedule.id) }}">
+                            <span class="fa fa-edit"></span>
+                        </a>
+                        <a href="{{ url_for('delete_schedule_get', schedule_id=schedule.id) }}">
+                            <span class="fa fa-trash"></span>
+                        </a>
+                    </div>
+                </td>
+                <td>{{ schedule.surname }} {{ schedule.first_name }}, +38{{ schedule.phone }}</td>
+                <td>{{ schedule.change_start }}</td>
+                <td>{{ schedule.change_end }}</td>
+                <td>{% if schedule.is_working %}+{% else %}-{% endif %}</td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <a href="{{ url_for('new_schedule_get') }}">
+            <button type="submit" class="btn btn-primary">Додати</button>
+        </a>
+    </div>
+</div>
+{% endblock %}

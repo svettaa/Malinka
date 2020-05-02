@@ -9,19 +9,14 @@ $(document).ready(function () {
     });
 
 
-
-
-
-
-    /*$(function () {
-        $('#datetimepicker').datetimepicker({
-            format: 'L'
-        });
+    $('#change_start_datetimepicker').datetimepicker({
+         locale: 'ru'
     });
-*/
 
+
+    $('#change_end_datetimepicker').datetimepicker({
+         locale: 'ru'
+    });
 
 
 });
-
-
