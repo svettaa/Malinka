@@ -19,4 +19,10 @@ $(document).ready(function () {
     });
 
 
+    $('#supply_date_datetimepicker').datetimepicker({
+         locale: 'ru',
+         format: 'L'
+    });
+
+
 });

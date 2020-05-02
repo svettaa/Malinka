@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, \
-    RadioField, HiddenField, FormField, FieldList, BooleanField
+    RadioField, HiddenField, FormField, FieldList
 from wtforms.validators import InputRequired, Optional, NumberRange
-from wtforms.fields.html5 import DateField, TelField, EmailField, IntegerField, DateTimeField
+from wtforms.fields.html5 import TelField, EmailField, IntegerField, DateTimeField
 
 
 class BaseForm(FlaskForm):
@@ -44,7 +44,9 @@ class AdminSupplyForm(BaseForm):
                           default=100,
                           validators=[InputRequired('Введіть кількість фарби'),
                                       NumberRange(min=1, message='Кількість має бути більше нуля')])
-    supply_date = DateField('Дата', validators=[InputRequired('Введіть дату')])
+    supply_date = DateTimeField('Дата', validators=[InputRequired('Введіть дату')],
+                                render_kw={'data-target': '#supply_date_datetimepicker'},
+                                format='%d.%m.%Y')
 
 
 class AdminClientForm(BaseForm):
