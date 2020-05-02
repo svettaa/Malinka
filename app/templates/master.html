@@ -19,37 +19,37 @@
 
             {% if not new_master %}
             <div class="form-group row">
-                <label for="masterSurname" class="col-lg-2 col-form-label">Прізвище</label>
+                <label for="masterSurname" class="col-lg-2 col-form-label" style="font-weight: bold">Прізвище</label>
                 <div class="col-lg-10">
                     <input type="text" readonly id="masterSurname" class="form-control-plaintext" value="{{ master.surname }}">
                 </div>
             </div>
             <div class="form-group row">
-                <label for="masterName" class="col-lg-2 col-form-label">Ім'я</label>
+                <label for="masterName" class="col-lg-2 col-form-label" style="font-weight: bold">Ім'я</label>
                 <div class="col-lg-10">
                     <input type="text" readonly id="masterName" class="form-control-plaintext" value="{{ master.first_name }}">
                 </div>
             </div>
             <div class="form-group row">
-                <label for="masterSecondName" class="col-lg-2 col-form-label">По-батькові</label>
+                <label for="masterSecondName" class="col-lg-2 col-form-label" style="font-weight: bold">По-батькові</label>
                 <div class="col-lg-10">
                     <input type="text" readonly id="masterSecondName" class="form-control-plaintext" value="{% if master.second_name %}{{ master.second_name }}{% endif %}">
                 </div>
             </div>
             <div class="form-group row">
-                <label for="masterIsMale" class="col-lg-2 col-form-label">Стать</label>
+                <label for="masterIsMale" class="col-lg-2 col-form-label" style="font-weight: bold">Стать</label>
                 <div class="col-lg-10">
                     <input type="text" readonly id="masterIsMale" class="form-control-plaintext" value="{% if master.is_male %}Чоловіча{% else %}Жіноча{% endif %}">
                 </div>
             </div>
             <div class="form-group row">
-                <label for="masterPhone" class="col-lg-2 col-form-label">Номер телефону</label>
+                <label for="masterPhone" class="col-lg-2 col-form-label" style="font-weight: bold">Номер телефону</label>
                 <div class="col-lg-10">
                     <input type="text" readonly id="masterPhone" class="form-control-plaintext" value="+38{{ master.phone }}">
                 </div>
             </div>
             <div class="form-group row">
-                <label for="masterEmail" class="col-lg-2 col-form-label">Email </label>
+                <label for="masterEmail" class="col-lg-2 col-form-label" style="font-weight: bold">Email </label>
                 <div class="col-lg-10">
                     <input type="text" readonly id="masterEmail" class="form-control-plaintext" value="{% if master.email %}{{ master.email }}{% endif %}">
                 </div>
@@ -94,12 +94,12 @@
 
             <div class="form-group row mt-5 mb-5">
 
-                <table class="ml-3">
+                <table class="table table-bordered ml-3">
                     <thead>
                     <tr>
                         <th style="width: 150px" scope="col">Категорія</th>
                         <th style="width: 300px" scope="col">Процедура</th>
-                        <th scope="col">Тривалість</th>
+                        <th scope="col">Тривалість, хв</th>
                     </tr>
                     </thead>
                     {% for procedure in form.procedures %}

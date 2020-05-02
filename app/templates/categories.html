@@ -17,7 +17,7 @@
 
 <div class="row ">
     <div class="col-12 col-md-10 mx-auto">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-responsive-lg">
             <thead>
             <tr>
                 <th style="width: 70px" scope="col"></th>
@@ -33,7 +33,7 @@
                     <a class="btnEdit" href="{{ url_for('edit_category_get', category_id=category.id) }}">
                         <span class="fa fa-edit"></span>
                     </a>
-                    <a href="{{ url_for('delete_category_get', category_id=category.id) }}">
+                    <a href="{{ url_for('delete_category_get', category_id=category.id) }}" data-toggle="modal" data-target="#modalAreYouSure">
                         <span class="fa fa-trash"></span>
                     </a>
                     </div>
@@ -48,7 +48,7 @@
 </div>
 
 <div class="row">
-    <div class="col-12 col-md-10 offset-md-1">
+    <div class="col-12 col-md-10 offset-sm-1">
         <a href="{{ url_for('new_category_get') }}"><button class="btn btn-primary">Додати</button></a>
     </div>
 </div>
