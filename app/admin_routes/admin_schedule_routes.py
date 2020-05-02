@@ -74,7 +74,7 @@ def edit_schedule_post(schedule_id):
     except IntegrityError:
         return render_template('schedule.html', form=form,
                                action=url_for('edit_schedule_post', schedule_id=schedule_id),
-                               error=Error.SCHEDULE_INTEGRITY)
+                               error=get_error_message(Error.SCHEDULE_INTEGRITY.value))
 
     return redirect(url_for('schedules_get', success=Success.UPDATED_SCHEDULE.value))
 
@@ -119,7 +119,7 @@ def new_schedule_post():
     except IntegrityError:
         return render_template('schedule.html', form=form,
                                action=url_for('new_schedule_post'),
-                               error=Error.SCHEDULE_INTEGRITY)
+                               error=get_error_message(Error.SCHEDULE_INTEGRITY.value))
 
     return redirect(url_for('schedules_get', success=Success.ADDED_SCHEDULE.value))
 

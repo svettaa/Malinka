@@ -64,6 +64,12 @@ class ScheduleChange(db.Model):
     master = db.relationship(
         "Master", back_populates="schedule_changes")
 
+    __table_args__ = (
+        db.CheckConstraint('NOT exists_intersecting_schedule_change'
+                           '    (id, master_id, change_start, change_end)', name='change_intersects'),
+        db.CheckConstraint('change_start < change_end', name='change_start_less_end'),
+    )
+
     def __repr__(self):
         return f'{self.master}, ' \
                f'{self.start_time.strftime("%h:%m")} - {self.end_time.strftime("%h:%m")}'
@@ -224,3 +230,20 @@ class MasterProcedure(db.Model):
 
     def __repr__(self):
         return f'{self.master} - {self.procedure}: {self.duration}min'
+
+# exists_intersecting_schedule_change = ReplaceableObject(
+#     'exists_intersecting_schedule_change(param_change_id integer, param_master_id integer, '
+#     'param_change_start timestamp, param_change_end timestamp)',
+#     """
+#    RETURNS boolean AS $$
+#    BEGIN
+#        RETURN EXISTS (SELECT *
+#                       FROM Schedule_Change
+#                       WHERE Schedule_Change.master_id = param_master_id AND
+#                             Schedule_Change.id <> param_change_id AND
+#                             Schedule_Change.change_start < param_change_end AND
+#                             Schedule_Change.change_end > param_change_start);
+#    END;
+#    $$ LANGUAGE plpgsql;
+#    """
+# )
