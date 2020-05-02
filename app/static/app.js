@@ -10,19 +10,22 @@ $(document).ready(function () {
 
 
     $('#change_start_datetimepicker').datetimepicker({
-         locale: 'ru'
+        locale: 'ru'
     });
 
 
     $('#change_end_datetimepicker').datetimepicker({
-         locale: 'ru'
+        locale: 'ru'
     });
 
 
     $('#supply_date_datetimepicker').datetimepicker({
-         locale: 'ru',
-         format: 'L'
+        locale: 'ru',
+        format: 'LT'
     });
 
 
+
+
 });
+

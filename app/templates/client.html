@@ -7,7 +7,7 @@
 
 
 {% block header %}
-Додати/змінити клієнта
+Додати/змінити користувача
 {% endblock %}
 
 
@@ -91,7 +91,7 @@
         <h2>Улюблені майстри</h2>
         {% for master in favourite_masters %}
         <a href="{{ url_for('edit_master_get', master_id=master.id) }}">
-            {{ master.surname }} {{ master.first_name }}
+            <strong>{{ master.surname }} </strong>{{ master.first_name }}
             {% if master.second_name %}{{ master.second_name }}{% endif %},
             +38{{ master.phone }}
         </a>

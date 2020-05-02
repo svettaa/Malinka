@@ -19,51 +19,53 @@
 
             {% if not new_master %}
             <div class="form-group row">
-                <label class="col-lg-2 col-form-label">Прізвище</label>
+                <label for="masterSurname" class="col-lg-2 col-form-label">Прізвище</label>
                 <div class="col-lg-10">
-                    {{ master.surname }}
+                    <input type="text" readonly id="masterSurname" class="form-control-plaintext" value="{{ master.surname }}">
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-lg-2 col-form-label">Ім'я</label>
+                <label for="masterName" class="col-lg-2 col-form-label">Ім'я</label>
                 <div class="col-lg-10">
-                    {{ master.first_name }}
+                    <input type="text" readonly id="masterName" class="form-control-plaintext" value="{{ master.first_name }}">
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-lg-2 col-form-label">По-батькові</label>
+                <label for="masterSecondName" class="col-lg-2 col-form-label">По-батькові</label>
                 <div class="col-lg-10">
-                    {% if master.second_name %}{{ master.second_name }}{% endif %}
+                    <input type="text" readonly id="masterSecondName" class="form-control-plaintext" value="{% if master.second_name %}{{ master.second_name }}{% endif %}">
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-lg-2 col-form-label">Стать</label>
+                <label for="masterIsMale" class="col-lg-2 col-form-label">Стать</label>
                 <div class="col-lg-10">
-                    {% if master.is_male %}Чоловіча{% else %}Жіноча{% endif %}
+                    <input type="text" readonly id="masterIsMale" class="form-control-plaintext" value="{% if master.is_male %}Чоловіча{% else %}Жіноча{% endif %}">
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-lg-2 col-form-label">Номер телефону</label>
+                <label for="masterPhone" class="col-lg-2 col-form-label">Номер телефону</label>
                 <div class="col-lg-10">
-                    +38{{ master.phone }}
+                    <input type="text" readonly id="masterPhone" class="form-control-plaintext" value="+38{{ master.phone }}">
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-lg-2 col-form-label">Email </label>
+                <label for="masterEmail" class="col-lg-2 col-form-label">Email </label>
                 <div class="col-lg-10">
-                    {% if master.email %}{{ master.email }}{% endif %}
+                    <input type="text" readonly id="masterEmail" class="form-control-plaintext" value="{% if master.email %}{{ master.email }}{% endif %}">
                 </div>
             </div>
 
             {% else %}
 
             <!-- IF NEW MASTER -->
+
             <div class="form-group row">
                 {{ form.id.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    {{ form.id(class="form-control") }}
+                    {{ form.id(class="form-control", id="") }}
                 </div>
             </div>
+
 
             {% endif %}
 
@@ -88,24 +90,20 @@
                 </div>
             </div>
 
-            <div class="form-group row">
-                <div class="col-lg-10 offset-lg-2">
-                    <button type="submit" class="btn btn-primary">Зберегти</button>
-                    <a href="{{ url_for('masters_get') }}">
-                        <button type="button" class="btn btn-secondary">Назад</button>
-                    </a>
-                </div>
-            </div>
 
-            {% if not new_master %}
-            <div class="form-group row">
-                Улюблений у {{ favourite_clients_amount }} користувачів(а)
-            </div>
-            {% endif %}
 
-            <div class="form-group row">
-                <table>
+            <div class="form-group row mt-5 mb-5">
+
+                <table class="ml-3">
+                    <thead>
+                    <tr>
+                        <th style="width: 150px" scope="col">Категорія</th>
+                        <th style="width: 300px" scope="col">Процедура</th>
+                        <th scope="col">Тривалість</th>
+                    </tr>
+                    </thead>
                     {% for procedure in form.procedures %}
+                    <tbody>
                     <tr>
                         {{ procedure.procedure_id }}
                         <td>
@@ -113,16 +111,36 @@
                             {{ procedure.category_name }}
                         </td>
                         <td>
+                            <!--  data - display, no data - hidden -->
                             {{ procedure.procedure_name.data }}
                             {{ procedure.procedure_name }}
                         </td>
                         <td>
+                            <!--  duration input -->
                             {{ procedure.duration(class="form-control") }}
                         </td>
                     </tr>
+                    </tbody>
                     {% endfor %}
                 </table>
             </div>
+
+
+            <div class="form-group row">
+                <div class="col-lg-10">
+                    <button type="submit" class="btn btn-primary">Зберегти</button>
+                    <a href="{{ url_for('masters_get') }}">
+                        <button type="button" class="btn btn-secondary">Назад</button>
+                    </a>
+                </div>
+            </div>
+
+
+            {% if not new_master %}
+            <div class="form-group row pl-3 mt-5">
+                Улюблений у {{ favourite_clients_amount }} користувачів(а)
+            </div>
+            {% endif %}
 
         </form>
 
