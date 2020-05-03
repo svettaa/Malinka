@@ -10,7 +10,7 @@
 
 {% block content_wrapper %}
 
-<header class="jumbotron">
+<header class="jumbotron mb-0">
     <div class="container">
         <div class="row row-header">
             <div class="col-12">
@@ -31,6 +31,7 @@
         </button>
     </div>
 
+    <hr align="center" color="#e5e5e5">
 
     <div id="procedures" class="row align-items-center">
         <div class="col-12 d-flex justify-content-center myHeader">
@@ -41,28 +42,22 @@
     {% for category in categories %}
 
     <table class="table">
-        <thead class=" table-asc">
+        <thead class="thead-light">
         <tr>
-            <th scope="col"></th>
-            <th scope="col">{{ category.name }}</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
+            <th class="text-uppercase" colspan="2" scope="col">{{ category.name }}</th>
         </tr>
         </thead>
         <tbody>
-
         {% for procedure in category.procedures %}
-        <tr>
-            <th scope="row"></th>
-            <td>
+        <tr class="row pl-3 pr-3">
+            <td class="col-7">
                 <h6>{{ procedure.name }}<br></h6>
                 {% if procedure.info %}
                 <p>{{ procedure.info }}</p>
                 {% endif %}
             </td>
-            <td></td>
-            <td>
-                <h5>
+            <td class="col-5">
+                <h5 class="float-md-right">
                     {{ procedure.price_min }}грн
                     {% if procedure.price_max %}
                     &nbsp;-&nbsp;
@@ -79,7 +74,7 @@
 
 </div>
 
-<div class="jumbotron jumbotron-fluid m-0">
+<div class="jumbotron jumbotron-fluid">
     <div class="container">
 
     </div>
@@ -87,7 +82,7 @@
 
 <div class="container">
     <div id="masters" class="row align-items-center">
-        <div class="col-12 d-flex justify-content-center mt-5 mb-3">
+        <div class="col-12 d-flex justify-content-center myHeader">
             <h4>Майстри</h4>
         </div>
     </div>
@@ -134,7 +129,7 @@
 
 <div class="container">
     <div id="contacts" class="row align-items-center">
-        <div class="col-12 d-flex justify-content-center mt-5 mb-3">
+        <div class="col-12 d-flex justify-content-center myHeader">
             <h4>Контакти</h4>
         </div>
     </div>
