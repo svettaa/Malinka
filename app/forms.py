@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, \
     RadioField, HiddenField, FormField, FieldList, DateTimeField
-from wtforms.validators import InputRequired, Optional, NumberRange
+from wtforms.validators import InputRequired, Optional, NumberRange, Regexp
 from wtforms.fields.html5 import TelField, EmailField, IntegerField
 
 
@@ -56,7 +56,8 @@ class AdminClientForm(BaseForm):
     second_name = StringField('По-батькові', validators=[Optional()])
     is_male = RadioField('Стать', validators=[InputRequired('Виберіть стать')],
                          choices=[(1, 'Чоловіча'), (0, 'Жіноча')], coerce=int)
-    phone = TelField('Телефон', validators=[InputRequired('Введіть телефон')])
+    phone = TelField('Телефон, +38', validators=[InputRequired('Введіть телефон'),
+                                            Regexp('[0-9]{10}', message='Некоректний телефон')])
     email = EmailField('Email', validators=[Optional()])
 
 
