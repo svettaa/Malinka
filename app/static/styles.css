@@ -3,7 +3,7 @@ html{
 }
 
 body{
-    margin-top: 55px;
+    padding-top: 55px;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -28,4 +28,5 @@ body{
 .myHeader{
     padding: 20px 0;
 }
+
 
