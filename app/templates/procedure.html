@@ -60,9 +60,11 @@
                 </div>
             </div>
 
+            {% if not new_procedure %}
             <div class="form-group row pl-3 mt-5">
                 Улюблена у {{ favourite_clients_amount }} користувачів(а)
             </div>
+            {% endif %}
         </form>
     </div>
 </div>

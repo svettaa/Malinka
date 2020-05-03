@@ -40,7 +40,7 @@ def edit_procedure_get(procedure_id):
     form.category_id.choices = [('', 'Не обрано')] + \
                                [(str(category['id']), category['name']) for category in categories]
 
-    return render_template('procedure.html', form=form,
+    return render_template('procedure.html', form=form, new_procedure=False,
                            favourite_clients_amount=favourite_clients_amount,
                            action=url_for('edit_procedure_post', procedure_id=procedure_id))
 
@@ -60,7 +60,7 @@ def edit_procedure_post(procedure_id):
                                [(str(category['id']), category['name']) for category in categories]
 
     if not form.validate_on_submit():
-        return render_template('procedure.html', form=form,
+        return render_template('procedure.html', form=form, new_procedure=False,
                                favourite_clients_amount=favourite_clients_amount,
                                action=url_for('edit_procedure_post', procedure_id=procedure_id))
 
@@ -81,7 +81,7 @@ def edit_procedure_post(procedure_id):
                           (procedure.category_id, procedure.name, procedure.price_min,
                            procedure.price_max, procedure.info, procedure.id))
     except IntegrityError:
-        return render_template('procedure.html', form=form,
+        return render_template('procedure.html', form=form, new_procedure=False,
                                favourite_clients_amount=favourite_clients_amount,
                                action=url_for('edit_procedure_post', procedure_id=procedure_id),
                                error=get_error_message(Error.PROCEDURE_NAME_EXISTS.value))
@@ -98,7 +98,7 @@ def new_procedure_get():
     form.category_id.choices = [('', 'Не обрано')] + \
                                [(str(category['id']), category['name']) for category in categories]
 
-    return render_template('procedure.html', form=form,
+    return render_template('procedure.html', form=form, new_procedure=True,
                            action=url_for('new_procedure_post'))
 
 
@@ -111,7 +111,7 @@ def new_procedure_post():
                                [(str(category['id']), category['name']) for category in categories]
 
     if not form.validate_on_submit():
-        return render_template('procedure.html', form=form,
+        return render_template('procedure.html', form=form, new_procedure=True,
                                action=url_for('new_procedure_post'))
 
     procedure = Procedure()
@@ -126,7 +126,7 @@ def new_procedure_post():
                           (procedure.category_id, procedure.name, procedure.price_min,
                            procedure.price_max, procedure.info))
     except IntegrityError:
-        return render_template('procedure.html', form=form,
+        return render_template('procedure.html', form=form, new_procedure=True,
                                action=url_for('new_procedure_post'),
                                error=get_error_message(Error.PROCEDURE_NAME_EXISTS.value))
 
