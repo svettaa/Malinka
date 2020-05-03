@@ -87,24 +87,26 @@
         </div>
     </div>
 
-    <div class="row mb-5">
+    <div class="row mb-5 ">
 
         {% for master in masters %}
-        <div class="card сol-12 col-sm-4 p-0 mr-3">
-            <img class="card-img-top" src="http://placehold.it/150x100" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">
-                    {{ master.surname }}
-                    {{ master.first_name }}
-                    {% if master.second_name %}
-                    {{ master.second_name }}
-                    {% endif %}
-                </h5>
-<!--                <p class="card-text">Інформація про майстра</p>-->
-            </div>
-            <div class="card-footer">
-                <a href="#" class="card-link text-info">Профіль</a><br>
-                <a href="#" class="card-link text-info">Записатися до майстра</a>
+        <div class="сol-12 col-sm-6 col-md-4 mb-4">
+            <div class="card">
+                <img class="card-img-top" src="http://placehold.it/150x100" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ master.surname }}
+                        {{ master.first_name }}
+                        {% if master.second_name %}
+                        {{ master.second_name }}
+                        {% endif %}
+                    </h5>
+    <!--                <p class="card-text">Інформація про майстра</p>-->
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="card-link text-info">Профіль</a><br>
+                    <a href="#" class="card-link text-info">Записатися до майстра</a>
+                </div>
             </div>
         </div>
         {% endfor %}
@@ -115,11 +117,11 @@
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
         <div class="row row-header">
-            <div class="col-12 col-sm-9">
+            <div class="col-12 col-sm-8">
                 <h4>Подивіться журнал, щоб зробити запис</h4>
                 <p class="lead">Можете обрати день, процедуру та майстра</p>
             </div>
-            <div class="col-12 col-sm-3 justify-content-center align-self-center">
+            <div class="col-12 col-sm-4 justify-content-center align-self-center">
                 <button type="button" class="btn btn btn-secondary btn-block">ЗАПИСАТИСЯ</button>
             </div>
         </div>
@@ -134,7 +136,7 @@
         </div>
     </div>
 
-    <div class="row row-content">
+    <div class="row row-content mb-5">
         <div class="col-12 col-sm-4 offset-sm-1">
             <h5>Наша адреса</h5>
             <address style="font-size: 100%">

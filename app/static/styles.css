@@ -1,6 +1,5 @@
 html{
     height: 100%;
-
 }
 
 body{
@@ -28,13 +27,5 @@ body{
 
 .myHeader{
     padding: 20px 0;
-}
-
-.table-asc{
-    background-color: #FBEFF2;
-}
-
-.table-desc{
-    background-color: #F2F2F2;
 }
 
