@@ -1,6 +1,12 @@
 from flask import render_template
+from datetime import datetime
 
 from app import app, db
+
+
+@app.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}
 
 
 @app.route('/')
