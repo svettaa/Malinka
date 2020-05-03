@@ -31,8 +31,10 @@
             <div class="form-group row">
                 <label for="paintLeft" class="col-md-2 col-form-label">Залишок</label>
                 <div class="col-md-2">
-                    <input type="text" readonly id="paintLeft" class="form-control-plaintext" value="{% if paint %}{{ paint.left_ml }}{% else %}0{% endif %} мл">
-
+                    <input type="text" readonly id="paintLeft" class="form-control-plaintext"
+                           value="{% if form.left_ml.data %}{{ form.left_ml.data }}{% else %}0{% endif %} мл">
+                    <!-- It is hidden -->
+                    {{ form.left_ml }}
                 </div>
             </div>
             <div class="form-group row">

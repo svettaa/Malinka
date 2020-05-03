@@ -35,6 +35,7 @@ class AdminProcedureForm(BaseForm):
 class AdminPaintForm(BaseForm):
     code = StringField('Номер фарби', validators=[InputRequired('Введіть номер фарби')])
     name = StringField('Назва фарби', validators=[InputRequired('Введіть назву фарби')])
+    left_ml = HiddenField('')
 
 
 class AdminSupplyForm(BaseForm):
