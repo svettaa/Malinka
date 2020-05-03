@@ -122,7 +122,8 @@ def new_master_get():
                               '                  WHERE Master.id = Client.id) '
                               'ORDER BY surname, first_name, second_name, phone;').fetchall()
     form = AdminNewMasterForm()
-    form.id.choices = [(user['id'], user['surname'] + ' ' + user['first_name'] + ', +38' + user['phone'])
+    form.id.choices = [('', 'Не обрано')] + \
+                      [(str(user['id']), user['surname'] + ' ' + user['first_name'] + ', +38' + user['phone'])
                        for user in users]
 
     return render_template('master.html', form=form, new_master=True,
@@ -138,7 +139,9 @@ def new_master_post():
                               '                  FROM Master '
                               '                  WHERE Master.id = Client.id) '
                               'ORDER BY surname, first_name, second_name, phone;').fetchall()
-    form.id.choices = [(user['id'], user['surname'] + user['first_name'] + ', +38' + user['phone']) for user in users]
+    form.id.choices = [('', 'Не обрано')] + \
+                      [(str(user['id']), user['surname'] + ' ' + user['first_name'] + ', +38' + user['phone'])
+                       for user in users]
 
     if not form.validate_on_submit():
         return render_template('master.html', form=form, new_master=True,

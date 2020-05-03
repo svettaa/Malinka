@@ -37,7 +37,8 @@ def edit_procedure_get(procedure_id):
                                                  procedure_id).scalar()
 
     form = AdminProcedureForm(data=procedure)
-    form.category_id.choices = [(category['id'], category['name']) for category in categories]
+    form.category_id.choices = [('', 'Не обрано')] + \
+                               [(str(category['id']), category['name']) for category in categories]
 
     return render_template('procedure.html', form=form,
                            favourite_clients_amount=favourite_clients_amount,
@@ -55,7 +56,8 @@ def edit_procedure_post(procedure_id):
                                                  'FROM Favourite_Procedure '
                                                  'WHERE procedure_id = %s;',
                                                  procedure_id).scalar()
-    form.category_id.choices = [(category['id'], category['name']) for category in categories]
+    form.category_id.choices = [('', 'Не обрано')] + \
+                               [(str(category['id']), category['name']) for category in categories]
 
     if not form.validate_on_submit():
         return render_template('procedure.html', form=form,
@@ -93,7 +95,8 @@ def new_procedure_get():
                                    'FROM Category').fetchall()
 
     form = AdminProcedureForm()
-    form.category_id.choices = [(category['id'], category['name']) for category in categories]
+    form.category_id.choices = [('', 'Не обрано')] + \
+                               [(str(category['id']), category['name']) for category in categories]
 
     return render_template('procedure.html', form=form,
                            action=url_for('new_procedure_post'))
@@ -104,7 +107,8 @@ def new_procedure_post():
     form = AdminProcedureForm()
     categories = db.engine.execute('SELECT id, name '
                                    'FROM Category').fetchall()
-    form.category_id.choices = [(category['id'], category['name']) for category in categories]
+    form.category_id.choices = [('', 'Не обрано')] + \
+                               [(str(category['id']), category['name']) for category in categories]
 
     if not form.validate_on_submit():
         return render_template('procedure.html', form=form,

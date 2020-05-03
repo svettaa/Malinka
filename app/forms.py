@@ -20,7 +20,7 @@ class AdminCategoryForm(BaseForm):
 
 class AdminProcedureForm(BaseForm):
     category_id = SelectField('Назва категорії', validators=[InputRequired('Виберіть категорію')],
-                              coerce=int)
+                              coerce=str)
     name = StringField('Назва процедури', validators=[InputRequired('Введіть назву процедури')])
     price_min = IntegerField('Мінімальна ціна',
                              default=100,
@@ -40,7 +40,7 @@ class AdminPaintForm(BaseForm):
 
 class AdminSupplyForm(BaseForm):
     paint_id = SelectField('Фарба', validators=[InputRequired('Виберіть фарбу')],
-                           coerce=int)
+                           coerce=str)
     amount = IntegerField('Кількість, мл',
                           default=100,
                           validators=[InputRequired('Введіть кількість фарби'),
@@ -80,12 +80,12 @@ class AdminEditMasterForm(BaseForm):
 
 class AdminNewMasterForm(AdminEditMasterForm):
     id = SelectField('Користувач', validators=[InputRequired('Виберіть користувача')],
-                     coerce=int)
+                     coerce=str)
 
 
 class AdminScheduleChangeForm(BaseForm):
     master_id = SelectField('Майстер', validators=[InputRequired('Виберіть майстра')],
-                            coerce=int)
+                            coerce=str)
     change_start = DateTimeField('Початок', validators=[InputRequired('Введіть початок зміни в графіку')],
                                  render_kw={'data-target': '#change_start_datetimepicker'},
                                  format='%d.%m.%Y %H:%M')

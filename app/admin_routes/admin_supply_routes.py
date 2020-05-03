@@ -31,7 +31,8 @@ def edit_supply_get(supply_id):
                                'FROM Paint').fetchall()
 
     form = AdminSupplyForm(data=supply)
-    form.paint_id.choices = [(paint['id'], paint['code'] + ' - ' + paint['name']) for paint in paints]
+    form.paint_id.choices = [('', 'Не обрано')] + \
+                            [(str(paint['id']), paint['code'] + ' - ' + paint['name']) for paint in paints]
 
     return render_template('supply.html', form=form,
                            action=url_for('edit_supply_post', supply_id=supply_id))
@@ -43,7 +44,8 @@ def edit_supply_post(supply_id):
 
     paints = db.engine.execute('SELECT id, code, name '
                                'FROM Paint').fetchall()
-    form.paint_id.choices = [(paint['id'], paint['code'] + ' - ' + paint['name']) for paint in paints]
+    form.paint_id.choices = [('', 'Не обрано')] + \
+                            [(str(paint['id']), paint['code'] + ' - ' + paint['name']) for paint in paints]
 
     if not form.validate_on_submit():
         return render_template('supply.html', form=form,
@@ -82,7 +84,8 @@ def new_supply_get():
                                'FROM Paint').fetchall()
 
     form = AdminSupplyForm()
-    form.paint_id.choices = [(paint['id'], paint['code'] + ' - ' + paint['name']) for paint in paints]
+    form.paint_id.choices = [('', 'Не обрано')] + \
+                            [(str(paint['id']), paint['code'] + ' - ' + paint['name']) for paint in paints]
 
     return render_template('supply.html', form=form,
                            action=url_for('new_supply_post'))
@@ -94,7 +97,8 @@ def new_supply_post():
 
     paints = db.engine.execute('SELECT id, code, name '
                                'FROM Paint').fetchall()
-    form.paint_id.choices = [(paint['id'], paint['code'] + ' - ' + paint['name']) for paint in paints]
+    form.paint_id.choices = [('', 'Не обрано')] + \
+                            [(str(paint['id']), paint['code'] + ' - ' + paint['name']) for paint in paints]
 
     if not form.validate_on_submit():
         return render_template('supply.html', form=form,

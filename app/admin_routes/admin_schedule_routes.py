@@ -36,9 +36,10 @@ def edit_schedule_get(schedule_id):
                                 '     ON Master.id = Client.id;').fetchall()
 
     form = AdminScheduleChangeForm(data=schedule)
-    form.master_id.choices = [
-        (master['id'], master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])
-        for master in masters]
+    form.master_id.choices = [('', 'Не обрано')] + \
+                             [(str(master['id']),
+                               master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])
+                              for master in masters]
 
     return render_template('schedule.html', form=form,
                            action=url_for('edit_schedule_post', schedule_id=schedule_id))
@@ -51,9 +52,10 @@ def edit_schedule_post(schedule_id):
     masters = db.engine.execute('SELECT Master.id, surname, first_name, phone '
                                 'FROM Master INNER JOIN Client '
                                 '     ON Master.id = Client.id;').fetchall()
-    form.master_id.choices = [
-        (master['id'], master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])
-        for master in masters]
+    form.master_id.choices = [('', 'Не обрано')] + \
+                             [(str(master['id']),
+                               master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])
+                              for master in masters]
 
     if not form.validate_on_submit():
         return render_template('schedule.html', form=form,
@@ -86,9 +88,10 @@ def new_schedule_get():
                                 '     ON Master.id = Client.id;').fetchall()
 
     form = AdminScheduleChangeForm()
-    form.master_id.choices = [
-        (master['id'], master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])
-        for master in masters]
+    form.master_id.choices = [('', 'Не обрано')] + \
+                             [(str(master['id']),
+                               master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])
+                              for master in masters]
 
     return render_template('schedule.html', form=form,
                            action=url_for('new_schedule_post'))
@@ -101,9 +104,10 @@ def new_schedule_post():
     masters = db.engine.execute('SELECT Master.id, surname, first_name, phone '
                                 'FROM Master INNER JOIN Client '
                                 '     ON Master.id = Client.id;').fetchall()
-    form.master_id.choices = [
-        (master['id'], master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])
-        for master in masters]
+    form.master_id.choices = [('', 'Не обрано')] + \
+                             [(str(master['id']),
+                               master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])
+                              for master in masters]
 
     if not form.validate_on_submit():
         return render_template('schedule.html', form=form,

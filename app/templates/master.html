@@ -91,7 +91,7 @@
             </div>
 
 
-
+            {% if not new_master %}
             <div class="form-group row mt-5 mb-5">
 
                 <table class="table table-bordered ml-3">
@@ -124,6 +124,7 @@
                     {% endfor %}
                 </table>
             </div>
+            {% endif %}
 
 
             <div class="form-group row">
