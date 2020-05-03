@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, \
-    RadioField, HiddenField, FormField, FieldList
+    RadioField, HiddenField, FormField, FieldList, DateTimeField
 from wtforms.validators import InputRequired, Optional, NumberRange
-from wtforms.fields.html5 import TelField, EmailField, IntegerField, DateTimeField
+from wtforms.fields.html5 import TelField, EmailField, IntegerField
 
 
 class BaseForm(FlaskForm):
