@@ -40,7 +40,7 @@
                     </a>
                     </div>
                 </td>
-                <td>{{ supply.supply_date }}</td>
+                <td>{{ supply.supply_date.strftime('%d.%m.%Y') }}</td>
                 <td>{{ supply.paint_code }}</td>
                 <td>{{ supply.paint_name }}</td>
                 <td>{{ supply.amount }}</td>
