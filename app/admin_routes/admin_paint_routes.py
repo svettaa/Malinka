@@ -1,30 +1,22 @@
 from flask import render_template, request, redirect, url_for
-from sqlalchemy.exc import IntegrityError, DataError
 
 from app import app
 from app.models import *
 from app.message_codes import *
 from app.forms import AdminPaintForm
+from app.api.api_paint import *
 
 
 @app.route('/paints', methods=['GET'])
 def paints_get():
-    paints = db.engine.execute('SELECT id, code, name, left_ml '
-                               'FROM Paint;').fetchall()
-
-    return render_template('paints.html', paints=paints,
+    return render_template('paints.html', paints=get_paints(),
                            error=get_error_message(request.args.get('error')),
                            success=get_success_message(request.args.get('success')))
 
 
 @app.route('/paints/<int:paint_id>', methods=['GET'])
 def edit_paint_get(paint_id):
-    paint = db.engine.execute('SELECT id, code, name, left_ml '
-                              'FROM Paint '
-                              'WHERE id = %s;',
-                              paint_id).fetchone()
-
-    form = AdminPaintForm(data=paint)
+    form = AdminPaintForm(data=get_paint(paint_id))
 
     return render_template('paint.html', form=form,
                            action=url_for('edit_paint_post', paint_id=paint_id))
@@ -41,18 +33,14 @@ def edit_paint_post(paint_id):
     paint = Paint(id=paint_id)
     form.populate_obj(paint)
 
-    try:
-        db.engine.execute('UPDATE Paint '
-                          'SET code = %s,'
-                          '    name = %s '
-                          'WHERE id = %s;',
-                          (paint.code, paint.name, paint.id))
-    except IntegrityError:
+    status, message = update_paint(paint)
+
+    if status:
+        return redirect(url_for('paints_get', success=Success.UPDATED_PAINT.value))
+    else:
         return render_template('paint.html', form=form,
                                action=url_for('edit_paint_post', paint_id=paint_id),
-                               error=get_error_message(Error.PAINT_CODE_EXISTS.value))
-
-    return redirect(url_for('paints_get', success=Success.UPDATED_PAINT.value))
+                               error=message)
 
 
 @app.route('/paints/new', methods=['GET'])
@@ -74,27 +62,23 @@ def new_paint_post():
     paint = Paint()
     form.populate_obj(paint)
 
-    try:
-        db.engine.execute('INSERT INTO Paint (code, name, left_ml) '
-                          'VALUES (%s, %s, %s);',
-                          (paint.code, paint.name, 0))
-    except IntegrityError:
+    status, message = add_paint(paint)
+
+    if status:
+        return redirect(url_for('paints_get', success=Success.ADDED_PAINT.value))
+    else:
         return render_template('paint.html', form=form,
                                action=url_for('new_paint_post'),
-                               error=get_error_message(Error.PAINT_CODE_EXISTS.value))
-
-    return redirect(url_for('paints_get', success=Success.ADDED_PAINT.value))
+                               error=message)
 
 
 @app.route('/paints/delete/<int:paint_id>', methods=['GET'])
 def delete_paint_get(paint_id):
-    try:
-        db.engine.execute('DELETE '
-                          'FROM Paint '
-                          'WHERE id = %s',
-                          paint_id)
-    except IntegrityError:
+
+    status, message = delete_paint(paint_id)
+
+    if status:
+        return redirect(url_for('paints_get', success=Success.DELETED_PAINT.value))
+    else:
         return redirect(url_for('paints_get',
                                 error=Error.PAINT_HAS_APPOINTMENTS.value))
-
-    return redirect(url_for('paints_get', success=Success.DELETED_PAINT.value))
