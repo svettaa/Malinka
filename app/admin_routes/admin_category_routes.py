@@ -79,4 +79,4 @@ def delete_category_get(category_id):
         return redirect(url_for('categories_get', success=Success.DELETED_CATEGORY.value))
     else:
         return redirect(url_for('categories_get',
-                                error=message))
+                                error=Error.CATEGORY_HAS_PROCEDURES.value))
