@@ -40,7 +40,7 @@ def update_procedure(procedure: Procedure):
                            procedure.price_max, procedure.info, procedure.id))
         return True, 'Успішно оновлено процедуру'
     except IntegrityError:
-        return False, 'Процедура з такою назвою вже існує або максимальна ціна менша за мінімальну'
+        return False, 'Процедура з такою назвою вже існує'
 
 
 def add_procedure(procedure: Procedure):
@@ -51,7 +51,7 @@ def add_procedure(procedure: Procedure):
                            procedure.price_max, procedure.info))
         return True, 'Успішно додано процедуру'
     except IntegrityError:
-        return False, 'Процедура з такою назвою вже існує або максимальна ціна менша за мінімальну'
+        return False, 'Процедура з такою назвою вже існує'
 
 
 def delete_procedure(procedure_id: int):

@@ -35,7 +35,7 @@ def update_schedule(schedule: ScheduleChange):
                            schedule.master_id, schedule.id))
         return True, 'Успішно оновлено зміну в графіку'
     except IntegrityError:
-        return False, 'Зміни в графіку перетинаються або кінцевий час передує початковому'
+        return False, ''
 
 
 def add_schedule(schedule: ScheduleChange):
@@ -45,7 +45,7 @@ def add_schedule(schedule: ScheduleChange):
                           (schedule.change_start, schedule.change_end, bool(schedule.is_working), schedule.master_id))
         return True, 'Успішно додано зміну в графіку'
     except IntegrityError:
-        return False, 'Зміни в графіку перетинаються або кінцевий час передує початковому'
+        return False, ''
 
 
 def delete_schedule(schedule_id: int):
