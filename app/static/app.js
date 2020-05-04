@@ -42,7 +42,7 @@ $(document).ready(function () {
         format: 'LT'
     });
 
-    $('#procedureTable').DataTable();
+    $('.entriesList').DataTable();
 
 });
 
