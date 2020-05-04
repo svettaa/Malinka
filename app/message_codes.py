@@ -44,72 +44,72 @@ class Error(Enum):
     SCHEDULE_DELETE_INTEGRITY = 16
 
 
-message = {Success.ADDED_CATEGORY: 'Успішно додано категорію',
-           Success.ADDED_PROCEDURE: 'Успішно додано процедуру',
-           Success.UPDATED_CATEGORY: 'Успішно змінено категорію',
-           Success.UPDATED_PROCEDURE: 'Успішно змінено процедуру',
-           Success.DELETED_CATEGORY: 'Успішно видалено категорію',
-           Success.DELETED_PROCEDURE: 'Успішно видалено процедуру',
-           Success.ADDED_PAINT: 'Успішно додано фарбу',
-           Success.UPDATED_PAINT: 'Успішно змінено фарбу',
-           Success.DELETED_PAINT: 'Успішно видалено фарбу',
-           Success.ADDED_SUPPLY: 'Успішно додано поставку',
-           Success.UPDATED_SUPPLY: 'Успішно змінено поставку',
-           Success.DELETED_SUPPLY: 'Успішно видалено поставку',
-           Success.ADDED_USER: 'Успішно додано користувача',
-           Success.UPDATED_USER: 'Успішно змінено користувача',
-           Success.DELETED_USER: 'Успішно видалено користувача',
-           Success.ADDED_MASTER: 'Успішно додано майстра',
-           Success.UPDATED_MASTER: 'Успішно змінено майстра',
-           Success.DELETED_MASTER: 'Успішно видалено майстра',
-           Success.ADDED_SCHEDULE: 'Успішно додано зміну в графіку',
-           Success.UPDATED_SCHEDULE: 'Успішно змінено зміну в графіку',
-           Success.DELETED_SCHEDULE: 'Успішно видалено зміну в графіку',
-           Error.CATEGORY_HAS_PROCEDURES: 'Неможливо видалити категорію, що містить процедури',
-           Error.CATEGORY_NAME_EXISTS: 'Неможливо змінити або додати категорію, '
-                                       'категорія з такою назваю вже існує',
-           Error.PROCEDURE_NAME_EXISTS: 'Неможливо змінити або додати процедуру, '
-                                        'процедура з такою назваю вже існує, '
-                                        'або максимальна ціна менша за мінімальну',
-           Error.PROCEDURE_ILLEGAL_DATA: 'Неможливо змінити або додати процедуру '
-                                         'через неправильно введені дані. Можливі причини: '
-                                         'Некоректний числовий формат для ціни '
-                                         'Не вказана мінімальна ціна',
-           Error.PAINT_ILLEGAL_DATA: 'Неможливо змінити або додати фарбу '
-                                     'через неправильно введені дані. Можливі причини: '
-                                     'Не вказано залишок',
-           Error.PROCEDURE_HAS_APPOINTMENTS: 'Неможливо видалити процедуру, що міститься у записах '
-                                             'або улюблених',
-           Error.PAINT_HAS_APPOINTMENTS: 'Неможливо видалити фарбу, що міститься у записах '
-                                         'або для якої є поставки',
-           Error.USER_HAS_APPOINTMENTS: 'Неможливо видалити клієнта, що міститься у записах '
-                                        'або є майстром',
-           Error.USER_PHONE_EXISTS: 'Неможливо додати або змінити користувача, '
-                                    'користувач з таким номером вже існує',
-           Error.PAINT_CODE_EXISTS: 'Неможливо змінити або додати фарбу, '
-                                    'фарба з таким номером вже існує',
-           Error.SUPPLY_ILLEGAL_DATA: 'Неможливо змінити або додати поставку. '
-                                      'Можливі причини: '
-                                      'Неправильно вказана дата '
-                                      'Не вказано кількість',
-           Error.USER_ILLEGAL_DATA: 'Неможливо додати або змінити користувача, '
-                                    'неправильно введені дані',
-           Error.MASTER_ILLEGAL_DATA: 'Неможливо додати або змінити майстра, '
-                                      'неправильно введені дані',
-           Error.MASTER_HAS_APPOINTMENTS: 'Неможливо видалити майстра, що міститься у записах, '
-                                          'улюблених або у змінах графіку',
-           Error.SCHEDULE_INTEGRITY: 'Неможливо оновити зміну в графіку, можливі причини: '
-                                     'Дати перетинаються з іншими змінами в графіку даного майстра, '
-                                     'Існує запис в дані дати',
-           Error.SCHEDULE_DELETE_INTEGRITY: 'Неможливо видалити зміну в графіку, можливі причини: '
-                                            'Вже існує запис в дані дати для даного майстра',
-           }
+messages = {Success.ADDED_CATEGORY: 'Успішно додано категорію',
+            Success.ADDED_PROCEDURE: 'Успішно додано процедуру',
+            Success.UPDATED_CATEGORY: 'Успішно змінено категорію',
+            Success.UPDATED_PROCEDURE: 'Успішно змінено процедуру',
+            Success.DELETED_CATEGORY: 'Успішно видалено категорію',
+            Success.DELETED_PROCEDURE: 'Успішно видалено процедуру',
+            Success.ADDED_PAINT: 'Успішно додано фарбу',
+            Success.UPDATED_PAINT: 'Успішно змінено фарбу',
+            Success.DELETED_PAINT: 'Успішно видалено фарбу',
+            Success.ADDED_SUPPLY: 'Успішно додано поставку',
+            Success.UPDATED_SUPPLY: 'Успішно змінено поставку',
+            Success.DELETED_SUPPLY: 'Успішно видалено поставку',
+            Success.ADDED_USER: 'Успішно додано користувача',
+            Success.UPDATED_USER: 'Успішно змінено користувача',
+            Success.DELETED_USER: 'Успішно видалено користувача',
+            Success.ADDED_MASTER: 'Успішно додано майстра',
+            Success.UPDATED_MASTER: 'Успішно змінено майстра',
+            Success.DELETED_MASTER: 'Успішно видалено майстра',
+            Success.ADDED_SCHEDULE: 'Успішно додано зміну в графіку',
+            Success.UPDATED_SCHEDULE: 'Успішно змінено зміну в графіку',
+            Success.DELETED_SCHEDULE: 'Успішно видалено зміну в графіку',
+            Error.CATEGORY_HAS_PROCEDURES: 'Неможливо видалити категорію, що містить процедури',
+            Error.CATEGORY_NAME_EXISTS: 'Неможливо змінити або додати категорію, '
+                                        'категорія з такою назваю вже існує',
+            Error.PROCEDURE_NAME_EXISTS: 'Неможливо змінити або додати процедуру, '
+                                         'процедура з такою назваю вже існує, '
+                                         'або максимальна ціна менша за мінімальну',
+            Error.PROCEDURE_ILLEGAL_DATA: 'Неможливо змінити або додати процедуру '
+                                          'через неправильно введені дані. Можливі причини: '
+                                          'Некоректний числовий формат для ціни '
+                                          'Не вказана мінімальна ціна',
+            Error.PAINT_ILLEGAL_DATA: 'Неможливо змінити або додати фарбу '
+                                      'через неправильно введені дані. Можливі причини: '
+                                      'Не вказано залишок',
+            Error.PROCEDURE_HAS_APPOINTMENTS: 'Неможливо видалити процедуру, що міститься у записах '
+                                              'або улюблених',
+            Error.PAINT_HAS_APPOINTMENTS: 'Неможливо видалити фарбу, що міститься у записах '
+                                          'або для якої є поставки',
+            Error.USER_HAS_APPOINTMENTS: 'Неможливо видалити клієнта, що міститься у записах '
+                                         'або є майстром',
+            Error.USER_PHONE_EXISTS: 'Неможливо додати або змінити користувача, '
+                                     'користувач з таким номером вже існує',
+            Error.PAINT_CODE_EXISTS: 'Неможливо змінити або додати фарбу, '
+                                     'фарба з таким номером вже існує',
+            Error.SUPPLY_ILLEGAL_DATA: 'Неможливо змінити або додати поставку. '
+                                       'Можливі причини: '
+                                       'Неправильно вказана дата '
+                                       'Не вказано кількість',
+            Error.USER_ILLEGAL_DATA: 'Неможливо додати або змінити користувача, '
+                                     'неправильно введені дані',
+            Error.MASTER_ILLEGAL_DATA: 'Неможливо додати або змінити майстра, '
+                                       'неправильно введені дані',
+            Error.MASTER_HAS_APPOINTMENTS: 'Неможливо видалити майстра, що міститься у записах, '
+                                           'улюблених або у змінах графіку',
+            Error.SCHEDULE_INTEGRITY: 'Неможливо оновити зміну в графіку, можливі причини: '
+                                      'Дати перетинаються з іншими змінами в графіку даного майстра, '
+                                      'Існує запис в дані дати',
+            Error.SCHEDULE_DELETE_INTEGRITY: 'Неможливо видалити зміну в графіку, можливі причини: '
+                                             'Вже існує запис в дані дати для даного майстра',
+            }
 
 
 def get_error_message(code):
     if code is not None:
         try:
-            return message[Error(int(code))]
+            return messages[Error(int(code))]
         except ValueError:
             pass
 
@@ -117,6 +117,6 @@ def get_error_message(code):
 def get_success_message(code):
     if code is not None:
         try:
-            return message[Success(int(code))]
+            return messages[Success(int(code))]
         except ValueError:
             pass

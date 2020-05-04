@@ -1,30 +1,21 @@
 from flask import render_template, request, redirect, url_for
-from sqlalchemy.exc import IntegrityError
 
 from app import app
-from app.models import *
 from app.message_codes import *
 from app.forms import AdminCategoryForm
+from app.api.api_category import *
 
 
 @app.route('/categories')
 def categories_get():
-    categories = db.engine.execute('SELECT id, name '
-                                   'FROM Category;').fetchall()
-
-    return render_template('categories.html', categories=categories,
+    return render_template('categories.html', categories=get_categories(),
                            error=get_error_message(request.args.get('error')),
                            success=get_success_message(request.args.get('success')))
 
 
 @app.route('/categories/<int:category_id>', methods=['GET'])
 def edit_category_get(category_id):
-    category = db.engine.execute('SELECT id, name '
-                                 'FROM Category '
-                                 'WHERE id = %s;',
-                                 category_id).fetchone()
-
-    form = AdminCategoryForm(data=category)
+    form = AdminCategoryForm(data=get_category(category_id))
 
     return render_template('category.html', form=form,
                            action=url_for('edit_category_post', category_id=category_id))
@@ -41,17 +32,14 @@ def edit_category_post(category_id):
     category = Category(id=category_id)
     form.populate_obj(category)
 
-    try:
-        db.engine.execute('UPDATE Category '
-                          'SET name = %s '
-                          'WHERE id = %s;',
-                          (category.name, category.id))
-    except IntegrityError:
+    status, message = update_category(category)
+
+    if status:
+        return redirect(url_for('categories_get', success=Success.UPDATED_CATEGORY.value))
+    else:
         return render_template('category.html', form=form,
                                action=url_for('edit_category_post', category_id=category_id),
-                               error=get_error_message(Error.CATEGORY_NAME_EXISTS.value))
-
-    return redirect(url_for('categories_get', success=Success.UPDATED_CATEGORY.value))
+                               error=message)
 
 
 @app.route('/categories/new', methods=['GET'])
@@ -73,27 +61,22 @@ def new_category_post():
     category = Category()
     form.populate_obj(category)
 
-    try:
-        db.engine.execute('INSERT INTO Category (name) '
-                          'VALUES (%s);',
-                          category.name)
-    except IntegrityError:
+    status, message = add_category(category)
+
+    if status:
+        return redirect(url_for('categories_get', success=Success.ADDED_CATEGORY.value))
+    else:
         return render_template('category.html', form=form,
                                action=url_for('new_category_post'),
-                               error=get_error_message(Error.CATEGORY_NAME_EXISTS.value))
-
-    return redirect(url_for('categories_get', success=Success.ADDED_CATEGORY.value))
+                               error=message)
 
 
 @app.route('/categories/delete/<int:category_id>', methods=['GET'])
 def delete_category_get(category_id):
-    try:
-        db.engine.execute('DELETE '
-                          'FROM Category '
-                          'WHERE id = %s',
-                          category_id)
-    except IntegrityError:
-        return redirect(url_for('categories_get',
-                                error=Error.CATEGORY_HAS_PROCEDURES.value))
+    status, message = delete_category(category_id)
 
-    return redirect(url_for('categories_get', success=Success.DELETED_CATEGORY.value))
+    if status:
+        return redirect(url_for('categories_get', success=Success.DELETED_CATEGORY.value))
+    else:
+        return redirect(url_for('categories_get',
+                                error=message))
