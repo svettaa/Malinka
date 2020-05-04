@@ -42,6 +42,8 @@ $(document).ready(function () {
         format: 'LT'
     });
 
+    $('.entriesList').DataTable();
+
 
 });
 
