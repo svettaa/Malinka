@@ -1,7 +1,6 @@
 from flask import render_template, request, redirect, url_for
 
 from app import app
-from app.models import *
 from app.message_codes import *
 from app.forms import AdminPaintForm
 from app.api.api_paint import *

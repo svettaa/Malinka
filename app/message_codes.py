@@ -42,6 +42,7 @@ class Error(Enum):
     MASTER_ILLEGAL_DATA = 14
     SCHEDULE_INTEGRITY = 15
     SCHEDULE_DELETE_INTEGRITY = 16
+    SUPPLY_INTEGRITY = 17
 
 
 messages = {Success.ADDED_CATEGORY: 'Успішно додано категорію',
@@ -103,6 +104,7 @@ messages = {Success.ADDED_CATEGORY: 'Успішно додано категор�
                                       'Існує запис в дані дати',
             Error.SCHEDULE_DELETE_INTEGRITY: 'Неможливо видалити зміну в графіку, можливі причини: '
                                              'Вже існує запис в дані дати для даного майстра',
+            Error.SUPPLY_INTEGRITY: 'Порушення цілісності поставок'
             }
 
 
