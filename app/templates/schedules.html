@@ -41,8 +41,14 @@
                     </div>
                 </td>
                 <td>{{ schedule.surname }} {{ schedule.first_name }}, +38{{ schedule.phone }}</td>
-                <td>{{ schedule.change_start.strftime('%d.%m.%Y %H:%M') }}</td>
-                <td>{{ schedule.change_end.strftime('%d.%m.%Y %H:%M') }}</td>
+                <td>
+                    <div style="display:none;">{{ schedule.change_start.strftime('%Y\%m\%d %H:%M') }}</div>
+                    {{ schedule.change_start.strftime('%d.%m.%Y %H:%M') }}
+                </td>
+                <td>
+                    <div style="display:none;">{{ schedule.change_end.strftime('%Y\%m\%d %H:%M') }}</div>
+                    {{ schedule.change_end.strftime('%d.%m.%Y %H:%M') }}
+                </td>
                 <td>{% if schedule.is_working %}+{% else %}-{% endif %}</td>
             </tr>
             {% endfor %}
