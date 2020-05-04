@@ -23,6 +23,9 @@ class Success(Enum):
     ADDED_SCHEDULE = 19
     UPDATED_SCHEDULE = 20
     DELETED_SCHEDULE = 21
+    ADDED_APPOINTMENT = 22
+    UPDATED_APPOINTMENT = 23
+    DELETED_APPOINTMENT = 24
 
 
 class Error(Enum):
@@ -43,6 +46,7 @@ class Error(Enum):
     SCHEDULE_INTEGRITY = 15
     SCHEDULE_DELETE_INTEGRITY = 16
     SUPPLY_INTEGRITY = 17
+    APPOINTMENT_INTEGRITY = 18
 
 
 messages = {Success.ADDED_CATEGORY: 'Успішно додано категорію',
@@ -66,6 +70,9 @@ messages = {Success.ADDED_CATEGORY: 'Успішно додано категор�
             Success.ADDED_SCHEDULE: 'Успішно додано зміну в графіку',
             Success.UPDATED_SCHEDULE: 'Успішно змінено зміну в графіку',
             Success.DELETED_SCHEDULE: 'Успішно видалено зміну в графіку',
+            Success.ADDED_APPOINTMENT: 'Успішно додано запис',
+            Success.UPDATED_APPOINTMENT: 'Успішно змінено запис',
+            Success.DELETED_APPOINTMENT: 'Успішно видалено запис',
             Error.CATEGORY_HAS_PROCEDURES: 'Неможливо видалити категорію, що містить процедури',
             Error.CATEGORY_NAME_EXISTS: 'Неможливо змінити або додати категорію, '
                                         'категорія з такою назваю вже існує',
@@ -104,7 +111,8 @@ messages = {Success.ADDED_CATEGORY: 'Успішно додано категор�
                                       'Існує запис в дані дати',
             Error.SCHEDULE_DELETE_INTEGRITY: 'Неможливо видалити зміну в графіку, можливі причини: '
                                              'Вже існує запис в дані дати для даного майстра',
-            Error.SUPPLY_INTEGRITY: 'Порушення цілісності поставок'
+            Error.SUPPLY_INTEGRITY: 'Порушення цілісності поставок',
+            Error.APPOINTMENT_INTEGRITY: 'Порушення цілісності записів'
             }
 
 

@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, \
-    RadioField, HiddenField, FormField, FieldList, DateTimeField
+    RadioField, HiddenField, FormField, FieldList, DateTimeField, BooleanField
 from wtforms.validators import InputRequired, Optional, NumberRange, Regexp
 from wtforms.fields.html5 import TelField, EmailField, IntegerField
 
@@ -57,7 +57,7 @@ class AdminClientForm(BaseForm):
     is_male = RadioField('Стать', validators=[InputRequired('Виберіть стать')],
                          choices=[(1, 'Чоловіча'), (0, 'Жіноча')], coerce=int)
     phone = TelField('Телефон, +38', validators=[InputRequired('Введіть телефон'),
-                                            Regexp('[0-9]{10}', message='Некоректний телефон')])
+                                                 Regexp('[0-9]{10}', message='Некоректний телефон')])
     email = EmailField('Email', validators=[Optional()])
 
 
@@ -94,3 +94,23 @@ class AdminScheduleChangeForm(BaseForm):
                                format='%d.%m.%Y %H:%M')
     is_working = RadioField('Працює', validators=[InputRequired('Оберіть тип зміни')],
                             choices=[(1, 'Так'), (0, 'Ні')], coerce=int)
+
+
+class AdminAppointmentForm(BaseForm):
+    appoint_date = DateTimeField('Дата', validators=[InputRequired('Введіть дату')],
+                                 render_kw={'data-target': '#admin_appointment_date_datetimepicker'},
+                                 format='%d.%m.%Y')
+    start_time = DateTimeField('Початок', validators=[InputRequired('Введіть початок запису')],
+                               render_kw={'data-target': '#admin_appointment_start_datetimepicker'},
+                               format='%H:%M')
+    end_time = DateTimeField('Кінець', validators=[InputRequired('Введіть кінець запису')],
+                             render_kw={'data-target': '#admin_appointment_end_datetimepicker'},
+                             format='%H:%M')
+    preferences = HiddenField('Побажання')
+    status = BooleanField('Підтверджено')
+    price = IntegerField('Ціна',
+                         validators=[InputRequired('Введіть ціну'),
+                                     NumberRange(min=0, message='Ціна не може бути від\'ємною')])
+    master_id = SelectField('Майстер', validators=[InputRequired('Виберіть майстра')], coerce=str)
+    client_id = SelectField('Клієнт', validators=[InputRequired('Виберіть клієнта')], coerce=str)
+    procedure_id = SelectField('Процедура', validators=[InputRequired('Виберіть процедуру')], coerce=str)

@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+Список записів
+{% endblock %}
+
+
+{% block header %}
+Список записів
+{% endblock %}
+
+
+{% block content %}
+
+<!-- Table - list of appointments -->
+<div class="row">
+    <div class="col-12 col-sm-10 mx-auto">
+        <table class="table table-bordered table-responsive-lg">
+            <thead>
+            <tr>
+                <th style="width: 70px" scope="col"></th>
+                <th scope="col">Статус</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Початок</th>
+                <th scope="col">Кінець</th>
+                <th scope="col">Майстер</th>
+                <th scope="col">Процедура</th>
+                <th scope="col">Клієнт</th>
+                <th scope="col">Ціна</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for appointment in appointments %}
+            <tr>
+                <td>
+                    <div style="width: 50px" class="d-flex justify-content-between">
+                        <a class="btnEdit" href="{{ url_for('edit_appointment_post', appointment_id=appointment.id) }}">
+                            <span class="fa fa-edit"></span>
+                        </a>
+                        <a href="{{ url_for('delete_appointment_get', appointment_id=appointment.id) }}">
+                            <span class="fa fa-trash"></span>
+                        </a>
+                    </div>
+                </td>
+                <td>{% if appointment.status %}+{% else %}-{% endif %}</td>
+                <td>{{ appointment.appoint_date.strftime('%d.%m.%Y') }}</td>
+                <td>{{ appointment.start_time.strftime('%H:%M') }}</td>
+                <td>{{ appointment.end_time.strftime('%H:%M') }}</td>
+                <td>{{ appointment.master_surname }} {{ appointment.master_first_name }}</td>
+                <td>{{ appointment.procedure_name }}</td>
+                <td>{{ appointment.client_surname }} {{ appointment.client_first_name }}</td>
+                <td>{{ appointment.price }}</td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-10 offset-sm-1">
+        <a href="{{ url_for('new_appointment_get') }}">
+            <button type="submit" class="btn btn-primary">Додати</button>
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -25,6 +25,22 @@ $(document).ready(function () {
     });
 
 
+    $('#admin_appointment_date_datetimepicker').datetimepicker({
+        locale: 'ru',
+        format: 'L'
+    });
+
+
+    $('#admin_appointment_start_datetimepicker').datetimepicker({
+        locale: 'ru',
+        format: 'LT'
+    });
+
+
+    $('#admin_appointment_end_datetimepicker').datetimepicker({
+        locale: 'ru',
+        format: 'LT'
+    });
 
 
 });
