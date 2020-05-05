@@ -78,6 +78,8 @@ def update_appointment(appointment: Appointment):
 
 
 def add_appointment(appointment: Appointment):
+    if appointment.master_id == appointment.client_id:
+        return False, 'Неможливо записати майстра до себе'
     try:
         db.session.execute('INSERT INTO Appointment (appoint_date, start_time, end_time, preferences,'
                            '                         status, price, client_id, master_id, procedure_id) '
