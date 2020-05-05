@@ -18,7 +18,7 @@
         <table class="table table-bordered table-responsive-lg entriesList">
             <thead>
             <tr>
-                <th style="width: 80px" scope="col"></th>
+                <th style="width: 70px" scope="col"></th>
                 <th scope="col">Прізвище</th>
                 <th scope="col">Ім'я</th>
                 <th scope="col">По-батькові</th>
@@ -34,7 +34,7 @@
             {% for master in masters %}
             <tr>
                 <td>
-                    <div style="width: 80px" class="d-flex justify-content-between">
+                    <div style="width: 90px" class="d-flex justify-content-between">
                         <a href="{{ url_for('edit_client_get', client_id=master.id) }}">
                             <span class="fa fa-edit"></span>
                         </a>
