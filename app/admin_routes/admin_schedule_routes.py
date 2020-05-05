@@ -17,15 +17,11 @@ def schedules_get():
 
 @app.route('/schedules/<int:schedule_id>', methods=['GET'])
 def edit_schedule_get(schedule_id):
-    masters = db.engine.execute('SELECT Master.id, surname, first_name, phone '
-                                'FROM Master INNER JOIN Client '
-                                '     ON Master.id = Client.id;').fetchall()
-
-    form = AdminScheduleChangeForm(data=get_schedule(schedule_id))
-    form.master_id.choices = [('', 'Не обрано')] + \
-                             [(str(master['id']),
-                               master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])
-                              for master in masters]
+    schedule = get_schedule(schedule_id)
+    form = AdminScheduleChangeForm(data=schedule)
+    form.master_id.choices = [(str(schedule.master_id),
+                               schedule.master_surname + ' ' + schedule.master_first_name)]
+    form.master_id.render_kw = {'readonly': ''}
 
     return render_template('schedule.html', form=form,
                            action=url_for('edit_schedule_post', schedule_id=schedule_id))
@@ -33,11 +29,11 @@ def edit_schedule_get(schedule_id):
 
 @app.route('/schedules/<int:schedule_id>', methods=['POST'])
 def edit_schedule_post(schedule_id):
+    schedule = get_schedule(schedule_id)
     form = AdminScheduleChangeForm()
-    form.master_id.choices = [('', 'Не обрано')] + \
-                             [(str(master['id']),
-                               master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])
-                              for master in get_masters()]
+    form.master_id.choices = [(str(schedule.master_id),
+                               schedule.master_surname + ' ' + schedule.master_first_name)]
+    form.master_id.render_kw = {'readonly': ''}
 
     if not form.validate_on_submit():
         return render_template('schedule.html', form=form,
