@@ -62,4 +62,4 @@ def delete_procedure(procedure_id: int):
                           procedure_id)
         return True, 'Успішно видалено процедуру'
     except IntegrityError:
-        return False, 'Процедура міститься у записах або є у списку улюблених'
+        return False, 'Процедура міститься у записах, списку улюблених або вміннях майстра'

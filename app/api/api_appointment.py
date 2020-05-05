@@ -78,4 +78,4 @@ def delete_appointment(appointment_id: int):
                           appointment_id)
         return True, 'Успішно видалено запис'
     except IntegrityError:
-        return False, ''
+        return False, 'Запис використовує фарби'

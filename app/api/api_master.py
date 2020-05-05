@@ -4,6 +4,30 @@ from app import db
 from app.models import Master
 
 
+def validate_is_hired(master: Master):
+    if master.is_hired:
+        return
+    if db.session.execute('SELECT * '
+                          'FROM Appointment '
+                          'WHERE master_id = :master_id AND '
+                          '      is_future_date_and_time(appoint_date, start_time);',
+                          {'master_id': master.id}).scalar() is not None:
+        raise AssertionError('Неможливо звільнити майстра, який має невиконані записи')
+
+
+def validate_even_schedule(master: Master):
+    if db.session.execute('SELECT * '
+                          'FROM Appointment INNER JOIN Master ON master_id = Master.id '
+                          'WHERE master_id = :master_id '
+                          '      AND '
+                          '      is_future_date_and_time(appoint_date, start_time) '
+                          '      AND'
+                          '      is_even_day(appoint_date) <> :even_schedule;',
+                          {'master_id': master.id,
+                           'even_schedule': bool(master.even_schedule)}).scalar() is not None:
+        raise AssertionError('Неможливо змінити графік майстра, існують невиконані записи за старим графіком')
+
+
 def get_masters():
     return db.engine.execute('SELECT Master.id, surname, first_name, second_name, is_male, '
                              '       phone, email, even_schedule, is_hired '
@@ -43,14 +67,22 @@ def get_master_favourite_clients_amount(master_id: int):
 
 def update_master(master: Master):
     try:
-        db.engine.execute('UPDATE Master '
-                          'SET even_schedule = %s,'
-                          '    is_hired = %s '
-                          'WHERE id = %s;',
-                          (bool(master.even_schedule), bool(master.is_hired), master.id))
+        db.session.execute('UPDATE Master '
+                           'SET even_schedule =:even_schedule,'
+                           '    is_hired = :is_hired '
+                           'WHERE id = :id;',
+                           {'even_schedule': bool(master.even_schedule),
+                            'is_hired': bool(master.is_hired),
+                            'id': master.id})
+        validate_is_hired(master)
+        validate_even_schedule(master)
+        db.session.commit()
         return True, 'Успішно оновлено майстра'
     except IntegrityError:
         return False, ''
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
 
 
 def update_master_procedures(master_id: int, procedures):
