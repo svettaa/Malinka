@@ -70,17 +70,14 @@ class AdminMasterProceduresForm(NoCsrfBaseForm):
                                         NumberRange(min=1, message='Тривалість має бути більше нуля')])
 
 
-class AdminEditMasterForm(BaseForm):
+class AdminMasterForm(BaseForm):
+    id = SelectField('Користувач', validators=[InputRequired('Виберіть користувача')],
+                     coerce=str)
     even_schedule = RadioField('Графік', validators=[InputRequired('Оберіть графік')],
                                choices=[(1, 'Парний'), (0, 'Непарний')], coerce=int)
     is_hired = RadioField('Статус', validators=[InputRequired('Оберіть статус')],
                           choices=[(1, 'Працює'), (0, 'Звільнено')], coerce=int)
     procedures = FieldList(FormField(AdminMasterProceduresForm))
-
-
-class AdminNewMasterForm(AdminEditMasterForm):
-    id = SelectField('Користувач', validators=[InputRequired('Виберіть користувача')],
-                     coerce=str)
 
 
 class AdminScheduleChangeForm(BaseForm):

@@ -17,57 +17,12 @@
         <form method="POST" action="{{ action }}">
             {{ form.csrf_token }}
 
-            {% if not new_master %}
-            <div class="form-group row">
-                <label for="masterSurname" class="col-lg-2 col-form-label" style="font-weight: bold">Прізвище</label>
-                <div class="col-lg-10">
-                    <input type="text" readonly id="masterSurname" class="form-control-plaintext" value="{{ master.surname }}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="masterName" class="col-lg-2 col-form-label" style="font-weight: bold">Ім'я</label>
-                <div class="col-lg-10">
-                    <input type="text" readonly id="masterName" class="form-control-plaintext" value="{{ master.first_name }}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="masterSecondName" class="col-lg-2 col-form-label" style="font-weight: bold">По-батькові</label>
-                <div class="col-lg-10">
-                    <input type="text" readonly id="masterSecondName" class="form-control-plaintext" value="{% if master.second_name %}{{ master.second_name }}{% endif %}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="masterIsMale" class="col-lg-2 col-form-label" style="font-weight: bold">Стать</label>
-                <div class="col-lg-10">
-                    <input type="text" readonly id="masterIsMale" class="form-control-plaintext" value="{% if master.is_male %}Чоловіча{% else %}Жіноча{% endif %}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="masterPhone" class="col-lg-2 col-form-label" style="font-weight: bold">Номер телефону</label>
-                <div class="col-lg-10">
-                    <input type="text" readonly id="masterPhone" class="form-control-plaintext" value="+38{{ master.phone }}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <label for="masterEmail" class="col-lg-2 col-form-label" style="font-weight: bold">Email </label>
-                <div class="col-lg-10">
-                    <input type="text" readonly id="masterEmail" class="form-control-plaintext" value="{% if master.email %}{{ master.email }}{% endif %}">
-                </div>
-            </div>
-
-            {% else %}
-
-            <!-- IF NEW MASTER -->
-
             <div class="form-group row">
                 {{ form.id.label(class="col-lg-2 col-form-label") }}
                 <div class="col-lg-10">
-                    {{ form.id(class="form-control", id="") }}
+                    {{ form.id(class="form-control") }}
                 </div>
             </div>
-
-
-            {% endif %}
 
             <div class="form-group row">
                 {{ form.even_schedule.label(class="col-lg-2 col-form-label") }}

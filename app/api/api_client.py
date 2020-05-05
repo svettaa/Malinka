@@ -10,6 +10,15 @@ def get_clients():
                              'FROM Client;').fetchall()
 
 
+def get_clients_no_masters():
+    return db.engine.execute('SELECT id, surname, first_name, second_name, is_male, '
+                             '       phone, email '
+                             'FROM Client '
+                             'WHERE NOT EXISTS (SELECT *'
+                             '                  FROM Master '
+                             '                  WHERE Master.id = Client.id);').fetchall()
+
+
 def get_client(client_id: int):
     return db.engine.execute('SELECT id, surname, first_name, second_name, is_male, '
                              '       phone, email '

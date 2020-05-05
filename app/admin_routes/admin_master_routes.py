@@ -2,9 +2,9 @@ from flask import render_template, request, redirect, url_for
 
 from app import app
 from app.message_codes import *
-from app.forms import AdminEditMasterForm, AdminNewMasterForm
+from app.forms import AdminMasterForm
 from app.api.api_master import *
-from app.api.api_client import get_clients
+from app.api.api_client import get_clients_no_masters
 
 
 def get_master_and_their_procedures(master_id):
@@ -32,7 +32,10 @@ def masters_get():
 @app.route('/masters/<int:master_id>', methods=['GET'])
 def edit_master_get(master_id):
     data = get_master_and_their_procedures(master_id)
-    form = AdminEditMasterForm(data=data)
+    form = AdminMasterForm(data=data)
+    form.id.choices = [(str(data['id']),
+                        data['surname'] + ' ' + data['first_name'] + ', +38' + data['phone'])]
+    form.id.render_kw = {'readonly': ''}
 
     return render_template('master.html', master=get_master(master_id), form=form,
                            new_master=False,
@@ -42,7 +45,11 @@ def edit_master_get(master_id):
 
 @app.route('/masters/<int:master_id>', methods=['POST'])
 def edit_master_post(master_id):
-    form = AdminEditMasterForm()
+    master = get_master(master_id)
+    form = AdminMasterForm()
+    form.id.choices = [(str(master['id']),
+                        master['surname'] + ' ' + master['first_name'] + ', +38' + master['phone'])]
+    form.id.render_kw = {'readonly': ''}
 
     if not form.validate_on_submit():
         return render_template('master.html', master=get_master(master_id), form=form,
@@ -79,10 +86,10 @@ def edit_master_post(master_id):
 
 @app.route('/masters/new', methods=['GET'])
 def new_master_get():
-    form = AdminNewMasterForm()
+    form = AdminMasterForm()
     form.id.choices = [('', 'Не обрано')] + \
                       [(str(user['id']), user['surname'] + ' ' + user['first_name'] + ', +38' + user['phone'])
-                       for user in get_clients()]
+                       for user in get_clients_no_masters()]
 
     return render_template('master.html', form=form, new_master=True,
                            action=url_for('new_master_post'))
@@ -90,10 +97,10 @@ def new_master_get():
 
 @app.route('/masters/new', methods=['POST'])
 def new_master_post():
-    form = AdminNewMasterForm()
+    form = AdminMasterForm()
     form.id.choices = [('', 'Не обрано')] + \
                       [(str(user['id']), user['surname'] + ' ' + user['first_name'] + ', +38' + user['phone'])
-                       for user in get_clients()]
+                       for user in get_clients_no_masters()]
 
     if not form.validate_on_submit():
         return render_template('master.html', form=form, new_master=True,
