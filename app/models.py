@@ -54,8 +54,8 @@ class Master(db.Model):
 class ScheduleChange(db.Model):
     __tablename__ = 'schedule_change'
     id = db.Column(db.Integer, primary_key=True)
-    change_start = db.Column(db.DateTime, nullable=False)
-    change_end = db.Column(db.DateTime, nullable=False)
+    change_start = db.Column(db.TIMESTAMP(timezone=True), nullable=False)
+    change_end = db.Column(db.TIMESTAMP(timezone=True), nullable=False)
     is_working = db.Column(db.Boolean)
 
     master_id = db.Column(
