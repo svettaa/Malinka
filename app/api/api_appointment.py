@@ -21,9 +21,13 @@ def get_appointments():
 def get_appointment(appointment_id: int):
     return db.engine.execute('SELECT  M.surname AS master_surname, '
                              '        M.first_name AS master_first_name, '
+                             '        M.id AS master_id, '
                              '        C.surname AS client_surname, '
                              '        C.first_name AS client_first_name, '
+                             '        C.phone AS client_phone, '
+                             '        C.id AS client_id, '
                              '        Procedure.name AS procedure_name, '
+                             '        Procedure.id AS procedure_id, '
                              '        status, appoint_date, start_time, end_time, '
                              '        price, preferences, Appointment.id,'
                              '        master_id, client_id, procedure_id '
@@ -36,6 +40,11 @@ def get_appointment(appointment_id: int):
 
 
 def update_appointment(appointment: Appointment):
+    original_appointment = get_appointment(appointment.id)
+    if int(appointment.master_id) != original_appointment.master_id:
+        return False, 'Не можна змінювати майстра у записі'
+    if int(appointment.client_id) != original_appointment.client_id:
+        return False, 'Не можна змінювати клієнта у записі'
     try:
         db.engine.execute('UPDATE Appointment '
                           'SET appoint_date = %s, '
