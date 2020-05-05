@@ -1,7 +1,7 @@
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.models import Appointment
+from app.api.asserts.asserts_appointment import *
 
 
 def get_appointments():
@@ -46,37 +46,60 @@ def update_appointment(appointment: Appointment):
     if int(appointment.client_id) != original_appointment.client_id:
         return False, 'Не можна змінювати клієнта у записі'
     try:
-        db.engine.execute('UPDATE Appointment '
-                          'SET appoint_date = %s, '
-                          '    start_time = %s, '
-                          '    end_time = %s, '
-                          '    preferences = %s,'
-                          '    status = %s, '
-                          '    price = %s, '
-                          '    client_id = %s, '
-                          '    master_id = %s, '
-                          '    procedure_id = %s '
-                          'WHERE id = %s;',
-                          (appointment.appoint_date, appointment.start_time, appointment.end_time,
-                           appointment.preferences, appointment.status, appointment.price,
-                           appointment.client_id, appointment.master_id, appointment.procedure_id,
-                           appointment.id))
+        db.session.execute('UPDATE Appointment '
+                           'SET appoint_date = :appoint_date, '
+                           '    start_time = :start_time, '
+                           '    end_time = :end_time, '
+                           '    preferences = :preferences,'
+                           '    status = :status, '
+                           '    price = :price, '
+                           '    client_id = :client_id, '
+                           '    master_id = :master_id, '
+                           '    procedure_id = :procedure_id '
+                           'WHERE id = :id;',
+                           {'appoint_date': appointment.appoint_date,
+                            'start_time': appointment.start_time,
+                            'end_time': appointment.end_time,
+                            'preferences': appointment.preferences,
+                            'status': appointment.status,
+                            'price': appointment.price,
+                            'client_id': appointment.client_id,
+                            'master_id': appointment.master_id,
+                            'procedure_id': appointment.procedure_id,
+                            'id': appointment.id})
+        assert_appointment_is_hired(appointment)
+        db.session.commit()
         return True, 'Успішно оновлено запис'
     except IntegrityError:
         return False, ''
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
 
 
 def add_appointment(appointment: Appointment):
     try:
-        db.engine.execute('INSERT INTO Appointment (appoint_date, start_time, end_time, preferences,'
-                          '                         status, price, client_id, master_id, procedure_id) '
-                          'VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);',
-                          (appointment.appoint_date, appointment.start_time, appointment.end_time,
-                           appointment.preferences, appointment.status, appointment.price,
-                           appointment.client_id, appointment.master_id, appointment.procedure_id))
+        db.session.execute('INSERT INTO Appointment (appoint_date, start_time, end_time, preferences,'
+                           '                         status, price, client_id, master_id, procedure_id) '
+                           'VALUES (:appoint_date, :start_time, :end_time, :preferences,'
+                           '        :status, :price, :client_id, :master_id, :procedure_id);',
+                           {'appoint_date': appointment.appoint_date,
+                            'start_time': appointment.start_time,
+                            'end_time': appointment.end_time,
+                            'preferences': appointment.preferences,
+                            'status': appointment.status,
+                            'price': appointment.price,
+                            'client_id': appointment.client_id,
+                            'master_id': appointment.master_id,
+                            'procedure_id': appointment.procedure_id})
+        assert_appointment_is_hired(appointment)
+        db.session.commit()
         return True, 'Успішно додано запис'
     except IntegrityError:
         return False, ''
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
 
 
 def delete_appointment(appointment_id: int):
