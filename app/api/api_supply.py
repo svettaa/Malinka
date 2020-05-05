@@ -13,13 +13,17 @@ def get_supplies():
 
 
 def get_supply(supply_id: int):
-    return db.engine.execute('SELECT id, paint_id, supply_date, amount '
-                             'FROM Paint_Supply '
-                             'WHERE id = %s;',
+    return db.engine.execute('SELECT Paint_Supply.id, paint_id, supply_date, amount, '
+                             '       code AS paint_code, '
+                             '       name AS paint_name '
+                             'FROM Paint_Supply INNER JOIN Paint ON paint_id = Paint.id '
+                             'WHERE Paint_Supply.id = %s;',
                              supply_id).fetchone()
 
 
 def update_supply(supply: PaintSupply):
+    if int(supply.paint_id) != get_supply(supply.id).paint_id:
+        return False, 'Не можна змінювати фарбу у поставках'
     try:
         old_amount = db.engine.execute('SELECT amount '
                                        'FROM Paint_Supply '

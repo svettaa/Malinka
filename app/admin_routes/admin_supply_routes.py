@@ -17,9 +17,11 @@ def supplies_get():
 
 @app.route('/supplies/<int:supply_id>', methods=['GET'])
 def edit_supply_get(supply_id):
-    form = AdminSupplyForm(data=get_supply(supply_id))
-    form.paint_id.choices = [('', 'Не обрано')] + \
-                            [(str(paint['id']), paint['code'] + ' - ' + paint['name']) for paint in get_paints()]
+    supply = get_supply(supply_id)
+    form = AdminSupplyForm(data=supply)
+    form.paint_id.choices = [(str(supply.paint_id),
+                             supply.paint_code + ' - ' + supply.paint_name)]
+    form.paint_id.render_kw = {'readonly': ''}
 
     return render_template('supply.html', form=form,
                            action=url_for('edit_supply_post', supply_id=supply_id))
@@ -27,9 +29,11 @@ def edit_supply_get(supply_id):
 
 @app.route('/supplies/<int:supply_id>', methods=['POST'])
 def edit_supply_post(supply_id):
+    supply = get_supply(supply_id)
     form = AdminSupplyForm()
-    form.paint_id.choices = [('', 'Не обрано')] + \
-                            [(str(paint['id']), paint['code'] + ' - ' + paint['name']) for paint in get_paints()]
+    form.paint_id.choices = [(str(supply.paint_id),
+                             supply.paint_code + ' - ' + supply.paint_name)]
+    form.paint_id.render_kw = {'readonly': ''}
 
     if not form.validate_on_submit():
         return render_template('supply.html', form=form,
