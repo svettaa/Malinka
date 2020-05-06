@@ -25,6 +25,8 @@ def get_schedule(schedule_id: int):
 
 
 def update_schedule(schedule: ScheduleChange):
+    if schedule.change_start >= schedule.change_end:
+        return False, 'Початкова дата має бути меньшою за кінцеву'
     if int(schedule.master_id) != get_schedule(schedule.id).master_id:
         return False, 'Не можна змінювати майстра у зміні графіку'
     try:
@@ -50,6 +52,8 @@ def update_schedule(schedule: ScheduleChange):
 
 
 def add_schedule(schedule: ScheduleChange):
+    if schedule.change_start >= schedule.change_end:
+        return False, 'Початкова дата має бути меньшою за кінцеву'
     try:
         db.session.execute('INSERT INTO Schedule_Change (change_start, change_end, is_working, master_id) '
                            'VALUES (:change_start, :change_end, :is_working, :master_id);',
