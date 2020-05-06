@@ -20,7 +20,7 @@
         <table class="table table-bordered table-responsive-lg entriesList">
             <thead>
             <tr>
-                <th style="width: 70px" scope="col"></th>
+                <th style="width: 40px" scope="col"></th>
                 <th scope="col">Назва категорії</th>
             </tr>
             </thead>
@@ -29,7 +29,7 @@
             {% for category in categories %}
             <tr>
                 <td>
-                    <div style="width: 50px" class="d-flex justify-content-between">
+                    <div style="width: 60px" class="d-flex justify-content-between">
                         <a class="btnEdit" href="{{ url_for('edit_category_get', category_id=category.id) }}">
                             <span class="fa fa-edit"></span>
                         </a>

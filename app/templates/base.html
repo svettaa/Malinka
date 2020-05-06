@@ -11,9 +11,12 @@
 <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css"/>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.css"/>
+
+
 {% endblock %}
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.css"/>
+
+
 <title>{% block title %}Malinka{% endblock %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 {% endblock %}
@@ -150,7 +153,7 @@
 {% endblock %}
 
 {% block footer %}
-<footer class="footer font-small bg-light p-4">
+<footer class="footer font-small bg-light p-4 mt-5">
 
     <div class="footer-copyright text-center">© {{ now.year }} Copyright:
         <a href="#"> Malinka</a>
@@ -166,7 +169,9 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.0/moment-with-locales.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
 <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"></script>
+
 <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
 {% endblock %}
 

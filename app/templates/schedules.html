@@ -19,7 +19,7 @@
         <table class="table table-bordered table-responsive-lg entriesList">
             <thead>
             <tr>
-                <th style="width: 70px" scope="col"></th>
+                <th style="width: 40px" scope="col"></th>
                 <th scope="col">Майстер</th>
                 <th scope="col">Початок</th>
                 <th scope="col">Кінець</th>
@@ -31,7 +31,7 @@
             {% for schedule in schedules %}
             <tr>
                 <td>
-                    <div style="width: 50px" class="d-flex justify-content-between">
+                    <div style="width: 60px" class="d-flex justify-content-between">
                         <a class="btnEdit" href="{{ url_for('edit_schedule_post', schedule_id=schedule.id) }}">
                             <span class="fa fa-edit"></span>
                         </a>

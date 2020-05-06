@@ -19,7 +19,7 @@
         <table class="table table-bordered table-responsive-lg entriesList">
             <thead>
             <tr>
-                <th style="width: 70px" scope="col"></th>
+                <th style="width: 40px" scope="col"></th>
                 <th style="width: 15%" scope="col">Дата поставки</th>
                 <th scope="col">Код фарби</th>
                 <th scope="col">Назва фарби</th>
@@ -31,7 +31,7 @@
             {% for supply in supplies %}
             <tr>
                 <td>
-                    <div style="width: 50px" class="d-flex justify-content-between">
+                    <div style="width: 60px" class="d-flex justify-content-between">
                     <a class="btnEdit" href="{{ url_for('edit_supply_post', supply_id=supply.id) }}">
                         <span class="fa fa-edit"></span>
                     </a>
