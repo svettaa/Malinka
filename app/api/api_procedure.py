@@ -28,6 +28,9 @@ def get_procedure_favourite_clients_amount(procedure_id: int):
 
 
 def update_procedure(procedure: Procedure):
+    if procedure.price_max is not None and \
+            procedure.price_max <= procedure.price_min:
+        return False, 'Мінімальна ціна має бути меншою за максимальну'
     try:
         db.engine.execute('UPDATE Procedure '
                           'SET category_id = %s,'
@@ -44,6 +47,9 @@ def update_procedure(procedure: Procedure):
 
 
 def add_procedure(procedure: Procedure):
+    if procedure.price_max is not None and \
+            procedure.price_max <= procedure.price_min:
+        return False, 'Мінімальна ціна має бути меншою за максимальну'
     try:
         db.engine.execute('INSERT INTO Procedure (category_id, name, price_min, price_max, info) '
                           'VALUES (%s, %s, %s, %s, %s);',
