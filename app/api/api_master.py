@@ -62,25 +62,35 @@ def update_master(master: Master):
 
 
 def update_master_procedures(master_id: int, procedures):
-    # delete old
-    try:
-        db.engine.execute('DELETE FROM Master_Procedure '
-                          'WHERE master_id = %s;',
-                          master_id)
-    except IntegrityError:
-        return False, ''
-
-    # insert new
     for procedure in procedures:
-        if procedure.duration.data is not None:
-            try:
-                db.engine.execute('INSERT INTO Master_Procedure '
-                                  '            (master_id, procedure_id, duration) '
-                                  'VALUES (%s, %s, %s);',
-                                  (master_id, procedure.procedure_id.data, procedure.duration.data))
-            except IntegrityError:
-                return False, ''
-    return True, 'Успішно змінено процедури майстра'
+        if procedure.duration.data is not None and procedure.duration.data <= 0:
+            return False, 'Тривалість виконання має бути більше нуля'
+
+    try:
+        # delete old
+        db.session.execute('DELETE FROM Master_Procedure '
+                           'WHERE master_id = :master_id;',
+                           {'master_id': master_id})
+
+        # insert new
+        for procedure in procedures:
+            if procedure.duration.data is not None:
+                db.session.execute('INSERT INTO Master_Procedure '
+                                   '            (master_id, procedure_id, duration) '
+                                   'VALUES (:master_id, :procedure_id, :duration);',
+                                   {'master_id': master_id,
+                                    'procedure_id': procedure.procedure_id.data,
+                                    'duration': procedure.duration.data})
+
+        assert_master_procedures(get_master(master_id))
+        db.session.commit()
+        return True, 'Успішно змінено процедури майстра'
+    except IntegrityError:
+        db.session.rollback()
+        return False, 'Некоректний номер процедури'
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
 
 
 def add_master(master: Master):

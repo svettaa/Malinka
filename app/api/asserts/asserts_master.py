@@ -31,3 +31,16 @@ def assert_master_even_schedule_or_working(master: Master):
         if even_day != master.even_schedule:
             raise AssertionError('Неможливо змінити графік майстра, існують невиконані записи за старим графіком '
                                  '(можна додати понаднормові години)')
+
+
+def assert_master_procedures(master: Master):
+    if db.session.execute('SELECT COUNT(*) '
+                          'FROM Appointment '
+                          'WHERE master_id = :master_id AND '
+                          '      appoint_start > now() AND '
+                          '      NOT EXISTS (SELECT * '
+                          '                  FROM Master_Procedure '
+                          '                  WHERE Master_Procedure.master_id = Appointment.master_id AND'
+                          '                        Master_Procedure.procedure_id = Appointment.procedure_id)',
+                          {'master_id': master.id}).scalar() > 0:
+        raise AssertionError('У майстра є невиконані записи з процедурою, яку намагаєтесь видалити')

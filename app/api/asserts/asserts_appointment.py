@@ -73,3 +73,17 @@ def assert_appointment_even_schedule_or_working(appointment: Appointment):
                            'appoint_start': appointment.appoint_start,
                            'appoint_end': appointment.appoint_end}).scalar() == 0:
         raise AssertionError('Майстер не працює у цей час')
+
+
+def assert_appointment_master_does_procedure(appointment: Appointment):
+    if not is_future_appointment(appointment):
+        return
+    if db.session.execute("""     SELECT COUNT(*)
+                                  FROM Master_Procedure
+                                  WHERE master_id = :master_id 
+                                        AND
+                                        procedure_id = :procedure_id;
+                              """,
+                          {'master_id': appointment.master_id,
+                           'procedure_id': appointment.procedure_id}).scalar() == 0:
+        raise AssertionError('Даний майстер не вміє виконувати дану процедуру')

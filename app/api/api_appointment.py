@@ -53,6 +53,7 @@ def update_appointment(appointment: Appointment):
     if int(appointment.client_id) != original_appointment.client_id:
         return False, 'Не можна змінювати клієнта у записі'
     try:
+        assert_appointment_master_does_procedure(appointment)
         db.session.execute('UPDATE Appointment '
                            'SET appoint_start = :appoint_start, '
                            '    appoint_end = :appoint_end, '
@@ -96,6 +97,7 @@ def add_appointment(appointment: Appointment):
     if appointment.master_id == appointment.client_id:
         return False, 'Неможливо записати майстра до себе'
     try:
+        assert_appointment_master_does_procedure(appointment)
         db.session.execute('INSERT INTO Appointment (appoint_start, appoint_end, preferences,'
                            '                         status, price, client_id, master_id, procedure_id) '
                            'VALUES (:appoint_start, :appoint_end, :preferences,'
