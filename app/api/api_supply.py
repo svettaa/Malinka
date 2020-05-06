@@ -22,6 +22,8 @@ def get_supply(supply_id: int):
 
 
 def update_supply(supply: PaintSupply):
+    if supply.amount <= 0:
+        return False, 'Поставка має бути більше нуля'
     if int(supply.paint_id) != get_supply(supply.id).paint_id:
         return False, 'Не можна змінювати фарбу у поставках'
     try:
@@ -50,6 +52,8 @@ def update_supply(supply: PaintSupply):
 
 
 def add_supply(supply: PaintSupply):
+    if supply.amount <= 0:
+        return False, 'Поставка має бути більше нуля'
     try:
         db.engine.execute('INSERT INTO Paint_Supply (paint_id, amount, supply_date) '
                           'VALUES (%s, %s, %s);',
