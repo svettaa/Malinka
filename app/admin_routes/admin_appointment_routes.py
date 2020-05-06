@@ -1,13 +1,12 @@
 from flask import render_template, request, redirect, url_for
 
 from app import app
-from app.message_codes import *
-from app.forms import AdminAppointmentForm
 from app.api.api_appointment import *
-from app.api.api_paint import get_paints
-from app.api.api_master import get_masters
 from app.api.api_client import get_clients
+from app.api.api_master import get_masters
 from app.api.api_procedure import get_procedures
+from app.forms import AdminAppointmentForm
+from app.message_codes import *
 
 
 def fill_new_form_choices(form):
@@ -32,7 +31,6 @@ def fill_edit_form_choices(form, appointment):
                                 [(str(procedure['id']), procedure['procedure_name'])
                                  for procedure in get_procedures()]
     form.master_id.render_kw = form.client_id.render_kw = {'readonly': ''}
-
 
 
 @app.route('/appointments')

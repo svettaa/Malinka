@@ -46,11 +46,13 @@
                 </td>
                 <td>{% if appointment.status %}+{% else %}-{% endif %}</td>
                 <td>
-                    <div style="display:none;">{{ appointment.appoint_date.strftime('%Y\%m\%d') }}</div>
-                    {{ appointment.appoint_date.strftime('%d.%m.%Y') }}
+                    <div style="display:none;">
+                        {{ appointment.appoint_start.strftime('%Y\%m\%d') }}
+                    </div>
+                    {{ appointment.appoint_start.strftime('%d.%m.%Y') }}
                 </td>
-                <td>{{ appointment.start_time.strftime('%H:%M') }}</td>
-                <td>{{ appointment.end_time.strftime('%H:%M') }}</td>
+                <td>{{ appointment.appoint_start.strftime('%H:%M') }}</td>
+                <td>{{ appointment.appoint_end.strftime('%H:%M') }}</td>
                 <td>{{ appointment.master_surname }} {{ appointment.master_first_name }}</td>
                 <td>{{ appointment.procedure_name }}</td>
                 <td>{{ appointment.client_surname }} {{ appointment.client_first_name }}</td>

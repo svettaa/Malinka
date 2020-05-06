@@ -36,13 +36,14 @@
                 </div>
             </div>
 
+
             <div class="form-group row">
-                {{ form.appoint_date.label(class="col-md-2 col-form-label") }}
+                {{ form.appoint_start.label(class="col-md-2 col-form-label") }}
                 <div class="col-md-3">
                     <div class="form-group">
-                        <div class="input-group date" id="admin_appointment_date_datetimepicker" data-target-input="nearest">
-                            {{ form.appoint_date(class="form-control datetimepicker-input") }}
-                            <div class="input-group-append" data-target="#admin_appointment_date_datetimepicker"
+                        <div class="input-group date" id="admin_appointment_start_datetimepicker" data-target-input="nearest">
+                            {{ form.appoint_start(class="form-control datetimepicker-input") }}
+                            <div class="input-group-append" data-target="#admin_appointment_start_datetimepicker"
                                  data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -51,35 +52,22 @@
                 </div>
             </div>
 
+
             <div class="form-group row">
-                {{ form.start_time.label(class="col-md-2 col-form-label") }}
+                {{ form.appoint_end.label(class="col-md-2 col-form-label") }}
                 <div class="col-md-3">
                     <div class="form-group">
-                        <div class="input-group date" id="admin_appointment_start_datetimepicker" data-target-input="nearest">
-                            {{ form.start_time(class="form-control datetimepicker-input") }}
-                            <div class="input-group-append" data-target="#admin_appointment_start_datetimepicker"
+                        <div class="input-group date" id="admin_appointment_end_datetimepicker" data-target-input="nearest">
+                            {{ form.appoint_end(class="form-control datetimepicker-input") }}
+                            <div class="input-group-append" data-target="#admin_appointment_end_datetimepicker"
                                  data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-group row">
-                {{ form.end_time.label(class="col-md-2 col-form-label") }}
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <div class="input-group date" id="admin_appointment_end_datetimepicker" data-target-input="nearest">
-                            {{ form.end_time(class="form-control datetimepicker-input") }}
-                            <div class="input-group-append" data-target="#admin_appointment_end_datetimepicker"
-                                 data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-clock"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="form-group row">
                 {{ form.preferences.label(class="col-md-2 col-form-label") }}
                 <div class="col-md-10">

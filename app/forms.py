@@ -5,7 +5,12 @@ from wtforms.validators import InputRequired, Optional, NumberRange, Regexp
 from wtforms.fields.html5 import TelField, EmailField, IntegerField
 
 
+# from flask_wtf.form import _Auto
+
+
 class BaseForm(FlaskForm):
+    # def __init__(self, formdata=_Auto, **kwargs):
+    #     super(BaseForm, self).__init__(formdata, **kwargs)
     pass
 
 
@@ -93,16 +98,30 @@ class AdminScheduleChangeForm(BaseForm):
                             choices=[(1, 'Так'), (0, 'Ні')], coerce=int)
 
 
+# class SeparateDateTimeForm(BaseForm):
+#     date = DateTimeField('Дата', validators=[InputRequired('Введіть дату')],
+#                          # render_kw={'data-target': '#admin_appointment_date_datetimepicker'},
+#                          format='%d.%m.%Y')
+#     # time = DateTimeField('Час', validators=[InputRequired('Введіть початок запису')],
+#     #                      # render_kw={'data-target': '#admin_appointment_start_datetimepicker'},
+#     #                      format='%H:%M')
+#
+#     def __init__(self, formdata=_Auto, **kwargs):
+#         print(kwargs)
+#         kwargs['data'] = {'date': {'obj': kwargs['obj'],
+#                                    'prefix': kwargs['prefix']}}
+#         del kwargs['obj']
+#         del kwargs['prefix']
+#         super(SeparateDateTimeForm, self).__init__(formdata, **kwargs)
+
+
 class AdminAppointmentForm(BaseForm):
-    appoint_date = DateTimeField('Дата', validators=[InputRequired('Введіть дату')],
-                                 render_kw={'data-target': '#admin_appointment_date_datetimepicker'},
-                                 format='%d.%m.%Y')
-    start_time = DateTimeField('Початок', validators=[InputRequired('Введіть початок запису')],
-                               render_kw={'data-target': '#admin_appointment_start_datetimepicker'},
-                               format='%H:%M')
-    end_time = DateTimeField('Кінець', validators=[InputRequired('Введіть кінець запису')],
-                             render_kw={'data-target': '#admin_appointment_end_datetimepicker'},
-                             format='%H:%M')
+    appoint_start = DateTimeField('Початок', validators=[InputRequired('Введіть початок запису')],
+                                  render_kw={'data-target': '#admin_appointment_start_datetimepicker'},
+                                  format='%d.%m.%Y %H:%M')
+    appoint_end = DateTimeField('Кінець', validators=[InputRequired('Введіть кінець запису')],
+                                render_kw={'data-target': '#admin_appointment_end_datetimepicker'},
+                                format='%d.%m.%Y %H:%M')
     preferences = HiddenField('Побажання')
     status = BooleanField('Підтверджено')
     price = IntegerField('Ціна',
@@ -111,3 +130,9 @@ class AdminAppointmentForm(BaseForm):
     master_id = SelectField('Майстер', validators=[InputRequired('Виберіть майстра')], coerce=str)
     client_id = SelectField('Клієнт', validators=[InputRequired('Виберіть клієнта')], coerce=str)
     procedure_id = SelectField('Процедура', validators=[InputRequired('Виберіть процедуру')], coerce=str)
+
+    # def __init__(self, formdata=_Auto, **kwargs):
+    #     print(kwargs)
+    #     # kwargs['4'] = 5
+    #     # kwargs['data']['date'] = kwargs['obj']
+    #     super(AdminAppointmentForm, self).__init__(formdata, **kwargs)

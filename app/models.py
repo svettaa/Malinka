@@ -117,9 +117,8 @@ class Procedure(db.Model):
 class Appointment(db.Model):
     __tablename__ = 'appointment'
     id = db.Column(db.Integer, primary_key=True)
-    appoint_date = db.Column(db.Date, nullable=False)
-    start_time = db.Column(db.Time, nullable=False)
-    end_time = db.Column(db.Time, nullable=False)
+    appoint_start = db.Column(db.TIMESTAMP(timezone=True), nullable=False)
+    appoint_end = db.Column(db.TIMESTAMP(timezone=True), nullable=False)
     preferences = db.Column(db.String(300))
     status = db.Column(db.Boolean, nullable=False)
     price = db.Column(db.Numeric(precision=14, scale=2), nullable=False)
@@ -141,8 +140,8 @@ class Appointment(db.Model):
         "AppointmentPaint", back_populates="appointment")
 
     __table_args__ = (
-        db.UniqueConstraint('start_time', 'client_id', name='unique_client_time'),
-        db.UniqueConstraint('start_time', 'master_id', name='unique_master_time')
+        db.UniqueConstraint('appoint_start', 'client_id', name='unique_client_time'),
+        db.UniqueConstraint('appoint_start', 'master_id', name='unique_master_time')
     )
 
     def __repr__(self):

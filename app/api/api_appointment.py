@@ -10,12 +10,12 @@ def get_appointments():
                              '        C.surname AS client_surname, '
                              '        C.first_name AS client_first_name, '
                              '        Procedure.name AS procedure_name, '
-                             '        status, appoint_date, start_time, end_time, '
+                             '        status, appoint_start, appoint_end, '
                              '        price, preferences, Appointment.id '
                              'FROM ((Appointment INNER JOIN Client M ON Appointment.master_id = M.id)'
                              '     INNER JOIN Client C ON Appointment.client_id = C.id)'
                              '     INNER JOIN Procedure ON Appointment.procedure_id = Procedure.id '
-                             'ORDER BY appoint_date').fetchall()
+                             'ORDER BY appoint_start').fetchall()
 
 
 def get_appointment(appointment_id: int):
@@ -28,14 +28,14 @@ def get_appointment(appointment_id: int):
                              '        C.id AS client_id, '
                              '        Procedure.name AS procedure_name, '
                              '        Procedure.id AS procedure_id, '
-                             '        status, appoint_date, start_time, end_time, '
+                             '        status, appoint_start, appoint_end, '
                              '        price, preferences, Appointment.id,'
                              '        master_id, client_id, procedure_id '
                              'FROM ((Appointment INNER JOIN Client M ON Appointment.master_id = M.id)'
                              '     INNER JOIN Client C ON Appointment.client_id = C.id)'
                              '     INNER JOIN Procedure ON Appointment.procedure_id = Procedure.id '
                              'WHERE Appointment.id = %s '
-                             'ORDER BY appoint_date;',
+                             'ORDER BY appoint_start;',
                              appointment_id).fetchone()
 
 
@@ -47,9 +47,8 @@ def update_appointment(appointment: Appointment):
         return False, 'Не можна змінювати клієнта у записі'
     try:
         db.session.execute('UPDATE Appointment '
-                           'SET appoint_date = :appoint_date, '
-                           '    start_time = :start_time, '
-                           '    end_time = :end_time, '
+                           'SET appoint_start = :appoint_start, '
+                           '    appoint_end = :appoint_end, '
                            '    preferences = :preferences,'
                            '    status = :status, '
                            '    price = :price, '
@@ -57,9 +56,8 @@ def update_appointment(appointment: Appointment):
                            '    master_id = :master_id, '
                            '    procedure_id = :procedure_id '
                            'WHERE id = :id;',
-                           {'appoint_date': appointment.appoint_date,
-                            'start_time': appointment.start_time,
-                            'end_time': appointment.end_time,
+                           {'appoint_start': appointment.appoint_start,
+                            'appoint_end': appointment.appoint_end,
                             'preferences': appointment.preferences,
                             'status': appointment.status,
                             'price': appointment.price,
@@ -81,13 +79,12 @@ def add_appointment(appointment: Appointment):
     if appointment.master_id == appointment.client_id:
         return False, 'Неможливо записати майстра до себе'
     try:
-        db.session.execute('INSERT INTO Appointment (appoint_date, start_time, end_time, preferences,'
+        db.session.execute('INSERT INTO Appointment (appoint_start, appoint_end, preferences,'
                            '                         status, price, client_id, master_id, procedure_id) '
-                           'VALUES (:appoint_date, :start_time, :end_time, :preferences,'
+                           'VALUES (:appoint_start, :appoint_end, :preferences,'
                            '        :status, :price, :client_id, :master_id, :procedure_id);',
-                           {'appoint_date': appointment.appoint_date,
-                            'start_time': appointment.start_time,
-                            'end_time': appointment.end_time,
+                           {'appoint_start': appointment.appoint_start,
+                            'appoint_end': appointment.appoint_end,
                             'preferences': appointment.preferences,
                             'status': appointment.status,
                             'price': appointment.price,
