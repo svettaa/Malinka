@@ -9,6 +9,17 @@ def get_paints():
                              'FROM Paint;').fetchall()
 
 
+def get_spare_appointment_paints(appointment_id: int):
+    return db.engine.execute('SELECT id, code, name, left_ml '
+                             'FROM Paint '
+                             'WHERE NOT EXISTS '
+                             '      (SELECT * '
+                             '       FROM Appointment_Paint '
+                             '       WHERE appointment_id = %s AND '
+                             '             paint_id = id);',
+                             appointment_id).fetchall()
+
+
 def get_paint(paint_id: int):
     return db.engine.execute('SELECT id, code, name, left_ml '
                              'FROM Paint '

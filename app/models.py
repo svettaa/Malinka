@@ -145,7 +145,7 @@ class Appointment(db.Model):
     )
 
     def __repr__(self):
-        return f'{self.start_time} - {self.master} - {self.procedure} - {self.client}'
+        return f'{self.appoint_start} - {self.master} - {self.procedure} - {self.client}'
 
 
 class Paint(db.Model):

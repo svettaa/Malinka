@@ -5,6 +5,7 @@ from app.api.api_appointment import *
 from app.api.api_client import get_clients
 from app.api.api_master import get_masters
 from app.api.api_procedure import get_procedures
+from app.api.api_appointment_paint import get_appointment_paints
 from app.forms import AdminAppointmentForm
 from app.message_codes import *
 
@@ -46,7 +47,8 @@ def edit_appointment_get(appointment_id):
     form = AdminAppointmentForm(data=appointment)
     fill_edit_form_choices(form, appointment)
 
-    return render_template('appointment.html', form=form,
+    return render_template('appointment.html', form=form, appointment_id=appointment_id,
+                           paints=get_appointment_paints(appointment_id),
                            action=url_for('edit_appointment_post', appointment_id=appointment_id))
 
 
@@ -56,7 +58,8 @@ def edit_appointment_post(appointment_id):
     fill_edit_form_choices(form, get_appointment(appointment_id))
 
     if not form.validate_on_submit():
-        return render_template('appointment.html', form=form,
+        return render_template('appointment.html', form=form, appointment_id=appointment_id,
+                               paints=get_appointment_paints(appointment_id),
                                action=url_for('edit_appointment_post', appointment_id=appointment_id))
 
     appointment = Appointment(id=appointment_id)
@@ -71,6 +74,7 @@ def edit_appointment_post(appointment_id):
         return redirect(url_for('appointments_get', success=Success.UPDATED_APPOINTMENT.value))
     else:
         return render_template('appointment.html', form=form,
+                               paints=get_appointment_paints(appointment_id),
                                action=url_for('edit_appointment_post', appointment_id=appointment_id),
                                error=message)
 

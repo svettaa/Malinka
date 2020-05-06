@@ -6,3 +6,4 @@ from app.api.api_client import *
 from app.api.api_master import *
 from app.api.api_schedule import *
 from app.api.api_appointment import *
+from app.api.api_appointment_paint import *

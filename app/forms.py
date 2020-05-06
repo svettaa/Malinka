@@ -115,6 +115,15 @@ class AdminScheduleChangeForm(BaseForm):
 #         super(SeparateDateTimeForm, self).__init__(formdata, **kwargs)
 
 
+class AdminAppointmentPaintForm(BaseForm):
+    paint_id = SelectField('Фарба', validators=[InputRequired('Виберіть фарбу')],
+                           coerce=str)
+    volume_ml = IntegerField('Кількість, мл',
+                             default=20,
+                             validators=[InputRequired('Введіть кількість фарби'),
+                                         NumberRange(min=1, message='Кількість має бути більше нуля')])
+
+
 class AdminAppointmentForm(BaseForm):
     appoint_start = DateTimeField('Початок', validators=[InputRequired('Введіть початок запису')],
                                   render_kw={'data-target': '#admin_appointment_start_datetimepicker'},

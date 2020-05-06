@@ -41,7 +41,8 @@
                 {{ form.appoint_start.label(class="col-md-2 col-form-label") }}
                 <div class="col-md-3">
                     <div class="form-group">
-                        <div class="input-group date" id="admin_appointment_start_datetimepicker" data-target-input="nearest">
+                        <div class="input-group date" id="admin_appointment_start_datetimepicker"
+                             data-target-input="nearest">
                             {{ form.appoint_start(class="form-control datetimepicker-input") }}
                             <div class="input-group-append" data-target="#admin_appointment_start_datetimepicker"
                                  data-toggle="datetimepicker">
@@ -57,7 +58,8 @@
                 {{ form.appoint_end.label(class="col-md-2 col-form-label") }}
                 <div class="col-md-3">
                     <div class="form-group">
-                        <div class="input-group date" id="admin_appointment_end_datetimepicker" data-target-input="nearest">
+                        <div class="input-group date" id="admin_appointment_end_datetimepicker"
+                             data-target-input="nearest">
                             {{ form.appoint_end(class="form-control datetimepicker-input") }}
                             <div class="input-group-append" data-target="#admin_appointment_end_datetimepicker"
                                  data-toggle="datetimepicker">
@@ -95,6 +97,53 @@
                     </a>
                 </div>
             </div>
+
+            {% if appointment_id %}
+            <h4>Фарби</h4>
+            {% if paints %}
+            <table class="table table-bordered table-responsive-lg">
+                <thead>
+                <tr>
+                    <th style="width: 70px" scope="col"></th>
+                    <th scope="col">Код</th>
+                    <th scope="col">Назва</th>
+                    <th scope="col">Кількість, мл</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for paint in paints %}
+                <tr>
+                    <td>
+                        <div style="width: 50px" class="d-flex justify-content-between">
+                            <a class="btnEdit"
+                               href="{{ url_for('edit_appointment_paint_get',
+                                                 appointment_id=appointment_id, paint_id=paint.paint_id) }}">
+                                <span class="fa fa-edit"></span>
+                            </a>
+                            <a href="{{ url_for('delete_appointment_paint_get',
+                                                appointment_id=appointment_id, paint_id=paint.paint_id) }}">
+                                <span class="fa fa-trash"></span>
+                            </a>
+                        </div>
+                    </td>
+                    <td>{{ paint.paint_code }}</td>
+                    <td>{{ paint.paint_name }}</td>
+                    <td>{{ paint.volume_ml }}</td>
+                </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+            {% endif %}
+            <div class="row">
+                <div class="col-md-10 offset-sm-1">
+                    <a href="{{ url_for('new_appointment_paint_get', appointment_id=appointment_id) }}">
+                        <button type="button" class="btn btn-primary">Додати</button>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         </form>
     </div>
 </div>
