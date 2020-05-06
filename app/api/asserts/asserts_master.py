@@ -13,15 +13,21 @@ def assert_master_is_hired(master: Master):
         raise AssertionError('Неможливо звільнити майстра, який має невиконані записи')
 
 
-def assert_master_even_schedule(master: Master):
-    pass
-    # if db.session.execute('SELECT COUNT(*) '
-    #                       'FROM Appointment INNER JOIN Master ON master_id = Master.id '
-    #                       'WHERE master_id = :master_id '
-    #                       '      AND '
-    #                       '      is_future_date_and_time(appoint_date, start_time) '
-    #                       '      AND'
-    #                       '      is_even_day(appoint_date) <> :even_schedule;',
-    #                       {'master_id': master.id,
-    #                        'even_schedule': bool(master.even_schedule)}).scalar() > 0:
-    #     raise AssertionError('Неможливо змінити графік майстра, існують невиконані записи за старим графіком')
+def assert_master_even_schedule_or_working(master: Master):
+    future_dates = db.session.execute('SELECT appoint_start '
+                                      'FROM Appointment '
+                                      'WHERE master_id = :master_id AND '
+                                      '      appoint_start > now() AND '
+                                      '      NOT EXISTS (SELECT * '
+                                      '                  FROM Schedule_Change '
+                                      '                  WHERE Schedule_Change.master_id = Appointment.master_id '
+                                      '                        AND is_working = True AND '
+                                      '                        change_start <= appoint_start AND '
+                                      '                        change_end >= appoint_end);',
+                                      {'master_id': master.id}).fetchall()
+    for future_date in future_dates:
+        day = future_date.appoint_start.day
+        even_day = (day % 2 == 0)
+        if even_day != master.even_schedule:
+            raise AssertionError('Неможливо змінити графік майстра, існують невиконані записи за старим графіком '
+                                 '(можна додати понаднормові години)')

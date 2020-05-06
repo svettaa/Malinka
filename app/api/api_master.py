@@ -51,7 +51,7 @@ def update_master(master: Master):
                             'is_hired': bool(master.is_hired),
                             'id': master.id})
         assert_master_is_hired(master)
-        assert_master_even_schedule(master)
+        assert_master_even_schedule_or_working(master)
         db.session.commit()
         return True, 'Успішно оновлено майстра'
     except IntegrityError:

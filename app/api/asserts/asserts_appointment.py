@@ -49,3 +49,27 @@ def assert_appointment_overlaps_client(appointment: Appointment):
                            'appoint_start': appointment.appoint_start,
                            'appoint_end': appointment.appoint_end}).scalar() > 1:
         raise AssertionError('Даний запис перетинається з іншими записами клієнта')
+
+
+def assert_appointment_even_schedule_or_working(appointment: Appointment):
+    if not is_future_appointment(appointment):
+        return
+    day = appointment.appoint_start.day
+    even_day = (day % 2 == 0)
+    master_even_schedule = db.session.execute('SELECT even_schedule '
+                                              'FROM Master '
+                                              'WHERE id = :master_id;',
+                                              {'master_id': appointment.master_id}).scalar()
+    if even_day == master_even_schedule:
+        return
+    # not master's schedule, looking for working changes
+    if db.session.execute('SELECT COUNT(*) '
+                          'FROM Schedule_Change '
+                          'WHERE Schedule_Change.master_id = :master_id '
+                          '      AND is_working = True AND '
+                          '      change_start <= :appoint_start AND '
+                          '      change_end >= :appoint_end;',
+                          {'master_id': appointment.master_id,
+                           'appoint_start': appointment.appoint_start,
+                           'appoint_end': appointment.appoint_end}).scalar() == 0:
+        raise AssertionError('Майстер не працює у цей час')
