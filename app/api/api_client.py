@@ -1,4 +1,4 @@
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 
 from app import db
 from app.models import Client
@@ -59,6 +59,9 @@ def update_client(client: Client):
         return True, 'Успішно оновлено користувача'
     except IntegrityError:
         return False, 'Користувач з таким телефоном вже існує'
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def add_client(client: Client):
@@ -71,6 +74,9 @@ def add_client(client: Client):
         return True, 'Успішно додано клієнта'
     except IntegrityError:
         return False, 'Користувач з таким телефоном вже існує'
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def delete_client(client_id: int):

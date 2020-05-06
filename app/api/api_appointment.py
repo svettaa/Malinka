@@ -1,4 +1,4 @@
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 
 from app import db, app
 from app.api.asserts.asserts_appointment import *
@@ -85,6 +85,9 @@ def update_appointment(appointment: Appointment):
     except AssertionError as e:
         db.session.rollback()
         return False, e
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def add_appointment(appointment: Appointment):
@@ -123,6 +126,9 @@ def add_appointment(appointment: Appointment):
     except AssertionError as e:
         db.session.rollback()
         return False, e
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def delete_appointment(appointment_id: int):

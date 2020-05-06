@@ -1,4 +1,4 @@
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 
 from app import db
 from app.models import Category
@@ -25,6 +25,9 @@ def update_category(category: Category):
         return True, 'Успішно оновлено категорію'
     except IntegrityError:
         return False, 'Категорія з такою назвою вже існує'
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def add_category(category:Category):
@@ -35,6 +38,9 @@ def add_category(category:Category):
         return True, 'Успішно додано категорію'
     except IntegrityError:
         return False, 'Категорія з такою назвою вже існує'
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def delete_category(category_id: int):

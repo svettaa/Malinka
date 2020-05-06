@@ -1,4 +1,4 @@
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 
 from app import db
 from app.models import Paint
@@ -26,6 +26,9 @@ def update_paint(paint: Paint):
         return True, 'Успішно оновлено фарбу'
     except IntegrityError:
         return False, 'Фарба з таким кодом вже існує'
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def add_paint(paint: Paint):
@@ -36,6 +39,9 @@ def add_paint(paint: Paint):
         return True, 'Успішно додано фарбу'
     except IntegrityError:
         return False, 'Фарба з таким кодом вже існує'
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def delete_paint(paint_id: int):

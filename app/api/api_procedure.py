@@ -1,4 +1,4 @@
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 
 from app import db
 from app.models import Procedure
@@ -44,6 +44,9 @@ def update_procedure(procedure: Procedure):
         return True, 'Успішно оновлено процедуру'
     except IntegrityError:
         return False, 'Процедура з такою назвою вже існує'
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def add_procedure(procedure: Procedure):
@@ -58,6 +61,9 @@ def add_procedure(procedure: Procedure):
         return True, 'Успішно додано процедуру'
     except IntegrityError:
         return False, 'Процедура з такою назвою вже існує'
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def delete_procedure(procedure_id: int):
