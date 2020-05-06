@@ -2,6 +2,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.models import AppointmentPaint
+from app.api.asserts.asserts_paint import *
 
 
 def get_appointment_paints(appointment_id: int):
@@ -32,59 +33,79 @@ def update_appointment_paint(appointment_paint: AppointmentPaint):
     if appointment_paint.volume_ml <= 0:
         return False, 'Кількість має бути більше нуля'
     try:
-        # old_amount = db.engine.execute('SELECT volume_ml '
-        #                                'FROM Appointment_Paint '
-        #                                'WHERE id = %s;',
-        #                                supply.id).fetchone()['amount']
-        db.engine.execute('UPDATE Appointment_Paint '
-                          'SET volume_ml = %s '
-                          'WHERE appointment_id = %s AND paint_id = %s;',
-                          (appointment_paint.volume_ml,
-                           appointment_paint.appointment_id,
-                           appointment_paint.paint_id))
-        # db.engine.execute('UPDATE Paint '
-        #                   'SET left_ml = left_ml - %s '
-        #                   'WHERE id = %s',
-        #                   (old_amount, supply.paint_id))
-        # db.engine.execute('UPDATE Paint '
-        #                   'SET left_ml = left_ml + %s '
-        #                   'WHERE id = %s',
-        #                   (supply.amount, supply.paint_id))
+        old_amount = db.session.execute('SELECT volume_ml '
+                                        'FROM Appointment_Paint '
+                                        'WHERE appointment_id = :appointment_id AND paint_id = :paint_id;',
+                                        {'appointment_id': appointment_paint.appointment_id,
+                                         'paint_id': appointment_paint.paint_id}).scalar()
+        db.session.execute('UPDATE Appointment_Paint '
+                           'SET volume_ml = :volume_ml '
+                           'WHERE appointment_id = :appointment_id AND paint_id = :paint_id;',
+                           {'volume_ml': appointment_paint.volume_ml,
+                            'appointment_id': appointment_paint.appointment_id,
+                            'paint_id': appointment_paint.paint_id})
+        db.session.execute('UPDATE Paint '
+                           'SET left_ml = left_ml + :old_amount '
+                           'WHERE id = :paint_id',
+                           {'old_amount': old_amount,
+                            'paint_id': appointment_paint.paint_id})
+        db.session.execute('UPDATE Paint '
+                           'SET left_ml = left_ml - :volume_ml '
+                           'WHERE id = :paint_id',
+                           {'volume_ml': appointment_paint.volume_ml,
+                            'paint_id': appointment_paint.paint_id})
+        assert_paint_enough(appointment_paint.paint_id)
+        db.session.commit()
         return True, 'Успішно оновлено використання фарби'
     except IntegrityError:
         return False, 'Порушення цілісності використання фарби'
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
 
 
 def add_appointment_paint(appointment_paint: AppointmentPaint):
     if appointment_paint.volume_ml <= 0:
         return False, 'Кількість має бути більше нуля'
     try:
-        db.engine.execute('INSERT INTO Appointment_Paint (appointment_id, paint_id, volume_ml) '
-                          'VALUES (%s, %s, %s);',
-                          (appointment_paint.appointment_id, appointment_paint.paint_id, appointment_paint.volume_ml))
-        # db.engine.execute('UPDATE Paint '
-        #                   'SET left_ml = left_ml + %s '
-        #                   'WHERE id = %s',
-        #                   (supply.amount, supply.paint_id))
+        db.session.execute('INSERT INTO Appointment_Paint (appointment_id, paint_id, volume_ml) '
+                           'VALUES (:appointment_id, :paint_id, :volume_ml);',
+                           {'appointment_id': appointment_paint.appointment_id,
+                            'paint_id': appointment_paint.paint_id,
+                            'volume_ml': appointment_paint.volume_ml})
+        db.session.execute('UPDATE Paint '
+                           'SET left_ml = left_ml - :volume_ml '
+                           'WHERE id = :paint_id',
+                           {'volume_ml': appointment_paint.volume_ml,
+                            'paint_id': appointment_paint.paint_id})
+        assert_paint_enough(appointment_paint.paint_id)
+        db.session.commit()
         return True, 'Успішно додано використання фарби'
     except IntegrityError:
         return False, 'Порушення цілісності використання фарби'
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
 
 
 def delete_appointment_paint(appointment_id: int, paint_id: int):
     try:
-        # old = db.engine.execute('SELECT amount, paint_id '
-        #                         'FROM Paint_Supply '
-        #                         'WHERE id = %s;',
-        #                         supply_id).fetchone()
-        db.engine.execute('DELETE '
-                          'FROM Appointment_Paint '
-                          'WHERE appointment_id = %s AND paint_id = %s;',
-                          (appointment_id, paint_id))
-        # db.engine.execute('UPDATE Paint '
-        #                   'SET left_ml = left_ml - %s '
-        #                   'WHERE id = %s',
-        #                   (old['amount'], old['paint_id']))
+        old_amount = db.session.execute('SELECT volume_ml '
+                                        'FROM Appointment_Paint '
+                                        'WHERE appointment_id = :appointment_id AND paint_id = :paint_id;',
+                                        {'appointment_id': appointment_id,
+                                         'paint_id': paint_id}).scalar()
+        db.session.execute('DELETE '
+                           'FROM Appointment_Paint '
+                           'WHERE appointment_id = :appointment_id AND paint_id = :paint_id;',
+                           {'appointment_id': appointment_id,
+                            'paint_id': paint_id})
+        db.session.execute('UPDATE Paint '
+                           'SET left_ml = left_ml + :old_amount '
+                           'WHERE id = :paint_id',
+                           {'old_amount': old_amount,
+                            'paint_id': paint_id})
+        db.session.commit()
         return True, 'Успішно видалено використання фарби'
     except IntegrityError:
         return False, 'Порушення цілісності використання фарби'
