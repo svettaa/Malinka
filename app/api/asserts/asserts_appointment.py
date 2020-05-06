@@ -87,3 +87,17 @@ def assert_appointment_master_does_procedure(appointment: Appointment):
                           {'master_id': appointment.master_id,
                            'procedure_id': appointment.procedure_id}).scalar() == 0:
         raise AssertionError('Даний майстер не вміє виконувати дану процедуру')
+
+
+def assert_appointment_master_no_vacation(appointment: Appointment):
+    if db.session.execute('SELECT COUNT(*) '
+                          'FROM Schedule_Change '
+                          'WHERE master_id = :master_id AND '
+                          '      is_working = False AND '
+                          '      (change_start, change_end) '
+                          '      OVERLAPS '
+                          '      (:appoint_start, :appoint_end);',
+                          {'master_id': appointment.master_id,
+                           'appoint_start': appointment.appoint_start,
+                           'appoint_end': appointment.appoint_end}).scalar() > 0:
+        raise AssertionError('У майстра відпустка на цей час')

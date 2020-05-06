@@ -37,3 +37,18 @@ def assert_schedule_working_or_even_schedule(schedule: ScheduleChange):
                                                   {'master_id': schedule.master_id}).scalar()
         if even_day != master_even_schedule:
             raise AssertionError('Неможливо змінити графік майстра, з\'являться записи не за графіком')
+
+
+def assert_schedule_no_vacation_appointment(schedule: ScheduleChange):
+    if schedule.is_working:
+        return
+    if db.session.execute('SELECT COUNT(*) '
+                          'FROM Appointment '
+                          'WHERE master_id = :master_id AND '
+                          '      (:change_start, :change_end) '
+                          '      OVERLAPS '
+                          '      (appoint_start, appoint_end);',
+                          {'master_id': schedule.master_id,
+                           'change_start': schedule.change_start,
+                           'change_end': schedule.change_end}).scalar() > 0:
+        raise AssertionError('У майстра є записи на цей час, не можна додати відпустку')

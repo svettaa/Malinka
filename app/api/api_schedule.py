@@ -43,6 +43,7 @@ def update_schedule(schedule: ScheduleChange):
                             'id': schedule.id})
         assert_schedule_no_overlaps(schedule)
         assert_schedule_working_or_even_schedule(schedule)
+        assert_schedule_no_vacation_appointment(schedule)
         db.session.commit()
         return True, 'Успішно оновлено зміну в графіку'
     except IntegrityError:
@@ -63,6 +64,7 @@ def add_schedule(schedule: ScheduleChange):
                             'is_working': bool(schedule.is_working),
                             'master_id': schedule.master_id})
         assert_schedule_no_overlaps(schedule)
+        assert_schedule_no_vacation_appointment(schedule)
         db.session.commit()
         return True, 'Успішно додано зміну в графіку'
     except IntegrityError:
