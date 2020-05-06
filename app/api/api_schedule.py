@@ -76,9 +76,14 @@ def add_schedule(schedule: ScheduleChange):
 
 def delete_schedule(schedule_id: int):
     try:
-        db.engine.execute('DELETE FROM Schedule_Change '
-                          'WHERE id = %s',
-                          schedule_id)
+        db.session.execute('DELETE FROM Schedule_Change '
+                           'WHERE id = :id',
+                           {'id': schedule_id})
+        assert_schedule_working_or_even_schedule(get_schedule(schedule_id))
+        db.session.commit()
         return True, 'Успішно видалено зміну в графіку'
     except IntegrityError:
         return False, ''
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
