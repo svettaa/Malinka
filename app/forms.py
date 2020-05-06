@@ -122,7 +122,7 @@ class AdminAppointmentForm(BaseForm):
     appoint_end = DateTimeField('Кінець', validators=[InputRequired('Введіть кінець запису')],
                                 render_kw={'data-target': '#admin_appointment_end_datetimepicker'},
                                 format='%d.%m.%Y %H:%M')
-    preferences = HiddenField('Побажання')
+    preferences = TextAreaField('Побажання', render_kw={"rows": 4})
     status = BooleanField('Підтверджено')
     price = IntegerField('Ціна',
                          validators=[InputRequired('Введіть ціну'),

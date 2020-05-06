@@ -62,6 +62,9 @@ def edit_appointment_post(appointment_id):
     appointment = Appointment(id=appointment_id)
     form.populate_obj(appointment)
 
+    if appointment.preferences.strip() == '':
+        appointment.preferences = None
+
     status, message = update_appointment(appointment)
 
     if status:
@@ -92,6 +95,9 @@ def new_appointment_post():
 
     appointment = Appointment()
     form.populate_obj(appointment)
+
+    if appointment.preferences.strip() == '':
+        appointment.preferences = None
 
     status, message = add_appointment(appointment)
 
