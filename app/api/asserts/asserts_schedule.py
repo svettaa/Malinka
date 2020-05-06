@@ -2,7 +2,7 @@ from app import db
 from app.models import ScheduleChange
 
 
-def assert_schedule_overlapping(schedule: ScheduleChange):
+def assert_schedule_no_overlaps(schedule: ScheduleChange):
     if db.session.execute(""" SELECT COUNT(*)
                               FROM Schedule_Change
                               WHERE master_id = :master_id AND

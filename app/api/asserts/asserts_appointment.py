@@ -21,7 +21,7 @@ def assert_appointment_is_hired(appointment: Appointment):
         raise AssertionError('Даний майстер звільнений')
 
 
-def assert_appointment_overlaps_master(appointment: Appointment):
+def assert_appointment_no_overlaps_master(appointment: Appointment):
     if db.session.execute(""" SELECT COUNT(*)
                                   FROM Appointment
                                   WHERE (master_id = :master_id OR client_id = :master_id)
@@ -36,7 +36,7 @@ def assert_appointment_overlaps_master(appointment: Appointment):
         raise AssertionError('Даний запис перетинається з іншими записами майстра')
 
 
-def assert_appointment_overlaps_client(appointment: Appointment):
+def assert_appointment_no_overlaps_client(appointment: Appointment):
     if db.session.execute(""" SELECT COUNT(*)
                                   FROM Appointment
                                   WHERE (master_id = :client_id OR client_id = :client_id)

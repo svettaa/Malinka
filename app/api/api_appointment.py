@@ -69,8 +69,8 @@ def update_appointment(appointment: Appointment):
                             'id': appointment.id})
         assert_appointment_is_hired(appointment)
         assert_appointment_even_schedule_or_working(appointment)
-        assert_appointment_overlaps_client(appointment)
-        assert_appointment_overlaps_master(appointment)
+        assert_appointment_no_overlaps_client(appointment)
+        assert_appointment_no_overlaps_master(appointment)
         db.session.commit()
         return True, 'Успішно оновлено запис'
     except IntegrityError:
@@ -100,8 +100,8 @@ def add_appointment(appointment: Appointment):
                             'procedure_id': appointment.procedure_id})
         assert_appointment_is_hired(appointment)
         assert_appointment_even_schedule_or_working(appointment)
-        assert_appointment_overlaps_client(appointment)
-        assert_appointment_overlaps_master(appointment)
+        assert_appointment_no_overlaps_client(appointment)
+        assert_appointment_no_overlaps_master(appointment)
         db.session.commit()
         return True, 'Успішно додано запис'
     except IntegrityError:
