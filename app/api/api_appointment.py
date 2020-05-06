@@ -40,6 +40,8 @@ def get_appointment(appointment_id: int):
 
 
 def update_appointment(appointment: Appointment):
+    if appointment.appoint_start >= appointment.appoint_end:
+        return False, 'Початковий час має бути меньшим за кінцевий'
     original_appointment = get_appointment(appointment.id)
     if int(appointment.master_id) != original_appointment.master_id:
         return False, 'Не можна змінювати майстра у записі'
@@ -78,6 +80,8 @@ def update_appointment(appointment: Appointment):
 
 
 def add_appointment(appointment: Appointment):
+    if appointment.appoint_start >= appointment.appoint_end:
+        return False, 'Початковий час має бути меньшим за кінцевий'
     if appointment.master_id == appointment.client_id:
         return False, 'Неможливо записати майстра до себе'
     try:
