@@ -66,10 +66,12 @@ def update_appointment(appointment: Appointment):
                             'procedure_id': appointment.procedure_id,
                             'id': appointment.id})
         assert_appointment_is_hired(appointment)
+        assert_appointment_overlaps_client(appointment)
+        assert_appointment_overlaps_master(appointment)
         db.session.commit()
         return True, 'Успішно оновлено запис'
     except IntegrityError:
-        return False, ''
+        return False, 'Вже існує запис для даного клієнта чи майстра на цей час'
     except AssertionError as e:
         db.session.rollback()
         return False, e
@@ -92,10 +94,12 @@ def add_appointment(appointment: Appointment):
                             'master_id': appointment.master_id,
                             'procedure_id': appointment.procedure_id})
         assert_appointment_is_hired(appointment)
+        assert_appointment_overlaps_client(appointment)
+        assert_appointment_overlaps_master(appointment)
         db.session.commit()
         return True, 'Успішно додано запис'
     except IntegrityError:
-        return False, ''
+        return False, 'Вже існує запис для даного клієнта чи майстра на цей час'
     except AssertionError as e:
         db.session.rollback()
         return False, e
