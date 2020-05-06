@@ -1,6 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 
-from app import db
+from app import db, app
 from app.api.asserts.asserts_appointment import *
 
 
@@ -44,6 +44,9 @@ def update_appointment(appointment: Appointment):
         return False, 'Початковий час має бути меньшим за кінцевий'
     if appointment.appoint_start.date() != appointment.appoint_end.date():
         return False, 'Запис має бути в межах одного дня'
+    if appointment.appoint_start.time() < app.config['WORKING_DAY_START'] or \
+            appointment.appoint_end.time() > app.config['WORKING_DAY_END']:
+        return False, 'Запис має бути в межах робочого дня'
     original_appointment = get_appointment(appointment.id)
     if int(appointment.master_id) != original_appointment.master_id:
         return False, 'Не можна змінювати майстра у записі'
@@ -87,6 +90,9 @@ def add_appointment(appointment: Appointment):
         return False, 'Початковий час має бути меньшим за кінцевий'
     if appointment.appoint_start.date() != appointment.appoint_end.date():
         return False, 'Запис має бути в межах одного дня'
+    if appointment.appoint_start.time() < app.config['WORKING_DAY_START'] or \
+            appointment.appoint_end.time() > app.config['WORKING_DAY_END']:
+        return False, 'Запис має бути в межах робочого дня'
     if appointment.master_id == appointment.client_id:
         return False, 'Неможливо записати майстра до себе'
     try:
