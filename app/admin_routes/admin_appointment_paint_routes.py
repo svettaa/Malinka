@@ -2,8 +2,6 @@ from flask import render_template, request, redirect, url_for
 from flask_login import login_required
 
 from app import app
-from app.models import *
-from app.message_codes import *
 from app.forms import AdminAppointmentPaintForm
 from app.api.api_appointment_paint import *
 from app.api.api_paint import get_spare_appointment_paints
@@ -47,7 +45,7 @@ def edit_appointment_paint_post(appointment_id, paint_id):
 
     if status:
         return redirect(url_for('edit_appointment_get',
-                                appointment_id=appointment_id, success=Success.UPDATED_APPOINTMENT_PAINT.value))
+                                appointment_id=appointment_id, success=message))
     else:
         return render_template('appointment_paint.html', form=form, appointment_id=appointment_id,
                                action=url_for('edit_appointment_paint_post',
@@ -90,7 +88,7 @@ def new_appointment_paint_post(appointment_id):
 
     if status:
         return redirect(url_for('edit_appointment_get',
-                                appointment_id=appointment_id, success=Success.ADDED_APPOINTMENT_PAINT.value))
+                                appointment_id=appointment_id, success=message))
     else:
         return render_template('appointment_paint.html', form=form, appointment_id=appointment_id,
                                action=url_for('new_appointment_paint_post',
@@ -106,7 +104,7 @@ def delete_appointment_paint_get(appointment_id, paint_id):
 
     if status:
         return redirect(url_for('edit_appointment_get',
-                                appointment_id=appointment_id, success=Success.DELETED_APPOINTMENT_PAINT.value))
+                                appointment_id=appointment_id, success=message))
     else:
         return redirect(url_for('edit_appointment_get',
-                                appointment_id=appointment_id, error=Error.APPOINTMENT_PAINT_INTEGRITY.value))
+                                appointment_id=appointment_id, error=message))

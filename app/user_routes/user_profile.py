@@ -2,8 +2,6 @@ from flask import render_template, url_for, redirect, request
 from flask_login import login_required, current_user
 
 from app import app
-from app.models import Client
-from app.message_codes import *
 from app.forms import AdminClientForm
 from app.api.api_client import *
 
@@ -17,8 +15,8 @@ def edit_user_profile_get():
                            favourite_procedures=get_client_favourite_procedures(client_id),
                            favourite_masters=get_client_favourite_masters(client_id),
                            action=url_for('edit_user_profile_post'),
-                           error=get_error_message(request.args.get('error')),
-                           success=get_success_message(request.args.get('success')))
+                           error=(request.args.get('error')),
+                           success=(request.args.get('success')))
 
 
 @app.route('/cabinet/edit', methods=['POST'])
@@ -44,7 +42,7 @@ def edit_user_profile_post():
     status, message = update_client(client)
 
     if status:
-        return redirect(url_for('edit_user_profile_get', success=Success.USER_PROFILE_UPDATED.value))
+        return redirect(url_for('edit_user_profile_get', success=message))
     else:
         return render_template('client.html', form=form, page_header='Мій кабінет',
                                favourite_masters=get_client_favourite_masters(client_id),

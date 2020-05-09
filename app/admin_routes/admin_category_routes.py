@@ -2,7 +2,6 @@ from flask import render_template, request, redirect, url_for
 from flask_login import login_required
 
 from app import app
-from app.message_codes import *
 from app.forms import AdminCategoryForm
 from app.api.api_category import *
 from app.login import admin_only
@@ -13,8 +12,8 @@ from app.login import admin_only
 @admin_only
 def categories_get():
     return render_template('categories.html', categories=get_categories(),
-                           error=get_error_message(request.args.get('error')),
-                           success=get_success_message(request.args.get('success')))
+                           error=(request.args.get('error')),
+                           success=(request.args.get('success')))
 
 
 @app.route('/categories/<int:category_id>', methods=['GET'])
@@ -43,7 +42,7 @@ def edit_category_post(category_id):
     status, message = update_category(category)
 
     if status:
-        return redirect(url_for('categories_get', success=Success.UPDATED_CATEGORY.value))
+        return redirect(url_for('categories_get', success=message))
     else:
         return render_template('category.html', form=form,
                                action=url_for('edit_category_post', category_id=category_id),
@@ -76,7 +75,7 @@ def new_category_post():
     status, message = add_category(category)
 
     if status:
-        return redirect(url_for('categories_get', success=Success.ADDED_CATEGORY.value))
+        return redirect(url_for('categories_get', success=message))
     else:
         return render_template('category.html', form=form,
                                action=url_for('new_category_post'),
@@ -90,7 +89,7 @@ def delete_category_get(category_id):
     status, message = delete_category(category_id)
 
     if status:
-        return redirect(url_for('categories_get', success=Success.DELETED_CATEGORY.value))
+        return redirect(url_for('categories_get', success=message))
     else:
         return redirect(url_for('categories_get',
-                                error=Error.CATEGORY_HAS_PROCEDURES.value))
+                                error=message))

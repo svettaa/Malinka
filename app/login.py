@@ -6,7 +6,6 @@ from flask_login import logout_user, login_user, login_required, current_user
 from app import app, db, login_manager
 from app.models import Client
 from app.forms import LoginForm
-from app.message_codes import *
 
 
 @login_manager.user_loader
@@ -45,8 +44,8 @@ def master_only(function):
 def login_get():
     form = LoginForm()
     return render_template('login.html', form=form,
-                           error=get_error_message(request.args.get('error')),
-                           success=get_success_message(request.args.get('success')))
+                           error=(request.args.get('error')),
+                           success=(request.args.get('success')))
 
 
 @app.route('/login', methods=['POST'])
@@ -60,7 +59,7 @@ def login_post():
 
     if not user:
         return render_template('login.html', form=form,
-                               error=Error.USER_NOT_EXISTS.value)
+                               error='Не існує користувача з таким номером телефону')
 
     login_user(user)
 

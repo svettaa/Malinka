@@ -2,8 +2,6 @@ from flask import render_template, request, redirect, url_for
 from flask_login import login_required
 
 from app import app
-from app.models import *
-from app.message_codes import *
 from app.forms import AdminClientForm
 from app.api.api_client import *
 from app.login import admin_only
@@ -14,8 +12,8 @@ from app.login import admin_only
 @admin_only
 def clients_get():
     return render_template('clients.html', clients=get_clients(),
-                           error=get_error_message(request.args.get('error')),
-                           success=get_success_message(request.args.get('success')))
+                           error=(request.args.get('error')),
+                           success=(request.args.get('success')))
 
 
 @app.route('/clients/<int:client_id>', methods=['GET'])
@@ -53,7 +51,7 @@ def edit_client_post(client_id):
     status, message = update_client(client)
 
     if status:
-        return redirect(url_for('clients_get', success=Success.UPDATED_USER.value))
+        return redirect(url_for('clients_get', success=message))
     else:
         return render_template('client.html', form=form,
                                favourite_masters=get_client_favourite_masters(client_id),
@@ -93,7 +91,7 @@ def new_client_post():
     status, message = add_client(client)
 
     if status:
-        return redirect(url_for('clients_get', success=Success.ADDED_USER.value))
+        return redirect(url_for('clients_get', success=message))
     else:
         return render_template('client.html', form=form,
                                action=url_for('new_client_post'),
@@ -108,7 +106,7 @@ def delete_client_get(client_id):
     status, message = delete_client(client_id)
 
     if status:
-        return redirect(url_for('clients_get', success=Success.DELETED_USER.value))
+        return redirect(url_for('clients_get', success=message))
     else:
         return redirect(url_for('clients_get',
-                                error=Error.USER_HAS_APPOINTMENTS.value))
+                                error=message))

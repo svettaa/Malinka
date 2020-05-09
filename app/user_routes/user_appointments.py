@@ -2,7 +2,6 @@ from flask import render_template, redirect, url_for, request
 from flask_login import login_required, current_user
 
 from app import app
-from app.message_codes import *
 from app.api.api_appointment import get_client_future_appointments, delete_appointment_if_future, \
     get_client_past_appointments
 

@@ -8,7 +8,6 @@ from app.api.api_master import get_masters
 from app.api.api_procedure import get_procedures
 from app.api.api_appointment_paint import get_appointment_paints
 from app.forms import AdminAppointmentForm
-from app.message_codes import *
 from app.login import admin_only
 
 
@@ -41,8 +40,8 @@ def fill_edit_form_choices(form, appointment):
 @admin_only
 def appointments_get():
     return render_template('appointments.html', appointments=get_appointments(),
-                           error=get_error_message(request.args.get('error')),
-                           success=get_success_message(request.args.get('success')))
+                           error=(request.args.get('error')),
+                           success=(request.args.get('success')))
 
 
 @app.route('/appointments/<int:appointment_id>', methods=['GET'])
@@ -79,7 +78,7 @@ def edit_appointment_post(appointment_id):
     status, message = update_appointment(appointment)
 
     if status:
-        return redirect(url_for('appointments_get', success=Success.UPDATED_APPOINTMENT.value))
+        return redirect(url_for('appointments_get', success=message))
     else:
         return render_template('appointment.html', form=form,
                                paints=get_appointment_paints(appointment_id),
@@ -118,7 +117,7 @@ def new_appointment_post():
     status, message = add_appointment(appointment)
 
     if status:
-        return redirect(url_for('appointments_get', success=Success.ADDED_APPOINTMENT.value))
+        return redirect(url_for('appointments_get', success=message))
     else:
         return render_template('appointment.html', form=form,
                                action=url_for('new_appointment_post'),
@@ -132,6 +131,6 @@ def delete_appointment_get(appointment_id):
     status, message = delete_appointment(appointment_id)
 
     if status:
-        return redirect(url_for('appointments_get', success=Success.DELETED_APPOINTMENT.value))
+        return redirect(url_for('appointments_get', success=message))
     else:
-        return redirect(url_for('appointments_get', error=Error.APPOINTMENT_INTEGRITY.value))
+        return redirect(url_for('appointments_get', error=message))

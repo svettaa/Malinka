@@ -2,7 +2,6 @@ from flask import render_template, request, redirect, url_for
 from flask_login import login_required
 
 from app import app
-from app.message_codes import *
 from app.forms import AdminProcedureForm
 from app.api.api_procedure import *
 from app.api.api_category import get_categories
@@ -14,8 +13,8 @@ from app.login import admin_only
 @admin_only
 def procedures_get():
     return render_template('procedures.html', procedures=get_procedures(),
-                           error=get_error_message(request.args.get('error')),
-                           success=get_success_message(request.args.get('success')))
+                           error=(request.args.get('error')),
+                           success=(request.args.get('success')))
 
 
 @app.route('/procedures/<int:procedure_id>', methods=['GET'])
@@ -53,7 +52,7 @@ def edit_procedure_post(procedure_id):
     status, message = update_procedure(procedure)
 
     if status:
-        return redirect(url_for('procedures_get', success=Success.UPDATED_PROCEDURE.value))
+        return redirect(url_for('procedures_get', success=message))
     else:
         return render_template('procedure.html', form=form, new_procedure=False,
                                favourite_clients_amount=get_procedure_favourite_clients_amount(procedure_id),
@@ -94,7 +93,7 @@ def new_procedure_post():
     status, message = add_procedure(procedure)
 
     if status:
-        return redirect(url_for('procedures_get', success=Success.ADDED_PROCEDURE.value))
+        return redirect(url_for('procedures_get', success=message))
     else:
         return render_template('procedure.html', form=form, new_procedure=True,
                                action=url_for('new_procedure_post'),
@@ -108,7 +107,7 @@ def delete_procedure_get(procedure_id):
     status, message = delete_procedure(procedure_id)
 
     if status:
-        return redirect(url_for('procedures_get', success=Success.DELETED_PROCEDURE.value))
+        return redirect(url_for('procedures_get', success=message))
     else:
         return redirect(url_for('procedures_get',
-                                error=Error.PROCEDURE_HAS_APPOINTMENTS.value))
+                                error=message))

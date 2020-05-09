@@ -2,8 +2,6 @@ from flask import render_template, request, redirect, url_for
 from flask_login import login_required
 
 from app import app
-from app.models import *
-from app.message_codes import *
 from app.forms import AdminSupplyForm
 from app.api.api_supply import *
 from app.api.api_paint import get_paints
@@ -15,8 +13,8 @@ from app.login import admin_only
 @admin_only
 def supplies_get():
     return render_template('supplies.html', supplies=get_supplies(),
-                           error=get_error_message(request.args.get('error')),
-                           success=get_success_message(request.args.get('success')))
+                           error=(request.args.get('error')),
+                           success=(request.args.get('success')))
 
 
 @app.route('/supplies/<int:supply_id>', methods=['GET'])
@@ -53,7 +51,7 @@ def edit_supply_post(supply_id):
     status, message = update_supply(supply)
 
     if status:
-        return redirect(url_for('supplies_get', success=Success.UPDATED_SUPPLY.value))
+        return redirect(url_for('supplies_get', success=message))
     else:
         return render_template('supply.html', form=form,
                                action=url_for('edit_supply_post', supply_id=supply_id),
@@ -90,7 +88,7 @@ def new_supply_post():
     status, message = add_supply(supply)
 
     if status:
-        return redirect(url_for('supplies_get', success=Success.ADDED_SUPPLY.value))
+        return redirect(url_for('supplies_get', success=message))
     else:
         return render_template('supply.html', form=form,
                                action=url_for('new_supply_post'),
@@ -104,6 +102,6 @@ def delete_supply_get(supply_id):
     status, message = delete_supply(supply_id)
 
     if status:
-        return redirect(url_for('supplies_get', success=Success.DELETED_SUPPLY.value))
+        return redirect(url_for('supplies_get', success=message))
     else:
-        return redirect(url_for('supplies_get', error=Error.SUPPLY_INTEGRITY.value))
+        return redirect(url_for('supplies_get', error=message))
