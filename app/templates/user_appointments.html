@@ -14,5 +14,136 @@
 {% block content %}
 
 
+<ul class="nav nav-tabs mb-5" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="active-tab" data-toggle="tab" href="#active" role="tab" aria-controls="active" aria-selected="true">Актуальні записи</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="prev-tab" data-toggle="tab" href="#prev" role="tab" aria-controls="prev" aria-selected="false">Історія</a>
+    </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <div class="tab-pane active" id="active" role="tabpanel" aria-labelledby="active-tab">
+        <div class="card mb-3 col-12 col-lg-9 mx-auto p-0">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-6 col-sm-5">
+                        <h5 class="mb-0">
+                            <span class="fa fa-calendar-alt fa-xs"></span>
+
+                            17.04.2020
+                        </h5>
+
+                    </div>
+                    <div class="col-4">
+                        <h5 class="mb-0">
+                            <span class="fa fa-clock fa-xs"></span>
+
+                            14:30
+                        </h5>
+                    </div>
+                    <div class="col-2 col-sm-3">
+                        <a class="float-right">
+                            <span class="fa fa-trash"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-5 mb-3 mb-md-0">
+                        <h6 class="card-subtitle">Процедура:</h6>
+                        <p class="card-text">Однотонне покриття лаком</p>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                        <h6 class="card-subtitle">Майстер:</h6>
+                        <a class="card-link" href="#">Петренко Марія</a>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <h6 class="card-subtitle">Ціна:</h6>
+                        <p class="card-text">від 300 грн</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-3 col-12 col-lg-9 mx-auto mt-5 p-0">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-6 col-sm-5">
+                        <h5 class="mb-0">
+                            <span class="fa fa-calendar-alt fa-xs"></span>
+                            17.04.2020
+                        </h5>
+
+                    </div>
+                    <div class="col-4">
+                        <h5 class="mb-0">
+                            <span class="fa fa-clock fa-xs"></span>
+                            14:30
+                        </h5>
+                    </div>
+                    <div class="col-2 col-sm-3">
+                        <a class="float-right">
+                            <span class="fa fa-trash"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-5 mb-3 mb-md-0">
+                        <h6 class="card-subtitle">Процедура:</h6>
+                        <p class="card-text">Однотонне покриття лаком</p>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                        <h6 class="card-subtitle">Майстер:</h6>
+                        <a class="card-link" href="#">Петренко Марія</a>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <h6 class="card-subtitle">Ціна:</h6>
+                        <p class="card-text">від 300 грн</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="prev" role="tabpanel" aria-labelledby="prev-tab">
+
+
+        <!-- Table - list of schedule changes -->
+        <div class="row">
+            <div class="col-12 col-sm-10 mx-auto">
+                <table class="table table-bordered table-responsive-lg entriesList">
+                    <thead>
+                    <tr>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Процедура</th>
+                        <th scope="col">Майстер</th>
+                        <th scope="col">Ціна, грн</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr>
+
+                        <td>16.04.2020</td>
+                        <td>Фарбування в блонд</td>
+                        <td><a href="#">Василенко Катерина</a></td>
+                        <td>200</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
 
 {% endblock %}
