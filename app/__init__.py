@@ -16,6 +16,8 @@ font_awesome = FontAwesome(app)
 
 from app.routes import *
 from app.admin_routes import *
+from app.user_routes import *
+from app.master_routes import *
 from app.models import *
 from app.admin_views import *
 
