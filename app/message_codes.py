@@ -53,6 +53,7 @@ class Error(Enum):
     APPOINTMENT_INTEGRITY = 18
     APPOINTMENT_PAINT_INTEGRITY = 19
     USER_NOT_EXISTS = 20
+    PAST_APPOINTMENT_DELETION = 21
 
 
 messages = {Success.ADDED_CATEGORY: 'Успішно додано категорію',
@@ -125,6 +126,7 @@ messages = {Success.ADDED_CATEGORY: 'Успішно додано категор�
             Error.APPOINTMENT_INTEGRITY: 'Порушення цілісності записів',
             Error.APPOINTMENT_PAINT_INTEGRITY: 'Порушення цілісності фарб запису',
             Error.USER_NOT_EXISTS: 'Користувача з таким номером телефону не існує',
+            Error.PAST_APPOINTMENT_DELETION: 'Неможливо видалити минулий запис',
             }
 
 

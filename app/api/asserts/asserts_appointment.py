@@ -11,6 +11,19 @@ def is_future_appointment(appointment: Appointment):
     return appoint_start > now
 
 
+def assert_appointment_is_future(appointment_id: int):
+    if not db.session.execute('SELECT appoint_start > now() '
+                              'FROM Appointment '
+                              'WHERE id = :id;',
+                              {'id': appointment_id}).scalar():
+        raise AssertionError('Запис вже відбувся')
+
+
+def assert_appointment_client(appointment: Appointment, user_id: int):
+    if appointment.client_id != user_id:
+        raise AssertionError('Спроба видалити чужі записи')
+
+
 def assert_appointment_is_hired(appointment: Appointment):
     if is_future_appointment(appointment) and \
             not db.session.execute(""" SELECT is_hired
