@@ -1,12 +1,16 @@
 from flask import render_template, request, redirect, url_for
+from flask_login import login_required
 
 from app import app
 from app.message_codes import *
 from app.forms import AdminPaintForm
 from app.api.api_paint import *
+from app.login import admin_only
 
 
 @app.route('/paints', methods=['GET'])
+@login_required
+@admin_only
 def paints_get():
     return render_template('paints.html', paints=get_paints(),
                            error=get_error_message(request.args.get('error')),
@@ -14,6 +18,8 @@ def paints_get():
 
 
 @app.route('/paints/<int:paint_id>', methods=['GET'])
+@login_required
+@admin_only
 def edit_paint_get(paint_id):
     form = AdminPaintForm(data=get_paint(paint_id))
 
@@ -22,6 +28,8 @@ def edit_paint_get(paint_id):
 
 
 @app.route('/paints/<int:paint_id>', methods=['POST'])
+@login_required
+@admin_only
 def edit_paint_post(paint_id):
     form = AdminPaintForm()
 
@@ -43,6 +51,8 @@ def edit_paint_post(paint_id):
 
 
 @app.route('/paints/new', methods=['GET'])
+@login_required
+@admin_only
 def new_paint_get():
     form = AdminPaintForm()
 
@@ -51,6 +61,8 @@ def new_paint_get():
 
 
 @app.route('/paints/new', methods=['POST'])
+@login_required
+@admin_only
 def new_paint_post():
     form = AdminPaintForm()
 
@@ -72,6 +84,8 @@ def new_paint_post():
 
 
 @app.route('/paints/delete/<int:paint_id>', methods=['GET'])
+@login_required
+@admin_only
 def delete_paint_get(paint_id):
 
     status, message = delete_paint(paint_id)

@@ -1,13 +1,17 @@
 from flask import render_template, request, redirect, url_for
+from flask_login import login_required
 
 from app import app
 from app.message_codes import *
 from app.forms import AdminProcedureForm
 from app.api.api_procedure import *
 from app.api.api_category import get_categories
+from app.login import admin_only
 
 
 @app.route('/procedures')
+@login_required
+@admin_only
 def procedures_get():
     return render_template('procedures.html', procedures=get_procedures(),
                            error=get_error_message(request.args.get('error')),
@@ -15,6 +19,8 @@ def procedures_get():
 
 
 @app.route('/procedures/<int:procedure_id>', methods=['GET'])
+@login_required
+@admin_only
 def edit_procedure_get(procedure_id):
     form = AdminProcedureForm(data=get_procedure(procedure_id))
     form.category_id.choices = [('', 'Не обрано')] + \
@@ -26,6 +32,8 @@ def edit_procedure_get(procedure_id):
 
 
 @app.route('/procedures/<int:procedure_id>', methods=['POST'])
+@login_required
+@admin_only
 def edit_procedure_post(procedure_id):
     form = AdminProcedureForm()
     form.category_id.choices = [('', 'Не обрано')] + \
@@ -54,6 +62,8 @@ def edit_procedure_post(procedure_id):
 
 
 @app.route('/procedures/new', methods=['GET'])
+@login_required
+@admin_only
 def new_procedure_get():
     form = AdminProcedureForm()
     form.category_id.choices = [('', 'Не обрано')] + \
@@ -64,6 +74,8 @@ def new_procedure_get():
 
 
 @app.route('/procedures/new', methods=['POST'])
+@login_required
+@admin_only
 def new_procedure_post():
     form = AdminProcedureForm()
     form.category_id.choices = [('', 'Не обрано')] + \
@@ -90,6 +102,8 @@ def new_procedure_post():
 
 
 @app.route('/procedures/delete/<int:procedure_id>', methods=['GET'])
+@login_required
+@admin_only
 def delete_procedure_get(procedure_id):
     status, message = delete_procedure(procedure_id)
 

@@ -1,4 +1,5 @@
 from flask import render_template, request, redirect, url_for
+from flask_login import login_required
 
 from app import app
 from app.models import *
@@ -6,9 +7,12 @@ from app.message_codes import *
 from app.forms import AdminAppointmentPaintForm
 from app.api.api_appointment_paint import *
 from app.api.api_paint import get_spare_appointment_paints
+from app.login import admin_only
 
 
 @app.route('/appointments/<int:appointment_id>/paints/<int:paint_id>', methods=['GET'])
+@login_required
+@admin_only
 def edit_appointment_paint_get(appointment_id, paint_id):
     appointment_paint = get_appointment_paint(appointment_id, paint_id)
     form = AdminAppointmentPaintForm(data=appointment_paint)
@@ -22,6 +26,8 @@ def edit_appointment_paint_get(appointment_id, paint_id):
 
 
 @app.route('/appointments/<int:appointment_id>/paints/<int:paint_id>', methods=['POST'])
+@login_required
+@admin_only
 def edit_appointment_paint_post(appointment_id, paint_id):
     appointment_paint = get_appointment_paint(appointment_id, paint_id)
     form = AdminAppointmentPaintForm()
@@ -50,6 +56,8 @@ def edit_appointment_paint_post(appointment_id, paint_id):
 
 
 @app.route('/appointments/<int:appointment_id>/paints/new', methods=['GET'])
+@login_required
+@admin_only
 def new_appointment_paint_get(appointment_id):
     form = AdminAppointmentPaintForm()
     form.paint_id.choices = [('', 'Не обрано')] + \
@@ -62,6 +70,8 @@ def new_appointment_paint_get(appointment_id):
 
 
 @app.route('/appointments/<int:appointment_id>/paints/new', methods=['POST'])
+@login_required
+@admin_only
 def new_appointment_paint_post(appointment_id):
     form = AdminAppointmentPaintForm()
     form.paint_id.choices = [('', 'Не обрано')] + \
@@ -89,6 +99,8 @@ def new_appointment_paint_post(appointment_id):
 
 
 @app.route('/appointments/<int:appointment_id>/paints/delete/<int:paint_id>', methods=['GET'])
+@login_required
+@admin_only
 def delete_appointment_paint_get(appointment_id, paint_id):
     status, message = delete_appointment_paint(appointment_id, paint_id)
 

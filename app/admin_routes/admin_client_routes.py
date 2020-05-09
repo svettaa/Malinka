@@ -1,13 +1,17 @@
 from flask import render_template, request, redirect, url_for
+from flask_login import login_required
 
 from app import app
 from app.models import *
 from app.message_codes import *
 from app.forms import AdminClientForm
 from app.api.api_client import *
+from app.login import admin_only
 
 
 @app.route('/clients', methods=['GET'])
+@login_required
+@admin_only
 def clients_get():
     return render_template('clients.html', clients=get_clients(),
                            error=get_error_message(request.args.get('error')),
@@ -15,6 +19,8 @@ def clients_get():
 
 
 @app.route('/clients/<int:client_id>', methods=['GET'])
+@login_required
+@admin_only
 def edit_client_get(client_id):
     form = AdminClientForm(data=get_client(client_id))
 
@@ -25,6 +31,8 @@ def edit_client_get(client_id):
 
 
 @app.route('/clients/<int:client_id>', methods=['POST'])
+@login_required
+@admin_only
 def edit_client_post(client_id):
     form = AdminClientForm()
 
@@ -55,6 +63,8 @@ def edit_client_post(client_id):
 
 
 @app.route('/clients/new', methods=['GET'])
+@login_required
+@admin_only
 def new_client_get():
     form = AdminClientForm()
 
@@ -63,6 +73,8 @@ def new_client_get():
 
 
 @app.route('/clients/new', methods=['POST'])
+@login_required
+@admin_only
 def new_client_post():
     form = AdminClientForm()
 
@@ -89,6 +101,8 @@ def new_client_post():
 
 
 @app.route('/clients/delete/<int:client_id>', methods=['GET'])
+@login_required
+@admin_only
 def delete_client_get(client_id):
 
     status, message = delete_client(client_id)

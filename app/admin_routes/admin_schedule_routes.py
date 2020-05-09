@@ -1,4 +1,5 @@
 from flask import render_template, request, redirect, url_for
+from flask_login import login_required
 
 from app import app
 from app.models import *
@@ -6,9 +7,12 @@ from app.message_codes import *
 from app.forms import AdminScheduleChangeForm
 from app.api.api_schedule import *
 from app.api.api_master import get_masters
+from app.login import admin_only
 
 
 @app.route('/schedules')
+@login_required
+@admin_only
 def schedules_get():
     return render_template('schedules.html', schedules=get_schedules(),
                            error=get_error_message(request.args.get('error')),
@@ -16,6 +20,8 @@ def schedules_get():
 
 
 @app.route('/schedules/<int:schedule_id>', methods=['GET'])
+@login_required
+@admin_only
 def edit_schedule_get(schedule_id):
     schedule = get_schedule(schedule_id)
     form = AdminScheduleChangeForm(data=schedule)
@@ -28,6 +34,8 @@ def edit_schedule_get(schedule_id):
 
 
 @app.route('/schedules/<int:schedule_id>', methods=['POST'])
+@login_required
+@admin_only
 def edit_schedule_post(schedule_id):
     schedule = get_schedule(schedule_id)
     form = AdminScheduleChangeForm()
@@ -53,6 +61,8 @@ def edit_schedule_post(schedule_id):
 
 
 @app.route('/schedules/new', methods=['GET'])
+@login_required
+@admin_only
 def new_schedule_get():
     form = AdminScheduleChangeForm()
     form.master_id.choices = [('', 'Не обрано')] + \
@@ -65,6 +75,8 @@ def new_schedule_get():
 
 
 @app.route('/schedules/new', methods=['POST'])
+@login_required
+@admin_only
 def new_schedule_post():
     form = AdminScheduleChangeForm()
     form.master_id.choices = [('', 'Не обрано')] + \
@@ -90,6 +102,8 @@ def new_schedule_post():
 
 
 @app.route('/schedules/delete/<int:schedule_id>', methods=['GET'])
+@login_required
+@admin_only
 def delete_schedule_get(schedule_id):
     status, message = delete_schedule(schedule_id)
 
