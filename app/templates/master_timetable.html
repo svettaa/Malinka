@@ -13,6 +13,60 @@
 
 {% block content %}
 
+<div class="row">
+    <div class="col-12 col-sm-10">
+        <div class="form-group row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div class="input-group date" id="supply_date_datetimepicker" data-target-input="nearest">
+
+                        <div class="input-group-append" data-target="#supply_date_datetimepicker"
+                             data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-12 col-sm-10 mx-auto">
+        <table class="table table-bordered table-responsive-lg entriesList">
+            <thead>
+            <tr>
+                <th scope="col">Початок</th>
+                <th scope="col">Кінець</th>
+                <th scope="col">Процедура</th>
+                <th scope="col">Клієнт</th>
+                <th scope="col">Статус</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr>
+                <td>10:00</td>
+                <td>11:00</td>
+                <td>Покраска в блонд</td>
+                <td>Мельник Анастасія</td>
+                <td class="appointStatus">+</td>
+            </tr>
+
+            <tr>
+                <td>10:00</td>
+                <td>11:00</td>
+                <td>Покраска в блонд</td>
+                <td>Мельник Анастасія</td>
+                <td class="appointStatus">-</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
 
 
 {% endblock %}

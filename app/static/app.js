@@ -4,10 +4,15 @@ $(document).ready(function () {
 
     $('.paint_left').each(function () {
         if (parseInt($(this).text()) <= 100){
-            $(this).parent().css( "background-color", "#FF6262 " );
+            $(this).parent().css( "background-color", "#FF6262");
         };
     });
-
+/*
+    $('.appointStatus').each(function () {
+        if ($(this).text() == "-"){
+            $(this).parent().css( "background-color", "#FF6262");
+        };
+    });*/
 
     $('#change_start_datetimepicker').datetimepicker({
         locale: 'ru'
