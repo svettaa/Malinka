@@ -2,12 +2,20 @@
 
 
 {% block title %}
+{% if page_header %}
+{{ page_header }}
+{% else %}
 Додати/змінити клієнта
+{% endif %}
 {% endblock %}
 
 
 {% block header %}
-Додати/змінити користувача
+{% if page_header %}
+{{ page_header }}
+{% else %}
+Додати/змінити клієнта
+{% endif %}
 {% endblock %}
 
 

@@ -29,6 +29,7 @@ class Success(Enum):
     ADDED_APPOINTMENT_PAINT = 25
     UPDATED_APPOINTMENT_PAINT = 26
     DELETED_APPOINTMENT_PAINT = 27
+    USER_PROFILE_UPDATED = 28
 
 
 class Error(Enum):
@@ -81,6 +82,7 @@ messages = {Success.ADDED_CATEGORY: 'Успішно додано категор�
             Success.ADDED_APPOINTMENT_PAINT: 'Успішно додано фарбу до запису',
             Success.UPDATED_APPOINTMENT_PAINT: 'Успішно змінено фарбу до запису',
             Success.DELETED_APPOINTMENT_PAINT: 'Успішно видалено фарбу до запису',
+            Success.USER_PROFILE_UPDATED: 'Успішно змінено дані',
             Error.CATEGORY_HAS_PROCEDURES: 'Неможливо видалити категорію, що містить процедури',
             Error.CATEGORY_NAME_EXISTS: 'Неможливо змінити або додати категорію, '
                                         'категорія з такою назваю вже існує',
