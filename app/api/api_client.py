@@ -80,6 +80,30 @@ def add_client(client: Client):
         return False, 'Занадто довге значення'
 
 
+def add_client_favourite_master(client_id: int, master_id: int):
+    try:
+        assert_user_has_NOT_favourite_master(client_id, master_id)
+        db.engine.execute('INSERT INTO Favourite_Master (client_id, master_id) '
+                          'VALUES (%s, %s);',
+                          (client_id, master_id))
+        return True, 'Успішно додано улюбленого майстра'
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
+
+
+def add_client_favourite_procedure(client_id: int, procedure_id: int):
+    try:
+        assert_user_has_NOT_favourite_procedure(client_id, procedure_id)
+        db.engine.execute('INSERT INTO Favourite_Procedure (client_id, procedure_id) '
+                          'VALUES (%s, %s);',
+                          (client_id, procedure_id))
+        return True, 'Успішно додано улюблену процедуру'
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
+
+
 def delete_client(client_id: int):
     try:
         db.engine.execute('DELETE '

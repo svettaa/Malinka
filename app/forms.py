@@ -153,3 +153,13 @@ class LoginForm(BaseForm):
     password = PasswordField('Пароль'
                              # , validators=[InputRequired('Введіть пароль')]
                              )
+
+
+class AddFavouriteMaster(BaseForm):
+    master_id = SelectField('Майстер', validators=[InputRequired('Виберіть майстра')],
+                            coerce=str)
+
+
+class AddFavouriteProcedure(BaseForm):
+    procedure_id = SelectField('Процедура', validators=[InputRequired('Виберіть процедуру')],
+                               coerce=str)

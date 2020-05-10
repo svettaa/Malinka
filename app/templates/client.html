@@ -99,6 +99,15 @@
         <br>
         {% endfor %}
         {% endif %}
+        {% if user_view %}
+        <div class="row">
+            <div class="col-md-10 offset-sm-1">
+                <a href="{{ url_for('new_favourite_procedure_get') }}">
+                    <button type="button" class="btn btn-primary">Додати</button>
+                </a>
+            </div>
+        </div>
+        {% endif %}
 
         <h4>Улюблені майстри</h4>
         {% if not favourite_masters %}
@@ -110,10 +119,19 @@
             <span class="fas fa-times"></span>
         </a>
         {% endif %}
-        <strong>{{ master.surname }} </strong>{{ master.first_name }}
+        {{ master.surname }} {{ master.first_name }}
         {% if master.second_name %}{{ master.second_name }}{% endif %}
         <br>
         {% endfor %}
+        {% endif %}
+        {% if user_view %}
+        <div class="row">
+            <div class="col-md-10 offset-sm-1">
+                <a href="{{ url_for('new_favourite_master_get') }}">
+                    <button type="button" class="btn btn-primary">Додати</button>
+                </a>
+            </div>
+        </div>
         {% endif %}
 
     </div>
