@@ -85,24 +85,33 @@
             </div>
         </form>
 
-        {% if favourite_procedures %}
         <h2>Улюблені процедури</h2>
+        {% if not favourite_procedures %}
+        Немає улюблених процедур
+        {% else %}
         {% for procedure in favourite_procedures %}
-        <a href="{{ url_for('edit_procedure_get', procedure_id=procedure.id) }}">
-            {{ procedure.name }}
+        {% if user_view %}
+        <a href="{{ url_for('delete_favourite_procedure_get', procedure_id=procedure.id) }}">
+            <span class="fas fa-times"></span>
         </a>
+        {% endif %}
+        {{ procedure.name }}
         <br>
         {% endfor %}
         {% endif %}
 
-        {% if favourite_masters %}
         <h4>Улюблені майстри</h4>
+        {% if not favourite_masters %}
+        Немає улюблених майстрів
+        {% else %}
         {% for master in favourite_masters %}
-        <a href="{{ url_for('edit_master_get', master_id=master.id) }}">
-            <strong>{{ master.surname }} </strong>{{ master.first_name }}
-            {% if master.second_name %}{{ master.second_name }}{% endif %},
-            +38{{ master.phone }}
+        {% if user_view %}
+        <a href="{{ url_for('delete_favourite_master_get', master_id=master.id) }}">
+            <span class="fas fa-times"></span>
         </a>
+        {% endif %}
+        <strong>{{ master.surname }} </strong>{{ master.first_name }}
+        {% if master.second_name %}{{ master.second_name }}{% endif %}
         <br>
         {% endfor %}
         {% endif %}

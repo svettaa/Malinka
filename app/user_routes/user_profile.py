@@ -12,6 +12,7 @@ def edit_user_profile_get():
     client_id = current_user.id
     form = AdminClientForm(data=get_client(client_id))
     return render_template('client.html', form=form, page_header='Мій кабінет',
+                           user_view=True,
                            favourite_procedures=get_client_favourite_procedures(client_id),
                            favourite_masters=get_client_favourite_masters(client_id),
                            action=url_for('edit_user_profile_post'),
@@ -27,6 +28,7 @@ def edit_user_profile_post():
 
     if not form.validate_on_submit():
         return render_template('client.html', form=form, page_header='Мій кабінет',
+                               user_view=True,
                                favourite_procedures=get_client_favourite_procedures(client_id),
                                favourite_masters=get_client_favourite_masters(client_id),
                                action=url_for('edit_user_profile_post'))
@@ -45,6 +47,7 @@ def edit_user_profile_post():
         return redirect(url_for('edit_user_profile_get', success=message))
     else:
         return render_template('client.html', form=form, page_header='Мій кабінет',
+                               user_view=True,
                                favourite_masters=get_client_favourite_masters(client_id),
                                favourite_procedures=get_client_favourite_procedures(client_id),
                                action=url_for('edit_user_profile_post'),

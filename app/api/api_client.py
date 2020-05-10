@@ -2,6 +2,7 @@ from sqlalchemy.exc import IntegrityError, DataError
 
 from app import db
 from app.models import Client
+from app.api.asserts.asserts_client import *
 
 
 def get_clients():
@@ -89,3 +90,29 @@ def delete_client(client_id: int):
     except IntegrityError:
         return False, 'Неможливо видалити користувача, що має улюблених майстрів чи процедур, міститься в записах ' \
                       'або є майстром'
+
+
+def delete_client_favourite_master(client_id: int, master_id: int):
+    try:
+        assert_user_has_favourite_master(client_id, master_id)
+        db.engine.execute('DELETE '
+                          'FROM Favourite_Master '
+                          'WHERE client_id = %s AND master_id = %s;',
+                          (client_id, master_id))
+        return True, 'Успішно видалено улюбленого майстра'
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
+
+
+def delete_client_favourite_procedure(client_id: int, procedure_id: int):
+    try:
+        assert_user_has_favourite_procedure(client_id, procedure_id)
+        db.engine.execute('DELETE '
+                          'FROM Favourite_Procedure '
+                          'WHERE client_id = %s AND procedure_id = %s;',
+                          (client_id, procedure_id))
+        return True, 'Успішно видалено улюблену процедуру'
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e
