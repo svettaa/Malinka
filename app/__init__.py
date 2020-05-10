@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_admin import Admin
 from flask_bootstrap import Bootstrap
 from flask_fontawesome import FontAwesome
+from flask_socketio import SocketIO
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -15,10 +16,12 @@ migrate = Migrate(app, db)
 admin = Admin(app, template_mode='bootstrap3')
 bootstrap = Bootstrap(app)
 font_awesome = FontAwesome(app)
+socketio = SocketIO(app)
 
 from app.routes import *
 from app.admin_routes import *
 from app.user_routes import *
+from app.socket_io import *
 from app.master_routes import *
 from app.models import *
 from app.admin_views import *

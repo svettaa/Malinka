@@ -18,9 +18,9 @@
         <div class="form-group row">
             <div class="col-md-3">
                 <div class="form-group">
-                    <div class="input-group date" id="supply_date_datetimepicker" data-target-input="nearest">
-
-                        <div class="input-group-append" data-target="#supply_date_datetimepicker"
+                    <div class="input-group date" id="master_timetable_datetimepicker" data-target-input="nearest">
+                        <input class="form-control datetimepicker-input" id="master-timetable-input">
+                        <div class="input-group-append" data-target="#master_timetable_datetimepicker"
                              data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
@@ -32,10 +32,9 @@
 </div>
 
 
-
 <div class="row">
     <div class="col-12 col-sm-10 mx-auto">
-        <table class="table table-bordered table-responsive-lg entriesList">
+        <table class="table table-bordered table-responsive-lg" id="mainTable">
             <thead>
             <tr>
                 <th scope="col">Початок</th>
@@ -46,27 +45,16 @@
             </tr>
             </thead>
             <tbody>
-
-            <tr>
-                <td>10:00</td>
-                <td>11:00</td>
-                <td>Покраска в блонд</td>
-                <td>Мельник Анастасія</td>
-                <td class="appointStatus">+</td>
-            </tr>
-
-            <tr>
-                <td>10:00</td>
-                <td>11:00</td>
-                <td>Покраска в блонд</td>
-                <td>Мельник Анастасія</td>
-                <td class="appointStatus">-</td>
-            </tr>
-
             </tbody>
         </table>
     </div>
 </div>
 
 
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+<script src="{{ url_for('static', filename='master_timetable.js') }}"></script>
 {% endblock %}

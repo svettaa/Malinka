@@ -30,6 +30,12 @@ $(document).ready(function () {
     });
 
 
+    $('#master_timetable_datetimepicker').datetimepicker({
+        locale: 'ru',
+        format: 'L'
+    });
+
+
     $('#admin_appointment_date_datetimepicker').datetimepicker({
         locale: 'ru',
         format: 'L'
