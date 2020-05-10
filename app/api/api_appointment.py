@@ -35,8 +35,40 @@ def get_appointment(appointment_id: int):
                              '     INNER JOIN Client C ON Appointment.client_id = C.id)'
                              '     INNER JOIN Procedure ON Appointment.procedure_id = Procedure.id '
                              'WHERE Appointment.id = %s '
-                             'ORDER BY appoint_start;',
+                             'ORDER BY appoint_start DESC;',
                              appointment_id).fetchone()
+
+
+def get_client_future_appointments(client_id: int):
+    return db.session.execute('SELECT  M.surname AS master_surname, '
+                              '        M.first_name AS master_first_name, '
+                              '        Procedure.name AS procedure_name, '
+                              '        status, appoint_start, appoint_end, '
+                              '        price_min, price_max, preferences, '
+                              '        Appointment.id AS appointment_id '
+                              'FROM ((Appointment INNER JOIN Client M ON Appointment.master_id = M.id)'
+                              '     INNER JOIN Client C ON Appointment.client_id = C.id)'
+                              '     INNER JOIN Procedure ON Appointment.procedure_id = Procedure.id '
+                              'WHERE C.id = :client_id AND'
+                              '      appoint_start > now() '
+                              'ORDER BY appoint_start;',
+                              {'client_id': client_id}).fetchall()
+
+
+def get_client_past_appointments(client_id: int):
+    return db.session.execute('SELECT  M.surname AS master_surname, '
+                              '        M.first_name AS master_first_name, '
+                              '        Procedure.name AS procedure_name, '
+                              '        status, appoint_start, appoint_end, '
+                              '        price, preferences, '
+                              '        Appointment.id AS appointment_id '
+                              'FROM ((Appointment INNER JOIN Client M ON Appointment.master_id = M.id)'
+                              '     INNER JOIN Client C ON Appointment.client_id = C.id)'
+                              '     INNER JOIN Procedure ON Appointment.procedure_id = Procedure.id '
+                              'WHERE C.id = :client_id AND'
+                              '      appoint_start <= now() '
+                              'ORDER BY appoint_start;',
+                              {'client_id': client_id}).fetchall()
 
 
 def update_appointment(appointment: Appointment):
@@ -140,3 +172,16 @@ def delete_appointment(appointment_id: int):
         return True, 'Успішно видалено запис'
     except IntegrityError:
         return False, 'Запис використовує фарби'
+
+
+def delete_appointment_if_future(appointment_id: int, user_id: int):
+    try:
+        appointment = get_appointment(appointment_id)
+        if appointment is None:
+            return False, 'Не існує такого запису'
+        assert_appointment_client(appointment, user_id)
+        assert_appointment_is_future(appointment_id)
+        return delete_appointment(appointment_id)
+    except AssertionError as e:
+        db.session.rollback()
+        return False, e

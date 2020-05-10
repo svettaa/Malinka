@@ -26,26 +26,31 @@
 <!-- Tab panes -->
 <div class="tab-content">
     <div class="tab-pane active" id="active" role="tabpanel" aria-labelledby="active-tab">
+
+        {% if future_appointments|length > 0 %}
+        {% for appointment in future_appointments %}
         <div class="card mb-3 col-12 col-lg-9 mx-auto p-0">
             <div class="card-header">
                 <div class="row">
                     <div class="col-6 col-sm-5">
                         <h5 class="mb-0">
                             <span class="fa fa-calendar-alt fa-xs"></span>
-
-                            17.04.2020
+                            {{ appointment.appoint_start.strftime('%d.%m.%Y') }}
                         </h5>
 
                     </div>
                     <div class="col-4">
                         <h5 class="mb-0">
                             <span class="fa fa-clock fa-xs"></span>
-
-                            14:30
+                            {{ appointment.appoint_start.strftime('%H:%M') }}
+                            -
+                            {{ appointment.appoint_end.strftime('%H:%M') }}
                         </h5>
                     </div>
                     <div class="col-2 col-sm-3">
-                        <a class="float-right">
+                        <a class="float-right"
+                           href="{{ url_for('delete_user_appointment_get',
+                                             appointment_id=appointment.appointment_id) }}">
                             <span class="fa fa-trash"></span>
                         </a>
                     </div>
@@ -55,60 +60,27 @@
                 <div class="row">
                     <div class="col-12 col-md-5 mb-3 mb-md-0">
                         <h6 class="card-subtitle">Процедура:</h6>
-                        <p class="card-text">Однотонне покриття лаком</p>
+                        <p class="card-text">{{ appointment.procedure_name }}</p>
                     </div>
                     <div class="col-12 col-md-4 mb-3 mb-md-0">
                         <h6 class="card-subtitle">Майстер:</h6>
-                        <a class="card-link" href="#">Петренко Марія</a>
+                        {{ appointment.master_surname }}
+                        {{ appointment.master_first_name }}
                     </div>
                     <div class="col-12 col-md-3">
                         <h6 class="card-subtitle">Ціна:</h6>
-                        <p class="card-text">від 300 грн</p>
+                        <p class="card-text">
+                            {{ appointment.price_min|round }}&nbsp;-&nbsp;{{ appointment.price_max|round }}&nbsp;грн
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
+        {% endfor %}
+        {% else %}
+        Немає актуальних записів
+        {% endif %}
 
-        <div class="card mb-3 col-12 col-lg-9 mx-auto mt-5 p-0">
-            <div class="card-header">
-                <div class="row">
-                    <div class="col-6 col-sm-5">
-                        <h5 class="mb-0">
-                            <span class="fa fa-calendar-alt fa-xs"></span>
-                            17.04.2020
-                        </h5>
-
-                    </div>
-                    <div class="col-4">
-                        <h5 class="mb-0">
-                            <span class="fa fa-clock fa-xs"></span>
-                            14:30
-                        </h5>
-                    </div>
-                    <div class="col-2 col-sm-3">
-                        <a class="float-right">
-                            <span class="fa fa-trash"></span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12 col-md-5 mb-3 mb-md-0">
-                        <h6 class="card-subtitle">Процедура:</h6>
-                        <p class="card-text">Однотонне покриття лаком</p>
-                    </div>
-                    <div class="col-12 col-md-4 mb-3 mb-md-0">
-                        <h6 class="card-subtitle">Майстер:</h6>
-                        <a class="card-link" href="#">Петренко Марія</a>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <h6 class="card-subtitle">Ціна:</h6>
-                        <p class="card-text">від 300 грн</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <div class="tab-pane" id="prev" role="tabpanel" aria-labelledby="prev-tab">
 
@@ -127,13 +99,18 @@
                     </thead>
                     <tbody>
 
+                    {% for appointment in past_appointments %}
                     <tr>
 
-                        <td>16.04.2020</td>
-                        <td>Фарбування в блонд</td>
-                        <td><a href="#">Василенко Катерина</a></td>
-                        <td>200</td>
+                        <td>{{ appointment.appoint_start.strftime('%d.%m.%Y') }}</td>
+                        <td>{{ appointment.procedure_name }}</td>
+                        <td>
+                            {{ appointment.master_surname }}
+                            {{ appointment.master_first_name }}
+                        </td>
+                        <td>{{ appointment.price }}</td>
                     </tr>
+                    {% endfor %}
 
                     </tbody>
                 </table>

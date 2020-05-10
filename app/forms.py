@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, TextAreaField, \
+from wtforms import StringField, SelectField, TextAreaField, PasswordField, \
     RadioField, HiddenField, FormField, FieldList, DateTimeField, BooleanField
 from wtforms.validators import InputRequired, Optional, NumberRange, Regexp
 from wtforms.fields.html5 import TelField, EmailField, IntegerField
@@ -145,3 +145,11 @@ class AdminAppointmentForm(BaseForm):
     #     # kwargs['4'] = 5
     #     # kwargs['data']['date'] = kwargs['obj']
     #     super(AdminAppointmentForm, self).__init__(formdata, **kwargs)
+
+
+class LoginForm(BaseForm):
+    phone = TelField('Телефон, +38', validators=[InputRequired('Введіть телефон'),
+                                                 Regexp('[0-9]{10}', message='Некоректний телефон')])
+    password = PasswordField('Пароль'
+                             # , validators=[InputRequired('Введіть пароль')]
+                             )

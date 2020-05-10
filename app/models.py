@@ -1,9 +1,10 @@
-from sqlalchemy import CheckConstraint
+from flask_login import UserMixin
+from sqlalchemy import exists
 
 from app import db
 
 
-class Client(db.Model):
+class Client(UserMixin, db.Model):
     __tablename__ = 'client'
     id = db.Column(db.Integer, primary_key=True)
     phone = db.Column(db.String(10), nullable=False, unique=True)
@@ -22,6 +23,12 @@ class Client(db.Model):
         "Appointment", back_populates="client")
     master_data = db.relationship(
         "Master", back_populates="data")
+
+    def is_master(self):
+        return db.session.query(exists().where(Master.id == self.id)).scalar()
+
+    def is_admin(self):
+        return db.session.query(exists().where(AdminUser.id == self.id)).scalar()
 
     def __repr__(self):
         return f'{self.surname} {self.first_name} {self.second_name}, +38{self.phone}'
@@ -49,6 +56,11 @@ class Master(db.Model):
 
     def __repr__(self):
         return f'{self.data.surname} {self.data.first_name} {self.data.second_name}, +38{self.data.phone}'
+
+
+class AdminUser(db.Model):
+    __tablename__ = 'admin_user'
+    id = db.Column(db.Integer, primary_key=True)
 
 
 class ScheduleChange(db.Model):

@@ -1,12 +1,14 @@
 from flask import render_template
+from flask_login import current_user
 from datetime import datetime
 
 from app import app, db
 
 
 @app.context_processor
-def inject_now():
-    return {'now': datetime.utcnow()}
+def pass_default_parameters():
+    return {'now': datetime.utcnow(),
+            'current_user': current_user}
 
 
 @app.route('/')

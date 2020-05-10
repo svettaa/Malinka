@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
@@ -8,6 +9,7 @@ from flask_fontawesome import FontAwesome
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
 
+login_manager = LoginManager(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 admin = Admin(app, template_mode='bootstrap3')

@@ -1,10 +1,11 @@
 from flask import render_template, request, redirect, url_for
+from flask_login import login_required
 
 from app import app
-from app.message_codes import *
 from app.forms import AdminMasterForm
 from app.api.api_master import *
 from app.api.api_client import get_clients_no_masters
+from app.login import admin_only
 
 
 def get_master_and_their_procedures(master_id):
@@ -23,13 +24,17 @@ def get_master_and_their_procedures(master_id):
 
 
 @app.route('/masters', methods=['GET'])
+@login_required
+@admin_only
 def masters_get():
     return render_template('masters.html', masters=get_masters(),
-                           error=get_error_message(request.args.get('error')),
-                           success=get_success_message(request.args.get('success')))
+                           error=(request.args.get('error')),
+                           success=(request.args.get('success')))
 
 
 @app.route('/masters/<int:master_id>', methods=['GET'])
+@login_required
+@admin_only
 def edit_master_get(master_id):
     data = get_master_and_their_procedures(master_id)
     form = AdminMasterForm(data=data)
@@ -44,6 +49,8 @@ def edit_master_get(master_id):
 
 
 @app.route('/masters/<int:master_id>', methods=['POST'])
+@login_required
+@admin_only
 def edit_master_post(master_id):
     master = get_master(master_id)
     form = AdminMasterForm()
@@ -81,10 +88,12 @@ def edit_master_post(master_id):
                                action=url_for('edit_master_post', master_id=master_id),
                                error=message)
 
-    return redirect(url_for('masters_get', success=Success.UPDATED_MASTER.value))
+    return redirect(url_for('masters_get', success=message))
 
 
 @app.route('/masters/new', methods=['GET'])
+@login_required
+@admin_only
 def new_master_get():
     form = AdminMasterForm()
     form.id.choices = [('', 'Не обрано')] + \
@@ -96,6 +105,8 @@ def new_master_get():
 
 
 @app.route('/masters/new', methods=['POST'])
+@login_required
+@admin_only
 def new_master_post():
     form = AdminMasterForm()
     form.id.choices = [('', 'Не обрано')] + \
@@ -112,7 +123,7 @@ def new_master_post():
     status, message = add_master(master)
 
     if status:
-        return redirect(url_for('masters_get', success=Success.ADDED_MASTER.value))
+        return redirect(url_for('masters_get', success=message))
     else:
         return render_template('master.html', form=form, new_master=True,
                                action=url_for('new_master_post'),
@@ -120,10 +131,12 @@ def new_master_post():
 
 
 @app.route('/masters/delete/<int:master_id>', methods=['GET'])
+@login_required
+@admin_only
 def delete_master_get(master_id):
     status, message = delete_master(master_id)
 
     if status:
-        return redirect(url_for('masters_get', success=Success.DELETED_MASTER.value))
+        return redirect(url_for('masters_get', success=message))
     else:
-        return redirect(url_for('masters_get', error=Error.MASTER_HAS_APPOINTMENTS.value))
+        return redirect(url_for('masters_get', error=message))
