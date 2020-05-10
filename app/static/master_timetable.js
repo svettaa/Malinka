@@ -25,12 +25,12 @@ $(document).ready(function () {
 
         var status = result['status'];
         var message = result['message'];
-        var json = result['json'];
+        var data = result['data'];
 
         if(status == false){
             $('#message').html('<div class="alert alert-danger" role="alert">' + message + '</div>');
         } else {
-            $.each(json, function(){
+            $.each(data, function(){
                 $('#mainTable > tbody').append('<tr>' +
                 '<td>' + this['appoint_start'].substring(11) + '</td>' +
                 '<td>' + this['appoint_end'].substring(11) + '</td>' +

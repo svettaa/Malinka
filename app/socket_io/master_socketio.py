@@ -16,7 +16,7 @@ def get_master_timetable(date_str):
         date_obj = datetime.strptime(date_str, '%d.%m.%Y')
         timetable = get_master_date_appointments(current_user.id, date_obj)
         emit('get_master_timetable', {'status': True,
-                                       'json': json_list(timetable)}, json=True)
+                                      'data': json_list(timetable)}, json=True)
     except ValueError:
         emit('get_master_timetable', {'status': False,
-                                       'message': 'Некоректний формат часу'}, json=True)
+                                      'message': 'Некоректний формат часу'}, json=True)
