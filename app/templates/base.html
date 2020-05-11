@@ -83,6 +83,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarProfile">
                     {% if current_user.is_admin() %}
+                    <a class="dropdown-item" href="{{ url_for('statistics_get') }}">Статистика</a>
                     <a class="dropdown-item" href="{{ url_for('categories_get') }}">Категорії</a>
                     <a class="dropdown-item" href="{{ url_for('procedures_get') }}">Процедури</a>
                     <a class="dropdown-item" href="{{ url_for('paints_get') }}">Фарби</a>
@@ -180,16 +181,13 @@
 {% block scripts %}
 <script src="{{ url_for('static', filename='jquery.slim.min.js') }}"></script>
 <script src="{{ url_for('static', filename='popper.min.js') }}"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.0/moment-with-locales.min.js"></script>
-<script type="text/javascript"
-        src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.25.0/moment-with-locales.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
 <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
-
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"></script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
+<script src="https://cdn.datatables.net/v/bs4/dt-1.10.20/datatables.min.js"></script>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 {% endblock %}
 
 {% endblock %}

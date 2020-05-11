@@ -7,3 +7,4 @@ from app.admin_routes.admin_master_routes import *
 from app.admin_routes.admin_schedule_routes import *
 from app.admin_routes.admin_appointment_routes import *
 from app.admin_routes.admin_appointment_paint_routes import *
+from app.admin_routes.admin_statisctics_routes import *

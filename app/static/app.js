@@ -51,6 +51,18 @@ $(document).ready(function () {
         locale: 'ru',
     });
 
+
+    $('#statistics_start_datetimepicker').datetimepicker({
+        locale: 'ru',
+        format: 'L'
+    });
+
+
+    $('#statistics_end_datetimepicker').datetimepicker({
+        locale: 'ru',
+        format: 'L'
+    });
+
     $('.entriesList').DataTable( {
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Ukrainian.json"
