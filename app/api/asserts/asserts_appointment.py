@@ -1,5 +1,6 @@
 import pytz
-from datetime import datetime, date, time
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 from app import db
 from app.models import Appointment
@@ -114,3 +115,22 @@ def assert_appointment_master_no_vacation(appointment: Appointment):
                            'appoint_start': appointment.appoint_start,
                            'appoint_end': appointment.appoint_end}).scalar() > 0:
         raise AssertionError('У майстра відпустка на цей час')
+
+
+def assert_client_has_not_many_future_appointments(appointment: Appointment):
+    if db.session.execute('SELECT COUNT(*) '
+                          'FROM Appointment '
+                          'WHERE client_id = :client_id AND '
+                          '      appoint_start > now();',
+                          {'client_id': appointment.client_id}).scalar() > 2:
+        raise AssertionError('Клієнт не може мати більше 2 невиконаних записів')
+
+
+def assert_appointment_is_in_nearest_future(appointment: Appointment):
+    appoint_start = appointment.appoint_start.date()
+    now = datetime.now(pytz.timezone('Europe/Kiev')).date()
+    max_possible_start = now + relativedelta(months=2)
+    print(appoint_start)
+    print(max_possible_start)
+    if appoint_start > max_possible_start:
+        raise AssertionError('Запис має бути протягом двох місяців від сьогодні')

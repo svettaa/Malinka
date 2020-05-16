@@ -15,7 +15,7 @@ def get_appointments():
                              'FROM ((Appointment INNER JOIN Client M ON Appointment.master_id = M.id)'
                              '     INNER JOIN Client C ON Appointment.client_id = C.id)'
                              '     INNER JOIN Procedure ON Appointment.procedure_id = Procedure.id '
-                             'ORDER BY appoint_start').fetchall()
+                             'ORDER BY appoint_start DESC').fetchall()
 
 
 def get_appointment(appointment_id: int):
@@ -98,6 +98,7 @@ def update_appointment(appointment: Appointment):
     if int(appointment.client_id) != original_appointment.client_id:
         return False, 'Не можна змінювати клієнта у записі'
     try:
+        assert_appointment_is_in_nearest_future(appointment)
         assert_appointment_master_does_procedure(appointment)
         db.session.execute('UPDATE Appointment '
                            'SET appoint_start = :appoint_start, '
@@ -118,6 +119,7 @@ def update_appointment(appointment: Appointment):
                             'master_id': appointment.master_id,
                             'procedure_id': appointment.procedure_id,
                             'id': appointment.id})
+        assert_client_has_not_many_future_appointments(appointment)
         assert_appointment_is_hired(appointment)
         assert_appointment_even_schedule_or_working(appointment)
         assert_appointment_master_no_vacation(appointment)
@@ -146,6 +148,7 @@ def add_appointment(appointment: Appointment):
     if appointment.master_id == appointment.client_id:
         return False, 'Неможливо записати майстра до себе'
     try:
+        assert_appointment_is_in_nearest_future(appointment)
         assert_appointment_master_does_procedure(appointment)
         db.session.execute('INSERT INTO Appointment (appoint_start, appoint_end, preferences,'
                            '                         status, price, client_id, master_id, procedure_id) '
@@ -159,6 +162,7 @@ def add_appointment(appointment: Appointment):
                             'client_id': appointment.client_id,
                             'master_id': appointment.master_id,
                             'procedure_id': appointment.procedure_id})
+        assert_client_has_not_many_future_appointments(appointment)
         assert_appointment_is_hired(appointment)
         assert_appointment_even_schedule_or_working(appointment)
         assert_appointment_master_no_vacation(appointment)
