@@ -32,14 +32,14 @@ $(document).ready(function () {
     statistics_socket.on('get_interval_statistics', function(result){
         $('.added-block').remove();
         $('.stat-number').html('-');
-        $('#message').html('');
+        clearMessages();
 
         var status = result['status'];
         var message = result['message'];
         var data = result['data'];
 
         if(status == false){
-            $('#message').html('<div class="alert alert-danger" role="alert">' + message + '</div>');
+            showError(message);
         } else {
 
             $('#appointments-amount').html(data['appointments']);

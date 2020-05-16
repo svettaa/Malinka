@@ -35,14 +35,6 @@
 <div class="row">
     <div class="col-12 col-sm-10 mx-auto">
         <table class="table table-bordered table-responsive-lg" id="mainTable">
-            <thead>
-            <tr>
-                <th scope="col" style="width:0px;">Час</th>
-                <th scope="col">Подія</th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
         </table>
     </div>
 </div>
@@ -53,5 +45,6 @@
 {% block scripts %}
 {{ super() }}
 <script src="{{ url_for('static', filename='input_date_utils.js') }}"></script>
+<script src="{{ url_for('static', filename='table_build_utils.js') }}"></script>
 <script src="{{ url_for('static', filename='master_timetable.js') }}"></script>
 {% endblock %}
