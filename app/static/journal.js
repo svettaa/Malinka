@@ -7,8 +7,13 @@ function initJournalTab(master) {
     content.append(table);
 
     buildTimeTable(table);
+
     $.each(master.appointments, function(){
          addAppointment(table, this);
+    });
+
+    $.each(master.vacations, function(){
+         addVacation(table, this);
     });
 }
 

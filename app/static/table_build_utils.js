@@ -90,3 +90,22 @@
                     tableWrapper.find('td.appointment').eq(i).css('display', 'none');
                 }
     }
+
+    function addVacation(tableWrapper, vacation) {
+
+                start_time = vacation['start'];
+                end_time = vacation['end'];
+
+                start_index = getRow(start_time);
+                end_index = getRow(end_time);
+
+                tableWrapper.find('.appointment').eq(start_index).append(
+                    'Відпустка!'
+                );
+
+                tableWrapper.find('td.appointment').eq(start_index)
+                    .attr('rowspan', Math.max(end_index - start_index, 1));
+                for(var i = start_index + 1; i < end_index; i++){
+                    tableWrapper.find('td.appointment').eq(i).css('display', 'none');
+                }
+    }
