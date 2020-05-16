@@ -6,6 +6,14 @@
     const interval = 10;
     const edge = 60;
 
+    function buildTable() {
+        var newTable = $(
+            '<table class="table table-bordered table-responsive-lg">' +
+            '</table>'
+        );
+        return newTable;
+    }
+
     function buildTimeTable(tableWrapper){
         tableWrapper.html('<thead>' +
             '<tr>' +
@@ -79,6 +87,6 @@
                 tableWrapper.find('td.appointment').eq(start_index)
                     .attr('rowspan', Math.max(end_index - start_index, 1));
                 for(var i = start_index + 1; i < end_index; i++){
-                    $('#mainTable td.appointment').eq(i).css('display', 'none');
+                    tableWrapper.find('td.appointment').eq(i).css('display', 'none');
                 }
     }

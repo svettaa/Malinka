@@ -130,7 +130,5 @@ def assert_appointment_is_in_nearest_future(appointment: Appointment):
     appoint_start = appointment.appoint_start.date()
     now = datetime.now(pytz.timezone('Europe/Kiev')).date()
     max_possible_start = now + relativedelta(months=2)
-    print(appoint_start)
-    print(max_possible_start)
     if appoint_start > max_possible_start:
         raise AssertionError('Запис має бути протягом двох місяців від сьогодні')

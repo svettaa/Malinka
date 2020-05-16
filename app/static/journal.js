@@ -1,34 +1,48 @@
 
-//function fillMasterTimetable(result) {
-//
-//        clearMessages();
-//        buildTimeTable($('#mainTable'));
-//
-//        var status = result['status'];
-//        var message = result['message'];
-//        var data = result['data'];
-//
-//        if(status == false){
-//            showError(message);
-//        } else {
-//            $.each(data, function(){
-//                addAppointment($('#mainTable'), this);
-//            });
-//        }
-//}
+function initJournalTab(master) {
+    addTab($('#main-tabs'), master.id, master.surname + ' ' + master.first_name);
+    const content = buildTabContent($('#main-content'), master.id);
+
+    const table = buildTable();
+    content.append(table);
+
+    buildTimeTable(table);
+    $.each(master.appointments, function(){
+         addAppointment(table, this);
+    });
+}
+
+function initJournal(result) {
+
+        clearMessages();
+        clearTabs($('#main-tabs'));
+        clearTabsContent($('#main-content'));
+
+        var status = result['status'];
+        var message = result['message'];
+        var data = result['data'];
+
+        if(status == false){
+            showError(message);
+        } else {
+            $.each(data, function(){
+                initJournalTab(this);
+            });
+        }
+}
 
 $(document).ready(function () {
     var admin_socket = io('http://127.0.0.1:5000/admin')
 
-    function get_timetable(){
+    function get_journal(){
         var msg = $('#admin-journal-input').val();
         admin_socket.emit('get_journal', msg);
     }
 
     setCurrentDateVal($('#admin-journal-input'));
 
-    get_timetable();
-    $('#admin-journal-input').focusout(get_timetable);
+    get_journal();
+    $('#admin-journal-input').focusout(get_journal);
 
-//    admin_socket.on('get_journal', fillMasterTimetable);
+    admin_socket.on('get_journal', initJournal);
 });

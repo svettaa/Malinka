@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from sqlalchemy.exc import IntegrityError
 
-from app import db
+from app import db, app
 from app.api.asserts.asserts_master import *
 
 
@@ -16,6 +18,35 @@ def get_master(master_id: int):
                              'FROM Client INNER JOIN Master ON Master.id = Client.id '
                              'WHERE Master.id = %s;',
                              master_id).fetchone()
+
+
+def get_masters_working(date: datetime):
+    day = date.day
+    even_day = (day % 2 == 0)
+
+    start_time = datetime(date.year, date.month, date.day,
+                          hour=app.config['WORKING_DAY_START'].hour,
+                          minute=app.config['WORKING_DAY_START'].minute)
+    end_time = datetime(date.year, date.month, date.day,
+                        hour=app.config['WORKING_DAY_END'].hour,
+                        minute=app.config['WORKING_DAY_END'].minute)
+
+    return db.engine.execute('SELECT Master.id, surname, first_name, second_name, is_male, '
+                             '       phone, email, even_schedule, is_hired '
+                             'FROM Master INNER JOIN Client ON Master.id = Client.id '
+                             'WHERE even_schedule = %s '
+                             '      OR EXISTS (SELECT * '
+                             '                 FROM Schedule_Change '
+                             '                 WHERE master_id = Master.id AND '
+                             '                       (change_start, change_end) '
+                             '                        OVERLAPS '
+                             '                       (%s, %s)) '
+                             '      OR (%s <= now() AND'
+                             '          EXISTS (SELECT * '
+                             '                  FROM Appointment '
+                             '                  WHERE master_id = Master.id AND '
+                             '                        appoint_start BETWEEN %s AND %s));',
+                             (even_day, start_time, end_time, start_time, start_time, end_time)).fetchall()
 
 
 def get_all_procedures_join_master(master_id: int):
