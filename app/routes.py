@@ -3,6 +3,7 @@ from flask_login import current_user
 from datetime import datetime
 
 from app import app, db
+from app.api.api_client import get_client_favourite_procedures
 
 
 @app.context_processor
@@ -22,7 +23,7 @@ def index():
 
     categories = []
     for category in categories_proxy:
-        procedures = db.engine.execute('SELECT name, info, price_min, price_max '
+        procedures = db.engine.execute('SELECT id, name, info, price_min, price_max '
                                        'FROM Procedure '
                                        'WHERE category_id = %s;',
                                        category['id']).fetchall()
@@ -30,4 +31,12 @@ def index():
                     'procedures': procedures}
         categories.append(new_item)
 
-    return render_template('index.html', categories=categories, masters=masters)
+    if current_user.is_authenticated:
+        favourite_procedures = get_client_favourite_procedures(current_user.id)
+    else:
+        favourite_procedures = None
+
+    return render_template('index.html',
+                           categories=categories,
+                           masters=masters,
+                           favourite_procedures=favourite_procedures)

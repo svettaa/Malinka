@@ -32,6 +32,14 @@ def get_vacations_list(master_id, date_obj):
     return result
 
 
+def get_appointments_list(master_id, date_obj):
+    result = list()
+    for appointment in get_master_date_appointments(master_id, date_obj):
+        result.append \
+            (json_one(normalize_time(appointment.appoint_start, appointment.appoint_end, date_obj)))
+    return result
+
+
 def get_not_working_list(master_id, date_obj):
     even_day = (date_obj.day % 2 == 0)
     if get_master(master_id).even_schedule == even_day:

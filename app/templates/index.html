@@ -26,7 +26,8 @@
         <div class="col-md-4">
             <label for="bookButton" class="col-form-label d-flex justify-content-center">Створити запис:</label>
         </div>
-        <button type="button" id="bookButton" class="d-flex justify-content-center btn btn-secondary col-md-4">
+        <button type="button" id="bookButton"
+                class="d-flex justify-content-center btn btn-secondary col-md-4 create-appointment">
             ЗАПИСАТИСЯ
         </button>
     </div>
@@ -101,12 +102,12 @@
                         {{ master.second_name }}
                         {% endif %}
                     </h5>
-    <!--                <p class="card-text">Інформація про майстра</p>-->
+                    <!--                <p class="card-text">Інформація про майстра</p>-->
                 </div>
-                <div class="card-footer">
-                    <a href="#" class="card-link text-info">Профіль</a><br>
-                    <a href="#" class="card-link text-info">Записатися до майстра</a>
-                </div>
+                <!--                <div class="card-footer">-->
+                <!--                    <a href="#" class="card-link text-info">Профіль</a><br>-->
+                <!--                    <a href="#" class="card-link text-info">Записатися до майстра</a>-->
+                <!--                </div>-->
             </div>
         </div>
         {% endfor %}
@@ -114,16 +115,21 @@
     </div>
 </div>
 
-<div class="jumbotron jumbotron-fluid">
+<div class="jumbotron jumbotron-fluid" id="appointment-jumbotron">
     <div class="container">
-        <div class="row row-header mb-4">
+        <div class="row row-header">
             <div class="col-12 col-sm-8">
                 <h4>Подивіться журнал, щоб зробити запис</h4>
-                <p class="lead">Оберіть день, процедуру та майстра</p>
+                <p class="lead">Можете обрати день, процедуру та майстра</p>
+            </div>
+            <div class="col-12 col-sm-4 justify-content-center align-self-center">
+                <button type="button" class="btn btn btn-secondary btn-block create-appointment">
+                    ЗАПИСАТИСЯ
+                </button>
             </div>
         </div>
 
-        <form>
+        <form style="display: none;" id="appointment">
             <div class="form-row">
                 <div class="form-group col-md-3 mr-2">
                     <label for="index_datetimepicker">День</label>
@@ -139,32 +145,43 @@
                 <div class="form-group col-md-3 mr-2">
                     <label for="indexProc">Процедура</label>
                     <select id="indexProc" class="form-control">
-                        <option selected>Choose...</option>
-                        <option>...</option>
+                        <option value="">Не обрано</option>
+                        {% if favourite_procedures %}
+                        <optgroup label="Улюблені">
+                            {% for procedure in favourite_procedures %}
+                            <option value="{{ procedure.id }}">{{ procedure.name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endif %}
+                        {% for category in categories %}
+                        <optgroup label="{{ category.name }}">
+                            {% for procedure in category.procedures %}
+                            <option value="{{ procedure.id }}">{{ procedure.name }}</option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endfor %}
                     </select>
                 </div>
-                <div class="form-group col-md-3 mr-2">
-                    <label for="indexMaster">Майстер</label>
-                    <select id="indexMaster" class="form-control">
-                        <option selected>Choose...</option>
-                        <option>...</option>
-                    </select>
-                </div>
-                <div class="form-group col-md-2 ">
-                    <button type="button" class="btn btn btn-secondary btn-block">ЗАПИСАТИСЯ</button>
-                </div>
+
             </div>
         </form>
 
-
-
-
-            <!--<div class="col-12 col-sm-4 justify-content-center align-self-center">
-                <button type="button" class="btn btn btn-secondary btn-block">ЗАПИСАТИСЯ</button>
-            </div>-->
-
     </div>
 </div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-10 mx-auto" id="index-message">
+        </div>
+    </div>
+</div>
+
+<div class="container" id="index-free-time" style="display:none;">
+    <ul class="nav nav-tabs" id="index-tabs">
+    </ul>
+
+    <div class="tab-content" id="index-content">
+    </div>
 </div>
 
 <div class="container">
@@ -198,4 +215,11 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='input_date_utils.js') }}"></script>
+<script src="{{ url_for('static', filename='tabs_build_utils.js') }}"></script>
+<script src="{{ url_for('static', filename='index_appointment.js') }}"></script>
 {% endblock %}

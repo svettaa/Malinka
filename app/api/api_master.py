@@ -40,6 +40,28 @@ def get_masters_working(date: datetime):
                               {'even_day': even_day, 'date': date}).fetchall()
 
 
+def get_masters_working_do_procedure_client_view(date: datetime, procedure_id: str):
+    day = date.day
+    even_day = (day % 2 == 0)
+
+    return db.session.execute('SELECT Master.id, surname, first_name, duration '
+                              'FROM (Master INNER JOIN Client ON Master.id = Client.id) '
+                              '      INNER JOIN Master_Procedure ON Master.id = master_id '
+                              'WHERE '
+                              '     procedure_id = :procedure_id AND '
+                              '     is_hired = True AND '
+                              '     ('
+                              '      even_schedule = :even_day '
+                              '      OR EXISTS (SELECT * '
+                              '                 FROM Schedule_Change '
+                              '                 WHERE master_id = Master.id AND is_working = True AND '
+                              '                       :date BETWEEN Date(change_start) AND DATE(change_end))  '
+                              '      );',
+                              {'even_day': even_day,
+                               'date': date,
+                               'procedure_id': procedure_id}).fetchall()
+
+
 def get_master_date_vacations(master_id: int, date_obj: datetime):
     return db.engine.execute('SELECT change_start, change_end '
                              'FROM Schedule_Change '

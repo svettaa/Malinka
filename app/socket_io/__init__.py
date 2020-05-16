@@ -25,3 +25,4 @@ def json_list(rows):
 from app.socket_io.master_socketio import *
 from app.socket_io.statistics_socketio import *
 from app.socket_io.journal_socketio import *
+from app.socket_io.appointment_socketio import *
