@@ -100,7 +100,36 @@
                 end_index = getRow(end_time);
 
                 tableWrapper.find('.appointment').eq(start_index).append(
+                    'Час: ' +
+                    start_time +
+                    ' - ' +
+                    end_time +
+                    '<br>' +
                     'Відпустка!'
+                );
+
+                tableWrapper.find('td.appointment').eq(start_index)
+                    .attr('rowspan', Math.max(end_index - start_index, 1));
+                for(var i = start_index + 1; i < end_index; i++){
+                    tableWrapper.find('td.appointment').eq(i).css('display', 'none');
+                }
+    }
+
+    function addNotWorking(tableWrapper, overworking) {
+
+                start_time = overworking['start'];
+                end_time = overworking['end'];
+
+                start_index = getRow(start_time);
+                end_index = getRow(end_time);
+
+                tableWrapper.find('.appointment').eq(start_index).append(
+                    'Час: ' +
+                    start_time +
+                    ' - ' +
+                    end_time +
+                    '<br>' +
+                    'Не працює!'
                 );
 
                 tableWrapper.find('td.appointment').eq(start_index)

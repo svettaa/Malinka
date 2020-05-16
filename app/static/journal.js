@@ -15,6 +15,12 @@ function initJournalTab(master) {
     $.each(master.vacations, function(){
          addVacation(table, this);
     });
+
+    $.each(master.notWorking, function(){
+         if (this.start !== this.end) {
+            addNotWorking(table, this);
+         }
+    });
 }
 
 function initJournal(result) {

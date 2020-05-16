@@ -48,6 +48,15 @@ def get_master_date_vacations(master_id: int, date_obj: datetime):
                              (master_id, date_obj)).fetchall()
 
 
+def get_master_date_overworks(master_id: int, date_obj: datetime):
+    return db.engine.execute('SELECT change_start, change_end '
+                             'FROM Schedule_Change '
+                             'WHERE master_id = %s AND is_working = True AND '
+                             '      %s BETWEEN Date(change_start) AND DATE(change_end) '
+                             'ORDER BY change_start;',
+                             (master_id, date_obj)).fetchall()
+
+
 def get_all_procedures_join_master(master_id: int):
     return db.engine.execute('SELECT  duration, '
                              '        Procedure.name AS procedure_name, '
