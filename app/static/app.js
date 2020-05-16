@@ -68,6 +68,12 @@ $(document).ready(function () {
         format: 'L'
     });
 
+
+    $('#admin_journal_datetimepicker').datetimepicker({
+        locale: 'ru',
+        format: 'L'
+    });
+
     $('.entriesList').DataTable( {
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Ukrainian.json"

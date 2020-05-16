@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+Журнал
+{% endblock %}
+
+
+{% block header %}
+Журнал
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12 col-sm-10">
+        <div class="form-group row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div class="input-group date" id="admin_journal_datetimepicker" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" id="admin-journal-input">
+                        <div class="input-group-append" data-target="#admin_journal_datetimepicker"
+                             data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-12 col-sm-10 mx-auto">
+        <table class="table table-bordered table-responsive-lg" id="mainTable">
+        </table>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='input_date_utils.js') }}"></script>
+<script src="{{ url_for('static', filename='table_build_utils.js') }}"></script>
+<script src="{{ url_for('static', filename='journal.js') }}"></script>
+{% endblock %}
