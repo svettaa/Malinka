@@ -22,14 +22,8 @@ $(document).ready(function () {
         statistics_socket.emit('get_interval_statistics', [start, end]);
     }
 
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-    var endDateStr = dd + '.' + mm + '.' + yyyy;
-    var startDateStr = '01.' + mm + '.' + yyyy;
-    $('#statistics-start-input').val(startDateStr);
-    $('#statistics-end-input').val(endDateStr);
+    setMonthStartVal($('#statistics-start-input'));
+    setCurrentDateVal($('#statistics-end-input'));
 
     get_interval_statistics();
     $('#statistics-start-input').focusout(get_interval_statistics);

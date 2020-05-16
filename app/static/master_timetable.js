@@ -7,12 +7,7 @@ $(document).ready(function () {
         master_socket.emit('get_master_timetable', msg);
     }
 
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, '0');
-    var mm = String(today.getMonth() + 1).padStart(2, '0');
-    var yyyy = today.getFullYear();
-    var dateStr = dd + '.' + mm + '.' + yyyy;
-    $('#master-timetable-input').val(dateStr);
+    setCurrentDateVal($('#master-timetable-input'));
 
     get_timetable();
     $('#master-timetable-input').focusout(get_timetable);

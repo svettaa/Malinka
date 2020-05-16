@@ -74,5 +74,6 @@
 
 {% block scripts %}
 {{ super() }}
+<script src="{{ url_for('static', filename='input_date_utils.js') }}"></script>
 <script src="{{ url_for('static', filename='statistics.js') }}"></script>
 {% endblock %}
