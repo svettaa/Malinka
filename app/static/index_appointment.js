@@ -35,10 +35,14 @@ function refreshFreeTime() {
 }
 
 function showMasterFreeTime(master){
-    addTab($('#index-tabs'), master.id, master.surname + ' ' + master.first_name);
+    var masterTabTitle = master.surname + ' ' + master.first_name;
+    if ('favourite' in master){
+        masterTabTitle = '<i class="fas fa-heart"></i> ' + masterTabTitle;
+    }
+
+    addTab($('#index-tabs'), master.id, masterTabTitle);
     const content = buildTabContent($('#index-content'), master.id);
 
-    console.log(master)
     $.each(master.busyTime, function(){
         content.append(this.start + ' - ' + this.end + '<br>');
     });
