@@ -54,6 +54,7 @@ def confirm_get():
         )
         master_id = int(request.args.get('master'))
         procedure_id = int(request.args.get('procedure'))
+        preferences = request.args.get('preferences')
 
         assert_master_exists(master_id)
         assert_procedure_exists(procedure_id)
@@ -70,6 +71,9 @@ def confirm_get():
         appointment = Appointment(appoint_start=start, appoint_end=end,
                                   status=False, price=price,
                                   client_id=current_user.id, master_id=master_id, procedure_id=procedure_id)
+
+        if preferences is not None:
+            appointment.preferences = preferences
 
         ok, message = add_appointment(appointment)
 

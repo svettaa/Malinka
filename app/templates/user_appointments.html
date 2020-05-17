@@ -16,10 +16,12 @@
 
 <ul class="nav nav-tabs mb-5" id="myTab" role="tablist">
     <li class="nav-item">
-        <a class="nav-link active" id="active-tab" data-toggle="tab" href="#active" role="tab" aria-controls="active" aria-selected="true">Актуальні записи</a>
+        <a class="nav-link active" id="active-tab" data-toggle="tab" href="#active" role="tab" aria-controls="active"
+           aria-selected="true">Актуальні записи</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" id="prev-tab" data-toggle="tab" href="#prev" role="tab" aria-controls="prev" aria-selected="false">Історія</a>
+        <a class="nav-link" id="prev-tab" data-toggle="tab" href="#prev" role="tab" aria-controls="prev"
+           aria-selected="false">Історія</a>
     </li>
 </ul>
 
@@ -77,6 +79,17 @@
                         </p>
                     </div>
                 </div>
+                <div class="row">
+                    {% if appointment.preferences %}
+                    <div class="col-12 col-md-12">
+                        <br>
+                        <h6 class="card-subtitle">Побажання:</h6>
+                        <p class="card-text">
+                            {{ appointment.preferences }}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
         {% endfor %}
@@ -123,7 +136,6 @@
 
     </div>
 </div>
-
 
 
 {% endblock %}

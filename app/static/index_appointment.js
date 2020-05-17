@@ -74,12 +74,16 @@ function refreshModal(timeStr) {
 }
 
 function confirmAppointment() {
-    window.location.replace("http://127.0.0.1:5000/confirm?" +
+    var url = "http://127.0.0.1:5000/confirm?" +
                             "date=" + datePicker.val() + "&" +
                             "time=" + $('#modalConfirm .modal-time').html().substring(0, 5) + "&" +
                             "master=" + $('#index-tabs a.show').attr('href').substring(1) + "&" +
-                            "procedure=" + procPicker.find('option:selected').val()
-    );
+                            "procedure=" + procPicker.find('option:selected').val();
+    const pref = $('#modalConfirm .modal-preferences').eq(0).val();
+    if (pref.length > 0){
+        url += '&preferences=' + pref;
+    }
+    window.location.replace(url);
 }
 
 function addFreeTimeToContent(content, time, duration) {
