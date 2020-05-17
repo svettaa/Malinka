@@ -30,7 +30,7 @@ function refreshFreeTime() {
     clearTabsContent($('#index-content'));
 
     if(dateStr.length > 0 && procStr.length > 0){
-        appointmentSocket.emit('get_busy_time', {'date': dateStr, 'procedure': procStr});
+        appointmentSocket.emit('get_free_time', {'date': dateStr, 'procedure': procStr});
     }
 }
 
@@ -43,7 +43,7 @@ function showMasterFreeTime(master){
     addTab($('#index-tabs'), master.id, masterTabTitle);
     const content = buildTabContent($('#index-content'), master.id);
 
-    $.each(master.busyTime, function(){
+    $.each(master.freeTime, function(){
         content.append(this.start + ' - ' + this.end + '<br>');
     });
 }
@@ -86,7 +86,7 @@ function initAppointmentForm() {
     procPicker.change(refreshFreeTime);
     refreshFreeTime();
 
-    appointmentSocket.on('get_busy_time', showFreeTime);
+    appointmentSocket.on('get_free_time', showFreeTime);
 }
 
 $(document).ready(function (){
