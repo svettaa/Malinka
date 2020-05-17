@@ -77,7 +77,7 @@ function confirmAppointment() {
     window.location.replace("http://127.0.0.1:5000/confirm?" +
                             "date=" + datePicker.val() + "&" +
                             "time=" + $('#modalConfirm .modal-time').html().substring(0, 5) + "&" +
-                            "master=" + $('#index-tabs a.show').attr('href') + "&" +
+                            "master=" + $('#index-tabs a.show').attr('href').substring(1) + "&" +
                             "procedure=" + procPicker.find('option:selected').val()
     );
 }

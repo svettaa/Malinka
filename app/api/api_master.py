@@ -20,6 +20,13 @@ def get_master(master_id: int):
                              master_id).fetchone()
 
 
+def get_master_procedure_duration(master_id: int, procedure_id: int):
+    return db.engine.execute('SELECT duration '
+                             'FROM Master_Procedure '
+                             'WHERE master_id = %s AND procedure_id = %s;',
+                             (master_id, procedure_id)).scalar()
+
+
 def get_masters_working(date: datetime):
     day = date.day
     even_day = (day % 2 == 0)
