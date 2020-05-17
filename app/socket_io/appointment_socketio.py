@@ -1,7 +1,10 @@
+from datetime import timedelta
+
+from dateutil.relativedelta import relativedelta
 from flask_socketio import emit
 from flask_login import current_user
 
-from app import socketio, app
+from app import socketio, app, pytz
 from app.socket_io import json_one, json_list
 from app.api.api_master import *
 from app.api.api_client import get_client_loves_master
@@ -23,6 +26,18 @@ def fill_free_time(master, date_obj):
         next_start = occ['end']
     result.append({'start': next_start, 'end': app.config['WORKING_DAY_END'].strftime('%H:%M')})
 
+    now = datetime.now(pytz.timezone('Europe/Kiev'))
+    now_time = (now + timedelta(minutes=1)).strftime("%H:%M")
+    if date_obj.date() == now.date():
+        new_result = []
+        for interval in result:
+            if interval['end'] > now_time:
+                interval['start'] = max(interval['start'], now_time)
+                new_result.append(interval)
+        result = new_result
+
+    print(result)
+
     master['freeTime'] = result
 
 
@@ -32,11 +47,23 @@ def set_favourite(master):
             master['favourite'] = ''
 
 
+def assert_date_future_and_not_long(start):
+    now = datetime.now(pytz.timezone('Europe/Kiev')).date()
+    start_date = start.date()
+
+    if start_date < now:
+        raise AssertionError('Обрано дату у минулому')
+    if start_date > now + relativedelta(months=2):
+        raise AssertionError('Дозволено записуватися лише на 2 місяці вперед')
+
+
 @socketio.on('get_free_time', namespace='/appointment')
 def get_free_time(data):
     try:
         date_obj = datetime.strptime(data['date'], '%d.%m.%Y')
         procedure_id = data['procedure']
+
+        assert_date_future_and_not_long(date_obj)
 
         masters = json_list(get_masters_working_do_procedure_client_view(date_obj, procedure_id))
 
@@ -49,3 +76,6 @@ def get_free_time(data):
     except ValueError:
         emit('get_free_time', {'status': False,
                                'message': 'Некоректний формат часу'}, json=True)
+    except AssertionError as e:
+        emit('get_free_time', {'status': False,
+                               'message': str(e)}, json=True)

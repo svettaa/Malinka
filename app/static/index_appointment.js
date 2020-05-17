@@ -124,6 +124,10 @@ function showMasterFreeTime(master){
     $.each(master.freeTime, function(){
         addFreeTimeToContent(content, this, master.duration);
     });
+
+    if (content.html() === '') {
+        content.html('На жаль, не залишилося вільних місць у майстра в даний день.');
+    }
 }
 
 function showFreeTime(result) {
