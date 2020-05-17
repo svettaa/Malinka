@@ -1,3 +1,4 @@
+import pytz
 from flask_socketio import emit
 from flask_login import login_required
 from datetime import datetime
@@ -42,7 +43,8 @@ def get_appointments_list(master_id, date_obj):
 
 def get_not_working_list(master_id, date_obj):
     even_day = (date_obj.day % 2 == 0)
-    if get_master(master_id).even_schedule == even_day:
+    if get_master(master_id).even_schedule == even_day or \
+            date_obj.date() < datetime.now(pytz.timezone('Europe/Kiev')).date():
         return []
 
     overworks = list()
