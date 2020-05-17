@@ -55,10 +55,31 @@ function getStrOfTimeArray(array) {
     return String(array[0]).padStart(2, '0') + ':' + String(array[1]).padStart(2, '0');
 }
 
-function createButton(timeArray){
-    const button = $('<button class="time-button"></button>');
+function createButton(timeArray, endArray){
+    const button = $('<button class="time-button" data-toggle="modal" data-target="#modalConfirm"></button>');
+    button.attr('onclick',
+         'refreshModal("' +
+         getStrOfTimeArray(timeArray) + ' - ' + getStrOfTimeArray(endArray) +
+         '");'
+    );
     button.text(getStrOfTimeArray(timeArray));
     return button;
+}
+
+function refreshModal(timeStr) {
+    $('#modalConfirm .modal-date').html(datePicker.val());
+    $('#modalConfirm .modal-time').html(timeStr);
+    $('#modalConfirm .modal-master').html($('#index-tabs a.show').text());
+    $('#modalConfirm .modal-procedure').html(procPicker.find('option:selected').text());
+}
+
+function confirmAppointment() {
+    window.location.replace("http://127.0.0.1:5000/confirm?" +
+                            "date=" + datePicker.val() + "&" +
+                            "time=" + $('#modalConfirm .modal-time').html().substring(0, 5) + "&" +
+                            "master=" + $('#index-tabs a.show').attr('href') + "&" +
+                            "procedure=" + procPicker.find('option:selected').val()
+    );
 }
 
 function addFreeTimeToContent(content, time, duration) {
@@ -77,7 +98,7 @@ function addFreeTimeToContent(content, time, duration) {
         normalizeTime(eventEnd);
 
         if(lessOrEqualTime(eventEnd, endArray)) {
-            content.append(createButton(startArray));
+            content.append(createButton(startArray, eventEnd));
         } else {
             flag = false;
         }
