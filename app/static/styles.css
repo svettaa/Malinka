@@ -28,3 +28,12 @@ body{
 .myHeader{
     padding: 20px 0;
 }
+
+.time-button{
+    margin: 15px;
+    padding: 5px 20px;
+    text-align: center;
+    background-color: #fff;
+    border: 2px solid #eaa;
+    cursor: pointer;
+}

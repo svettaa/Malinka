@@ -4,6 +4,8 @@ var form;
 var datePicker;
 var procPicker;
 
+const interval = 30;
+
 function clearIndexMessages() {
     $('#index-message').html('');
 }
@@ -34,6 +36,57 @@ function refreshFreeTime() {
     }
 }
 
+function getNumArrayFromStrTime(timeStr){
+    return [parseInt(timeStr.substring(0, 2)), parseInt(timeStr.substring(3, 5))];
+}
+
+function normalizeTime(timeArray){
+    if(timeArray[1] >= 60){
+        timeArray[0]++;
+        timeArray[1] -= 60;
+    }
+}
+
+function lessOrEqualTime(timeStart, timeEnd){
+    return timeStart[0] < timeEnd[0] || (timeStart[0] === timeEnd[0] && timeStart[1] <= timeEnd[1]);
+}
+
+function getStrOfTimeArray(array) {
+    return String(array[0]).padStart(2, '0') + ':' + String(array[1]).padStart(2, '0');
+}
+
+function createButton(timeArray){
+    const button = $('<button class="time-button"></button>');
+    button.text(getStrOfTimeArray(timeArray));
+    return button;
+}
+
+function addFreeTimeToContent(content, time, duration) {
+
+    var startArray = getNumArrayFromStrTime(time.start);
+    var endArray = getNumArrayFromStrTime(time.end);
+
+    while(startArray[1] % interval !== 0){
+        startArray[1]++;
+    }
+    normalizeTime(startArray);
+
+    var flag = true;
+    while(flag){
+        eventEnd = [startArray[0], startArray[1] + duration];
+        normalizeTime(eventEnd);
+
+        if(lessOrEqualTime(eventEnd, endArray)) {
+            content.append(createButton(startArray));
+        } else {
+            flag = false;
+        }
+
+        startArray[1] += interval;
+        normalizeTime(startArray);
+    }
+}
+
 function showMasterFreeTime(master){
     var masterTabTitle = master.surname + ' ' + master.first_name;
     if ('favourite' in master){
@@ -44,7 +97,7 @@ function showMasterFreeTime(master){
     const content = buildTabContent($('#index-content'), master.id);
 
     $.each(master.freeTime, function(){
-        content.append(this.start + ' - ' + this.end + '<br>');
+        addFreeTimeToContent(content, this, master.duration);
     });
 }
 
