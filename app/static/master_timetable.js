@@ -11,8 +11,16 @@ function fillMasterTimetable(result) {
         if(status == false){
             showError(message);
         } else {
-            $.each(data, function(){
+            $.each(data.appointments, function(){
                 addAppointment($('#mainTable'), this);
+            });
+            $.each(data.vacations, function(){
+                addVacation($('#mainTable'), this);
+            });
+            $.each(data.notWorking, function(){
+                 if (this.start !== this.end) {
+                    addNotWorking($('#mainTable'), this);
+                 }
             });
         }
 }

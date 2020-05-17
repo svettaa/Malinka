@@ -105,7 +105,8 @@
                     ' - ' +
                     end_time +
                     '<br>' +
-                    'Відпустка!'
+                    'Відпустка!' +
+                    '<br>'
                 );
 
                 tableWrapper.find('td.appointment').eq(start_index)
@@ -129,7 +130,8 @@
                     ' - ' +
                     end_time +
                     '<br>' +
-                    'Не працює!'
+                    'Не працює!' +
+                    '<br>'
                 );
 
                 tableWrapper.find('td.appointment').eq(start_index)
