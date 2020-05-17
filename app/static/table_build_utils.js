@@ -79,6 +79,11 @@
                     'Клієнт: ' +
                     appointment['client_surname'] + ' ' + appointment['client_first_name'] +
                     '<br>' +
+                    (appointment['preferences'] !== null ?
+                        ('Побажання: ' +
+                        appointment['preferences'] +
+                        '<br>')
+                        : '') +
                     'Статус: ' +
                     (appointment['status'] ? 'Підтверджено' : 'Не підтверджено') +
                     '<br>'
