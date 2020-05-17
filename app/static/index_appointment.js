@@ -164,6 +164,5 @@ function initAppointmentForm() {
 }
 
 $(document).ready(function (){
-    initAppointmentForm();
-//    $('button.create-appointment').on('click', initAppointmentForm);
+    $('button.create-appointment').on('click', initAppointmentForm);
 });

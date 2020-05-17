@@ -1,6 +1,6 @@
 import functools
 
-from flask import render_template, url_for, redirect, request
+from flask import render_template, url_for, redirect, request, session
 from flask_login import logout_user, login_user, login_required, current_user
 
 from app import app, db, login_manager
@@ -15,6 +15,11 @@ def load_user(user_id):
 
 @login_manager.unauthorized_handler
 def unauthorized_callback():
+    url = request.path + '?'
+    for arg in request.args:
+        url = url + arg + '=' + request.args.get(arg) + '&'
+
+    session['next'] = url
     return redirect(url_for('login_get'))
 
 
@@ -63,7 +68,12 @@ def login_post():
 
     login_user(user)
 
-    return redirect(url_for('index'))
+    if 'next' in session:
+        next = session['next']
+        del session['next']
+        return redirect(next)
+    else:
+        return redirect(url_for('index'))
 
 
 @app.route('/logout')

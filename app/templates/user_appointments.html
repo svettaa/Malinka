@@ -70,7 +70,10 @@
                     <div class="col-12 col-md-3">
                         <h6 class="card-subtitle">Ціна:</h6>
                         <p class="card-text">
-                            {{ appointment.price_min|round }}&nbsp;-&nbsp;{{ appointment.price_max|round }}&nbsp;грн
+                            {{ appointment.price_min|round }}
+                            {% if appointment.price_max %}
+                            &nbsp;-&nbsp;{{ appointment.price_max|round }}&nbsp;грн
+                            {% endif %}
                         </p>
                     </div>
                 </div>

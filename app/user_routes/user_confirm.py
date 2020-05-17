@@ -42,6 +42,12 @@ def assert_start_future(start):
 @login_required
 def confirm_get():
     try:
+        if request.args.get('date') is None or \
+                request.args.get('time') is None or \
+                request.args.get('master') is None or \
+                request.args.get('procedure') is None:
+            raise AssertionError('Недостатньо параметрів')
+
         start = datetime.datetime.strptime(
             request.args.get('date') + ' ' + request.args.get('time'),
             '%d.%m.%Y %H:%M'
