@@ -36,8 +36,6 @@ def fill_free_time(master, date_obj):
                 new_result.append(interval)
         result = new_result
 
-    print(result)
-
     master['freeTime'] = result
 
 
