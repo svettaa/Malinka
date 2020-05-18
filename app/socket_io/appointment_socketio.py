@@ -1,10 +1,10 @@
 from datetime import timedelta
 
 from dateutil.relativedelta import relativedelta
-from flask_socketio import emit
 from flask_login import current_user
+from flask import jsonify, request
 
-from app import socketio, app, pytz
+from app import app, pytz
 from app.socket_io import json_one, json_list
 from app.api.api_master import *
 from app.api.api_client import get_client_loves_master
@@ -55,11 +55,11 @@ def assert_date_future_and_not_long(start):
         raise AssertionError('Дозволено записуватися лише на 2 місяці вперед')
 
 
-@socketio.on('get_free_time', namespace='/appointment')
-def get_free_time(data):
+@app.route('/get_free_time', methods=['GET'])
+def get_free_time():
     try:
-        date_obj = datetime.strptime(data['date'], '%d.%m.%Y')
-        procedure_id = data['procedure']
+        date_obj = datetime.strptime(request.args.get('date'), '%d.%m.%Y')
+        procedure_id = request.args.get('procedure')
 
         assert_date_future_and_not_long(date_obj)
 
@@ -69,11 +69,11 @@ def get_free_time(data):
             fill_free_time(master, date_obj)
             set_favourite(master)
 
-        emit('get_free_time', {'status': True,
-                               'data': masters}, json=True)
+        return jsonify({'status': True,
+                        'data': masters})
     except ValueError:
-        emit('get_free_time', {'status': False,
-                               'message': 'Некоректний формат часу'}, json=True)
+        return jsonify({'status': False,
+                        'message': 'Некоректний формат часу'})
     except AssertionError as e:
-        emit('get_free_time', {'status': False,
-                               'message': str(e)}, json=True)
+        return jsonify({'status': False,
+                        'message': str(e)})

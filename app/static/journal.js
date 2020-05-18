@@ -46,7 +46,7 @@ function getData(){
     $.ajax({
                 type: "GET",
                 url: "/get_journal",
-                data: $('#admin-journal-input').val(),
+                data: {'date': $('#admin-journal-input').val()},
                 success: initJournal,
                 error: function(error) {
                     console.log(error);

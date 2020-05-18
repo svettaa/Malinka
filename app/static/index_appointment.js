@@ -1,5 +1,3 @@
-var appointmentSocket;
-
 var form;
 var datePicker;
 var procPicker;
@@ -32,7 +30,15 @@ function refreshFreeTime() {
     clearTabsContent($('#index-content'));
 
     if(dateStr.length > 0 && procStr.length > 0){
-        appointmentSocket.emit('get_free_time', {'date': dateStr, 'procedure': procStr});
+        $.ajax({
+                    type: "GET",
+                    url: "/get_free_time",
+                    data: {'date': dateStr, 'procedure': procStr},
+                    success: showFreeTime,
+                    error: function(error) {
+                        console.log(error);
+                    }
+        });
     }
 }
 
@@ -150,8 +156,6 @@ function initAppointmentForm() {
     if (form !== undefined)
         return;
 
-    appointmentSocket = io(URL + '/appointment');
-
     $([document.documentElement, document.body]).animate({
         scrollTop: $("#appointment-jumbotron").offset().top
     }, 500);
@@ -164,11 +168,9 @@ function initAppointmentForm() {
     setCurrentDateVal(datePicker);
     form.css('display', 'block');
 
+    refreshFreeTime();
     datePicker.focusout(refreshFreeTime);
     procPicker.change(refreshFreeTime);
-    refreshFreeTime();
-
-    appointmentSocket.on('get_free_time', showFreeTime);
 }
 
 $(document).ready(function (){

@@ -68,7 +68,7 @@ def get_not_working_list(master_id, date_obj):
 @admin_only
 def get_journal():
     try:
-        date_str = next(request.args.items())[0]
+        date_str = request.args.get('date')
         date_obj = datetime.strptime(date_str, '%d.%m.%Y')
 
         masters = json_list(get_masters_working(date_obj))
