@@ -26,7 +26,7 @@ function fillMasterTimetable(result) {
 }
 
 $(document).ready(function () {
-    var master_socket = io('http://127.0.0.1:5000/master')
+    var master_socket = io(URL + '/master')
 
     function get_timetable(){
         var msg = $('#master-timetable-input').val();

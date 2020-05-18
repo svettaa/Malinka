@@ -1,7 +1,7 @@
 
 $(document).ready(function () {
 
-    var statistics_socket = io('http://127.0.0.1:5000/statistics');
+    var statistics_socket = io(URL + '/statistics');
 
     statistics_socket.emit('get_base_statistics');
 

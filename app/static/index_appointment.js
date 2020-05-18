@@ -74,7 +74,7 @@ function refreshModal(timeStr) {
 }
 
 function confirmAppointment() {
-    var url = "http://127.0.0.1:5000/confirm?" +
+    var url = URL + "/confirm?" +
                             "date=" + datePicker.val() + "&" +
                             "time=" + $('#modalConfirm .modal-time').html().substring(0, 5) + "&" +
                             "master=" + $('#index-tabs a.show').attr('href').substring(1) + "&" +
@@ -150,7 +150,7 @@ function initAppointmentForm() {
     if (form !== undefined)
         return;
 
-    appointmentSocket = io('http://127.0.0.1:5000/appointment');
+    appointmentSocket = io(URL + '/appointment');
 
     $([document.documentElement, document.body]).animate({
         scrollTop: $("#appointment-jumbotron").offset().top

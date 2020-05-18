@@ -43,7 +43,7 @@ function initJournal(result) {
 }
 
 $(document).ready(function () {
-    var admin_socket = io('http://127.0.0.1:5000/admin')
+    var admin_socket = io(URL + '/admin')
 
     function get_journal(){
         var msg = $('#admin-journal-input').val();
