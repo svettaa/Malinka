@@ -31,10 +31,9 @@ def assert_start_mod(start):
 
 
 def assert_start_future(start):
-    start_tz = pytz.timezone('Europe/Kiev').localize(start)
     now = datetime.datetime.now(pytz.timezone('Europe/Kiev'))
 
-    if start_tz <= now:
+    if start <= now:
         raise AssertionError('Дата та час мають бути у майбутньому')
 
 
@@ -52,6 +51,8 @@ def confirm_get():
             request.args.get('date') + ' ' + request.args.get('time'),
             '%d.%m.%Y %H:%M'
         )
+        start = pytz.timezone('Europe/Kiev').localize(start)
+
         master_id = int(request.args.get('master'))
         procedure_id = int(request.args.get('procedure'))
         preferences = request.args.get('preferences')

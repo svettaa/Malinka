@@ -1,3 +1,4 @@
+import pytz
 from flask import render_template, request, redirect, url_for
 from flask_login import login_required
 
@@ -47,6 +48,8 @@ def edit_schedule_post(schedule_id):
 
     schedule = ScheduleChange(id=schedule_id)
     form.populate_obj(schedule)
+    schedule.change_start = pytz.timezone('Europe/Kiev').localize(schedule.change_start)
+    schedule.change_end = pytz.timezone('Europe/Kiev').localize(schedule.change_end)
 
     status, message = update_schedule(schedule)
 
@@ -88,6 +91,8 @@ def new_schedule_post():
 
     schedule = ScheduleChange()
     form.populate_obj(schedule)
+    schedule.change_start = pytz.timezone('Europe/Kiev').localize(schedule.change_start)
+    schedule.change_end = pytz.timezone('Europe/Kiev').localize(schedule.change_end)
 
     status, message = add_schedule(schedule)
 

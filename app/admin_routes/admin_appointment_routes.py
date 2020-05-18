@@ -71,6 +71,8 @@ def edit_appointment_post(appointment_id):
 
     appointment = Appointment(id=appointment_id)
     form.populate_obj(appointment)
+    appointment.appoint_start = pytz.timezone('Europe/Kiev').localize(appointment.appoint_start)
+    appointment.appoint_end = pytz.timezone('Europe/Kiev').localize(appointment.appoint_end)
 
     if appointment.preferences.strip() == '':
         appointment.preferences = None
@@ -110,6 +112,8 @@ def new_appointment_post():
 
     appointment = Appointment()
     form.populate_obj(appointment)
+    appointment.appoint_start = pytz.timezone('Europe/Kiev').localize(appointment.appoint_start)
+    appointment.appoint_end = pytz.timezone('Europe/Kiev').localize(appointment.appoint_end)
 
     if appointment.preferences.strip() == '':
         appointment.preferences = None

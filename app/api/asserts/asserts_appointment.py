@@ -7,7 +7,7 @@ from app.models import Appointment
 
 
 def is_future_appointment(appointment: Appointment):
-    appoint_start = pytz.timezone('Europe/Kiev').localize(appointment.appoint_start)
+    appoint_start = appointment.appoint_start
     now = datetime.now(pytz.timezone('Europe/Kiev'))
     return appoint_start > now
 
