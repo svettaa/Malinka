@@ -29,6 +29,13 @@ def get_client(client_id: int):
                              client_id).fetchone()
 
 
+def get_client_password(client_id: int):
+    return db.engine.execute('SELECT password '
+                             'FROM Client '
+                             'WHERE id = %s;',
+                             client_id).scalar()
+
+
 def get_client_favourite_masters(client_id: int):
     return db.engine.execute('SELECT Master.id, surname, first_name, second_name, phone '
                              'FROM (Favourite_Master INNER JOIN Master '
@@ -160,3 +167,12 @@ def reset_client_password(client_id: int):
                       'WHERE id = %s;',
                       (hashed_password, client_id))
     return True, 'Успішно оновлено пароль, останні 6 цифр телефону'
+
+
+def set_client_password(client_id: int, password: str):
+    hashed_password = generate_password_hash(password)
+    db.engine.execute('UPDATE Client '
+                      'SET password = %s '
+                      'WHERE id = %s;',
+                      (hashed_password, client_id))
+    return True, 'Успішно оновлено пароль'

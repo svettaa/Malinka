@@ -87,6 +87,11 @@
                         Скинути пароль
                     </button>
                     {% endif %}
+                    {% if user_view %}
+                    <a href="{{ url_for('change_user_password_get') }}">
+                        <button type="button" class="btn btn-danger">Змінити пароль</button>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </form>

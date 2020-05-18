@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, TextAreaField, PasswordField, \
     RadioField, HiddenField, FormField, FieldList, DateTimeField, BooleanField
-from wtforms.validators import InputRequired, Optional, NumberRange, Regexp
+from wtforms.validators import InputRequired, Optional, NumberRange, Regexp, ValidationError
 from wtforms.fields.html5 import TelField, EmailField, IntegerField
 
 
@@ -151,6 +151,20 @@ class LoginForm(BaseForm):
     phone = TelField('Телефон, +38', validators=[InputRequired('Введіть телефон'),
                                                  Regexp('[0-9]{10}', message='Некоректний телефон')])
     password = PasswordField('Пароль', validators=[InputRequired('Введіть пароль')])
+
+
+class ChangePasswordForm(BaseForm):
+    old_password = PasswordField('Старий пароль', validators=[InputRequired('Введіть старий пароль')])
+    new_password = PasswordField('Новий пароль', validators=[InputRequired('Введіть новий пароль'),
+                                                             Regexp('[0-9a-zA-Z]{6,}',
+                                                                    message='Пароль повинен бути довжиною не менше 6 '
+                                                                            'символів та складатися з цифр та '
+                                                                            'латинських літер')])
+    confirm_password = PasswordField('Повторіть пароль', validators=[InputRequired('Повторіть новий пароль')])
+
+    def validate_confirm_password(form, field):
+        if form.confirm_password.data != form.new_password.data:
+            raise ValidationError('Паролі повинні співпадати')
 
 
 class AddFavouriteMaster(BaseForm):
