@@ -1,11 +1,5 @@
 
-$(document).ready(function () {
-
-    var statistics_socket = io(URL + '/statistics');
-
-    statistics_socket.emit('get_base_statistics');
-
-    statistics_socket.on('get_base_statistics', function(result){
+function fillBaseStatistics(result){
         $('#message').html('');
 
         var status = result['status'];
@@ -14,22 +8,10 @@ $(document).ready(function () {
 
         $('#users-amount').html(data['users']);
         $('#masters-amount').html(data['masters']);
-    });
+}
 
-    function get_interval_statistics(){
-        var start = $('#statistics-start-input').val();
-        var end = $('#statistics-end-input').val();
-        statistics_socket.emit('get_interval_statistics', [start, end]);
-    }
+function fillIntervalStatistics(result){
 
-    setMonthStartVal($('#statistics-start-input'));
-    setCurrentDateVal($('#statistics-end-input'));
-
-    get_interval_statistics();
-    $('#statistics-start-input').focusout(get_interval_statistics);
-    $('#statistics-end-input').focusout(get_interval_statistics);
-
-    statistics_socket.on('get_interval_statistics', function(result){
         $('.added-block').remove();
         $('.stat-number').html('-');
         clearMessages();
@@ -84,7 +66,45 @@ $(document).ready(function () {
                 '</div>');
             });
         }
+}
+
+function getBaseData() {
+    $.ajax({
+                    type: "GET",
+                    url: "/get_base_statistics",
+                    data: {},
+                    success: fillBaseStatistics,
+                    error: function(error) {
+                        console.log(error);
+                    }
     });
+}
+
+function getIntervalData() {
+    var start = $('#statistics-start-input').val();
+    var end = $('#statistics-end-input').val();
+
+    $.ajax({
+                    type: "GET",
+                    url: "/get_interval_statistics",
+                    data: {'date_start': start, 'date_end': end},
+                    success: fillIntervalStatistics,
+                    error: function(error) {
+                        console.log(error);
+                    }
+    });
+}
+
+$(document).ready(function () {
+
+    getBaseData();
+
+    setMonthStartVal($('#statistics-start-input'));
+    setCurrentDateVal($('#statistics-end-input'));
+
+    getIntervalData();
+    $('#statistics-start-input').focusout(getIntervalData);
+    $('#statistics-end-input').focusout(getIntervalData);
 
 });
 
