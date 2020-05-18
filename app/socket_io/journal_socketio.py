@@ -1,9 +1,9 @@
 import pytz
-from flask_socketio import emit
 from flask_login import login_required
 from datetime import datetime
+from flask import jsonify, request
 
-from app import socketio, app
+from app import app
 from app.login import admin_only
 from app.socket_io import json_one, json_list
 from app.api.api_appointment import get_master_date_appointments
@@ -63,11 +63,12 @@ def get_not_working_list(master_id, date_obj):
     return result
 
 
-@socketio.on('get_journal', namespace='/admin')
+@app.route('/get_journal', methods=['GET'])
 @login_required
 @admin_only
-def get_journal(date_str):
+def get_journal():
     try:
+        date_str = next(request.args.items())[0]
         date_obj = datetime.strptime(date_str, '%d.%m.%Y')
 
         masters = json_list(get_masters_working(date_obj))
@@ -77,8 +78,8 @@ def get_journal(date_str):
             master['vacations'] = get_vacations_list(master['id'], date_obj)
             master['notWorking'] = get_not_working_list(master['id'], date_obj)
 
-        emit('get_journal', {'status': True,
-                             'data': masters}, json=True)
+        return jsonify({'status': True,
+                        'data': masters})
     except ValueError:
-        emit('get_journal', {'status': False,
-                             'message': 'Некоректний формат часу'}, json=True)
+        return jsonify({'status': False,
+                        'message': 'Некоректний формат часу'})

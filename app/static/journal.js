@@ -42,18 +42,22 @@ function initJournal(result) {
         }
 }
 
-$(document).ready(function () {
-    var admin_socket = io(URL + '/admin')
+function getData(){
+    $.ajax({
+                type: "GET",
+                url: "/get_journal",
+                data: $('#admin-journal-input').val(),
+                success: initJournal,
+                error: function(error) {
+                    console.log(error);
+                }
+    });
+}
 
-    function get_journal(){
-        var msg = $('#admin-journal-input').val();
-        admin_socket.emit('get_journal', msg);
-    }
+$(document).ready(function () {
 
     setCurrentDateVal($('#admin-journal-input'));
 
-    get_journal();
-    $('#admin-journal-input').focusout(get_journal);
-
-    admin_socket.on('get_journal', initJournal);
+    getData();
+    $('#admin-journal-input').focusout(getData);
 });
