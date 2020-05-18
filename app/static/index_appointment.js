@@ -80,7 +80,11 @@ function refreshModal(timeStr) {
 }
 
 function confirmAppointment() {
-    var url = URL + "/confirm?" +
+    var fullUrl = window.location.href;
+    var arr = fullUrl.split("/");
+    var domain = arr[0] + "//" + arr[2];
+
+    var url = domain + "/confirm?" +
                             "date=" + datePicker.val() + "&" +
                             "time=" + $('#modalConfirm .modal-time').html().substring(0, 5) + "&" +
                             "master=" + $('#index-tabs a.show').attr('href').substring(1) + "&" +
