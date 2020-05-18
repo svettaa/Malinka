@@ -14,6 +14,7 @@ class Client(UserMixin, db.Model):
     email = db.Column(db.String(30))
     is_male = db.Column(db.Boolean, nullable=False)
     photo = db.Column(db.LargeBinary)
+    password = db.Column(db.String(128))
 
     favourite_masters = db.relationship(
         "Master", secondary='favourite_master', back_populates="favourite_clients")

@@ -2,6 +2,7 @@ import functools
 
 from flask import render_template, url_for, redirect, request, session
 from flask_login import logout_user, login_user, login_required, current_user
+from werkzeug.security import check_password_hash
 
 from app import app, db, login_manager
 from app.models import Client
@@ -65,6 +66,14 @@ def login_post():
     if not user:
         return render_template('login.html', form=form,
                                error='Не існує користувача з таким номером телефону')
+
+    if user.password is None:
+        return render_template('login.html', form=form,
+                               error='Адміністратор ще не встановив Вам пароль')
+
+    if not check_password_hash(user.password, form.password.data):
+        return render_template('login.html', form=form,
+                               error='Неправильний пароль')
 
     login_user(user)
 

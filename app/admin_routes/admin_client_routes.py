@@ -22,7 +22,7 @@ def clients_get():
 def edit_client_get(client_id):
     form = AdminClientForm(data=get_client(client_id))
 
-    return render_template('client.html', form=form,
+    return render_template('client.html', form=form, client_id=client_id,
                            favourite_procedures=get_client_favourite_procedures(client_id),
                            favourite_masters=get_client_favourite_masters(client_id),
                            action=url_for('edit_client_post', client_id=client_id))
@@ -35,7 +35,7 @@ def edit_client_post(client_id):
     form = AdminClientForm()
 
     if not form.validate_on_submit():
-        return render_template('client.html', form=form,
+        return render_template('client.html', form=form, client_id=client_id,
                                favourite_procedures=get_client_favourite_procedures(client_id),
                                favourite_masters=get_client_favourite_masters(client_id),
                                action=url_for('edit_client_post', client_id=client_id))
@@ -53,7 +53,7 @@ def edit_client_post(client_id):
     if status:
         return redirect(url_for('clients_get', success=message))
     else:
-        return render_template('client.html', form=form,
+        return render_template('client.html', form=form, client_id=client_id,
                                favourite_masters=get_client_favourite_masters(client_id),
                                favourite_procedures=get_client_favourite_procedures(client_id),
                                action=url_for('edit_client_post', client_id=client_id),

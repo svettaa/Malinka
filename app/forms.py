@@ -150,9 +150,7 @@ class AdminAppointmentForm(BaseForm):
 class LoginForm(BaseForm):
     phone = TelField('Телефон, +38', validators=[InputRequired('Введіть телефон'),
                                                  Regexp('[0-9]{10}', message='Некоректний телефон')])
-    password = PasswordField('Пароль'
-                             # , validators=[InputRequired('Введіть пароль')]
-                             )
+    password = PasswordField('Пароль', validators=[InputRequired('Введіть пароль')])
 
 
 class AddFavouriteMaster(BaseForm):

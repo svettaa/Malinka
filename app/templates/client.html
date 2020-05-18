@@ -81,6 +81,12 @@
                     <a href="{{ url_for('clients_get') }}">
                         <button type="button" class="btn btn-secondary">Назад</button>
                     </a>
+                    {% if client_id %}
+                    <button type="button" class="btn btn-danger" id="reset-password"
+                            value="{{ client_id }}">
+                        Скинути пароль
+                    </button>
+                    {% endif %}
                 </div>
             </div>
         </form>
@@ -138,4 +144,12 @@
 </div>
 
 
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{% if client_id %}
+<script src="{{ url_for('static', filename='utils_js.js') }}"></script>
+<script src="{{ url_for('static', filename='client_password.js') }}"></script>
+{% endif %}
 {% endblock %}

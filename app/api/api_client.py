@@ -1,4 +1,5 @@
 from sqlalchemy.exc import IntegrityError, DataError
+from werkzeug.security import generate_password_hash
 
 from app import db
 from app.models import Client
@@ -147,3 +148,15 @@ def delete_client_favourite_procedure(client_id: int, procedure_id: int):
     except AssertionError as e:
         db.session.rollback()
         return False, e
+
+
+def reset_client_password(client_id: int):
+    client = get_client(client_id)
+    phone = client.phone
+    new_password = phone[-6:]
+    hashed_password = generate_password_hash(new_password)
+    db.engine.execute('UPDATE Client '
+                      'SET password = %s '
+                      'WHERE id = %s;',
+                      (hashed_password, client_id))
+    return True, 'Успішно оновлено пароль, останні 6 цифр телефону'
