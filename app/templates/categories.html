@@ -12,49 +12,249 @@
 
 
 {% block content %}
+{{ csrf_token }}
+
+<div id="modalDelete" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Видалення категорї</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Ви впевнені, що хочете видалити категорію?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger submit">Видалити</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalEdit" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messageEdit"></div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-sm-10 mx-auto">
+                        <div class="form-group row">
+                            <label class="col-lg-3 col-form-label">Назва категорії</label>
+                            <div class="col-lg-9">
+                                <input class="form-control" name="name">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary submit">Зберегти</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Table - list of categories -->
 
 <div class="row ">
-    <div class="col-12 col-md-10 mx-auto">
-        <table class="table table-bordered table-responsive-lg entriesList">
-            <thead>
-            <tr>
-                <th style="width: 40px" scope="col"></th>
-                <th scope="col">Назва категорії</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            {% for category in categories %}
-            <tr>
-                <td>
-                    <div style="width: 60px" class="d-flex justify-content-between">
-                        <a class="btnEdit" href="{{ url_for('edit_category_get', category_id=category.id) }}">
-                            <span class="fa fa-edit"></span>
-                        </a>
-                        <!--                    <a href="{{ url_for('delete_category_get', category_id=category.id) }}" data-toggle="modal" data-target="#modalAreYouSure">-->
-                        <a href="{{ url_for('delete_category_get', category_id=category.id) }}">
-                            <span class="fa fa-trash"></span>
-                        </a>
-                    </div>
-                </td>
-                <td>{{ category.name }}</td>
-            </tr>
-            {% endfor %}
-
-            </tbody>
-        </table>
+    <div class="col-12 col-md-10 mx-auto" id="table-wrapper">
     </div>
 </div>
 
 <div class="row">
     <div class="col-12 col-md-10 offset-sm-1">
-        <a href="{{ url_for('new_category_get') }}">
-            <button class="btn btn-primary">Додати</button>
-        </a>
+        <button class="btn btn-primary add-new">Додати</button>
     </div>
 </div>
 
 
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+
+    const addNewButton = $('.add-new');
+
+    const modalDelete = $('#modalDelete');
+    const modalDeleteSubmit = modalDelete.find('.submit').eq(0);
+
+    const modalEdit = $('#modalEdit');
+    const modalEditName = modalEdit.find('input[name="name"]').eq(0);
+    const modalEditSubmit = modalEdit.find('.submit').eq(0);
+    const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
+    const modalEditHeaderEditStr = 'Змінити категорію';
+    const modalEditHeaderNewStr = 'Додати категорію';
+    const modalEditMessageBlock = $('#messageEdit');
+
+    const tableWrapper = $('#table-wrapper');
+
+    const csrfToken = $('input[name="csrf_token"]').eq(0);
+
+    const tableEditSpanClassName = 'fa fa-edit table-edit-span';
+    const tableDeleteSpanClassName = 'fa fa-trash table-delete-span';
+    const tableEditSpanSelector = '.table-edit-span';
+    const tableDeleteSpanSelector = '.table-delete-span';
+
+    function fillTableWithRows(table, data) {
+        const tbody = table.find('tbody').eq(0);
+        $.each(data, function () {
+            const tr = $('<tr></tr>');
+            tr.append(createIconsTd(this.id, [tableEditSpanClassName, tableDeleteSpanClassName]));
+            tr.append(createTd(this.name));
+            tbody.append(tr);
+        });
+    }
+
+    function initDeleteCategoryEvents() {
+        $(tableDeleteSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+
+            modalDelete.modal('show');
+
+            modalDeleteSubmit.off();
+            modalDeleteSubmit.on('click', function () {
+                sendRequestDeleteCategory(clickedValue);
+            });
+        });
+    }
+
+    function initEditCategoryEvents() {
+        $(tableEditSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+            sendRequestGetCategory(clickedValue);
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderEditStr);
+            modalEdit.modal('show');
+
+            modalEditSubmit.off();
+            modalEditSubmit.on('click', function () {
+                sendRequestEditCategory(clickedValue);
+            });
+        });
+    }
+
+    function initAddCategoryEvent() {
+        addNewButton.on('click', function () {
+            clearAddCategoryForm();
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderNewStr);
+            modalEdit.modal('show');
+
+            modalEditSubmit.off();
+            modalEditSubmit.on('click', function () {
+                sendRequestAddCategory();
+            });
+        });
+    }
+
+    function clearAddCategoryForm() {
+        modalEditName.val('');
+    }
+
+    function processResponseGetAllCategories(result) {
+        const table = createHeaderTable(['Назва']);
+        tableWrapper.html(table);
+
+        fillTableWithRows(table, result.data);
+        initDataTable(table);
+
+        initDeleteCategoryEvents();
+        initEditCategoryEvents();
+        initAddCategoryEvent();
+    }
+
+    function processResponseGetCategory(result) {
+        modalEditName.val(result.data.name);
+    }
+
+    function processResponseAddOrEditCategory(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlock, result.message);
+        } else {
+            modalEdit.modal('hide');
+            showSuccess(result.message);
+            sendRequestGetAllCategories();
+        }
+    }
+
+    function processRequestDeleteCategory(result) {
+        modalDelete.modal('hide');
+        if (result.status === false) {
+            showError(result.message);
+        } else {
+            showSuccess(result.message);
+            sendRequestGetAllCategories();
+        }
+    }
+
+    function sendRequestGetAllCategories() {
+        $.ajax({
+            type: "GET",
+            url: "/api/categories",
+            success: processResponseGetAllCategories
+        });
+    }
+
+    function sendRequestGetCategory(id) {
+        $.ajax({
+            type: "GET",
+            url: "/api/categories/" + id,
+            success: processResponseGetCategory
+        });
+    }
+
+    function sendRequestAddCategory() {
+        $.ajax({
+            type: "POST",
+            url: "/api/categories",
+            data: {
+                'name': modalEditName.val(),
+                'csrf_token': csrfToken.val()
+            },
+            success: processResponseAddOrEditCategory
+        });
+    }
+
+    function sendRequestEditCategory(id) {
+        $.ajax({
+            type: "PUT",
+            url: "/api/categories/" + id,
+            data: {
+                'name': modalEditName.val(),
+                'csrf_token': csrfToken.val()
+            },
+            success: processResponseAddOrEditCategory
+        });
+    }
+
+    function sendRequestDeleteCategory(id) {
+        $.ajax({
+            type: "DELETE",
+            url: "/api/categories/" + id,
+            success: processRequestDeleteCategory
+        });
+    }
+
+    $(document).ready(function () {
+        sendRequestGetAllCategories();
+    });
+
+
+</script>
 {% endblock %}

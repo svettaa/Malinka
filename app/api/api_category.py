@@ -6,7 +6,8 @@ from app.models import Category
 
 def get_categories():
     return db.engine.execute('SELECT id, name '
-                             'FROM Category;').fetchall()
+                             'FROM Category '
+                             'ORDER BY id;').fetchall()
 
 
 def get_category(category_id: int):

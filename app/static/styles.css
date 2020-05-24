@@ -37,3 +37,12 @@ body{
     border: 2px solid #eaa;
     cursor: pointer;
 }
+
+.table-icon{
+    cursor: pointer;
+    color: #77e;
+}
+
+.table-icon:hover{
+    color: #33a;
+}
