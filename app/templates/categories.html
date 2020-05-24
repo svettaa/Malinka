@@ -120,6 +120,7 @@
     }
 
     function initDeleteCategoryEvents() {
+        $(tableDeleteSpanSelector).off();
         $(tableDeleteSpanSelector).on('click', function () {
             const clickedValue = $(this).attr('value');
 
@@ -133,6 +134,7 @@
     }
 
     function initEditCategoryEvents() {
+        $(tableEditSpanSelector).off();
         $(tableEditSpanSelector).on('click', function () {
             const clickedValue = $(this).attr('value');
             sendRequestGetCategory(clickedValue);
@@ -149,6 +151,7 @@
     }
 
     function initAddCategoryEvent() {
+        addNewButton.off();
         addNewButton.on('click', function () {
             clearAddCategoryForm();
 
