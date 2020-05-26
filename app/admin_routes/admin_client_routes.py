@@ -11,7 +11,7 @@ from app.login import admin_only
 @login_required
 @admin_only
 def clients_get():
-    return render_template('clients.html', clients=get_clients(),
+    return render_template('clients.html', clients=get_clients(), csrf_token=AdminClientForm().csrf_token,
                            error=(request.args.get('error')),
                            success=(request.args.get('success')))
 

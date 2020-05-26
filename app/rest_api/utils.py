@@ -18,15 +18,8 @@ def json_one(row, additional=dict()):
             result[item[0]] = int(item[1])
         else:
             result[item[0]] = item[1]
-    for item in additional.items():
-        if type(item[1]) == datetime:
-            result[item[0]] = datetime.datetime.strftime(item[1], '%d.%m.%Y %H:%M')
-        elif type(item[1]) == datetime.date:
-            result[item[0]] = datetime.datetime.strftime(item[1], '%d.%m.%Y')
-        elif type(item[1]) == Decimal:
-            result[item[0]] = int(item[1])
-        else:
-            result[item[0]] = item[1]
+    for part in additional.items():
+        result[part[0]] = part[1]
     return result
 
 
