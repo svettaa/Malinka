@@ -12,7 +12,7 @@ from app.login import admin_only
 @login_required
 @admin_only
 def supplies_get():
-    return render_template('supplies.html', supplies=get_supplies(),
+    return render_template('supplies.html', supplies=get_supplies(), csrf_token=AdminSupplyForm().csrf_token,
                            error=(request.args.get('error')),
                            success=(request.args.get('success')))
 
