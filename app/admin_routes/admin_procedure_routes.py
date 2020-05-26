@@ -14,7 +14,8 @@ from app.login import admin_only
 def procedures_get():
     return render_template('procedures.html', procedures=get_procedures(),
                            error=(request.args.get('error')),
-                           success=(request.args.get('success')))
+                           success=(request.args.get('success')),
+                           csrf_token=AdminProcedureForm().csrf_token)
 
 
 @app.route('/procedures/<int:procedure_id>', methods=['GET'])
