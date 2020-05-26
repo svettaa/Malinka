@@ -49,6 +49,8 @@ def api_procedure_post():
 @admin_only
 def api_procedure_put(procedure_id):
     form = AdminProcedureForm(data=request.args)
+    form.category_id.choices = [('', 'Не обрано')] + \
+                               [(str(category['id']), category['name']) for category in get_categories()]
 
     if not form.validate():
         return build_form_invalid_reply(form)
