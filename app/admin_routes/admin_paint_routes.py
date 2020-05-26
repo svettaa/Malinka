@@ -11,7 +11,7 @@ from app.login import admin_only
 @login_required
 @admin_only
 def paints_get():
-    return render_template('paints.html', paints=get_paints(),
+    return render_template('paints.html', paints=get_paints(), csrf_token=AdminPaintForm().csrf_token,
                            error=(request.args.get('error')),
                            success=(request.args.get('success')))
 
@@ -86,7 +86,6 @@ def new_paint_post():
 @login_required
 @admin_only
 def delete_paint_get(paint_id):
-
     status, message = delete_paint(paint_id)
 
     if status:
