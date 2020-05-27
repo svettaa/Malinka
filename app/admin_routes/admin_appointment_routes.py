@@ -40,6 +40,7 @@ def fill_edit_form_choices(form, appointment):
 @admin_only
 def appointments_get():
     return render_template('appointments.html', appointments=get_appointments(),
+                           csrf_token=AdminAppointmentForm().csrf_token,
                            error=(request.args.get('error')),
                            success=(request.args.get('success')))
 

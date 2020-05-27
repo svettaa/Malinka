@@ -5,3 +5,4 @@ from app.rest_api.supplies import *
 from app.rest_api.clients import *
 from app.rest_api.masters import *
 from app.rest_api.schedules import *
+from app.rest_api.appointments import *
