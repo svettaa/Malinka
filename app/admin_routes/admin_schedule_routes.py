@@ -13,7 +13,7 @@ from app.login import admin_only
 @login_required
 @admin_only
 def schedules_get():
-    return render_template('schedules.html', schedules=get_schedules(),
+    return render_template('schedules.html', schedules=get_schedules(), csrf_token=AdminScheduleChangeForm().csrf_token,
                            error=(request.args.get('error')),
                            success=(request.args.get('success')))
 
