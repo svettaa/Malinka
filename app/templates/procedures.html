@@ -10,63 +10,324 @@
 Список процедур
 {% endblock %}
 
-
 {% block content %}
-<!-- Table - list of procedures -->
-<div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
-        <table class="table table-bordered table-responsive-lg entriesList">
-            <thead>
-            <tr>
-                <th style="width: 40px" scope="col"></th>
-                <th scope="col">Категорія</th>
-                <th scope="col">Процедура</th>
-                <th scope="col">Мін. ціна</th>
-                <th scope="col">Макс. ціна</th>
-                <th scope="col">Додаткова інформація</th>
-            </tr>
-            </thead>
-            <tbody>
+{{ csrf_token }}
 
-            {% for procedure in procedures %}
-            <tr>
-                <td>
-                    <div style="width: 60px" class="d-flex justify-content-between">
-                    <a class="btnEdit" href="{{ url_for('edit_procedure_post', procedure_id=procedure.id) }}">
-                        <span class="fa fa-edit"></span>
-                    </a>
-                    <a href="{{ url_for('delete_procedure_get', procedure_id=procedure.id) }}">
-                        <span class="fa fa-trash"></span>
-                    </a>
+<div id="modalDelete" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Видалення процедури</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Ви впевнені, що хочете видалити процедуру?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger submit">Видалити</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalEdit" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messageEdit"></div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-sm-10 mx-auto">
+
+                        <div class="form-group row">
+                            <label for="category" class="col-md-3 col-form-label">Назва категорії</label>
+                            <div class="col-md-9">
+                                <select class="form-control" id="category" name="category" required>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="procedure" class="col-md-3 col-form-label">Назва процедури</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="procedure" name="procedure">
+                            </div>
+                        </div>
+                        <div class="form-group row ">
+                            <label for="min" class="col-md-3 col-form-label">Мінімальна ціна</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="min" name="min">
+                            </div>
+                            <label for="max" class="col-md-3 col-form-label">Максимальна ціна</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" id="max" name="max">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="info" class="col-lg-3 col-form-label">Додаткова інформація</label>
+                            <div class="col-lg-9">
+                                <textarea class="form-control" rows="3" id="info" name="info"></textarea>
+                            </div>
+                        </div>
                     </div>
-                </td>
-                <td>{{ procedure.category_name }}</td>
-                <td>{{ procedure.procedure_name }}</td>
-                <td>{{ procedure.price_min }}</td>
-                <td>
-                    {% if procedure.price_max %}
-                    {{ procedure.price_max }}
-                    {% endif %}
-                </td>
-                <td>
-                    {% if procedure.info %}
-                    {{ procedure.info }}
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary submit">Зберегти</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            </tbody>
-        </table>
+
+<div class="row ">
+    <div class="col-12 col-md-10 mx-auto" id="table-wrapper">
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-10 offset-sm-1">
-        <a href="{{ url_for('new_procedure_get') }}">
-            <button type="submit" class="btn btn-primary">Додати</button>
-        </a>
+    <div class="col-12 col-md-10 offset-sm-1">
+        <button class="btn btn-primary add-new">Додати</button>
     </div>
 </div>
+<!--<div>-->
+<!--    {% if not new_procedure %}-->
+<!--    <div class="form-group row pl-3 mt-5">-->
+<!--        Улюблена у {{ favourite_clients_amount }} користувачів(а)-->
+<!--    </div>-->
+<!--    {% endif %}-->
+<!--</div>-->
 
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+
+    const addNewButton = $('.add-new');
+
+    const modalDelete = $('#modalDelete');
+    const modalDeleteSubmit = modalDelete.find('.submit').eq(0);
+
+    const modalEdit = $('#modalEdit');
+    const modalEditCategory = modalEdit.find('select[name="category"]').eq(0);
+    const modalEditProcedure = modalEdit.find('input[name="procedure"]').eq(0);
+    const modalEditMinPrice = modalEdit.find('input[name="min"]').eq(0);
+    const modalEditMaxPrice = modalEdit.find('input[name="max"]').eq(0);
+    const modalEditInfo = modalEdit.find('textarea[name="info"]').eq(0);
+    const modalEditSubmit = modalEdit.find('.submit').eq(0);
+    const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
+    const modalEditHeaderEditStr = 'Змінити процедуру';
+    const modalEditHeaderNewStr = 'Додати процедуру';
+    const modalEditMessageBlock = $('#messageEdit');
+    const modalSelect = $('select');
+
+    const tableWrapper = $('#table-wrapper');
+
+    const csrfToken = $('input[name="csrf_token"]').eq(0);
+
+    const tableEditSpanClassName = 'fa fa-edit table-edit-span';
+    const tableDeleteSpanClassName = 'fa fa-trash table-delete-span';
+    const tableEditSpanSelector = '.table-edit-span';
+    const tableDeleteSpanSelector = '.table-delete-span';
+
+    function fillTableWithRows(table, data) {
+        const tbody = table.find('tbody').eq(0);
+        $.each(data, function () {
+            const tr = $('<tr></tr>');
+            tr.append(createIconsTd(this.id, [tableEditSpanClassName, tableDeleteSpanClassName]));
+            tr.append(createTd(this.category_name));
+            tr.append(createTd(this.procedure_name));
+            tr.append(createTd(this.price_min));
+            tr.append(createTd(this.price_max));
+            tbody.append(tr);
+        });
+    }
+
+    function initDeleteProcedureEvents() {
+        $(tableDeleteSpanSelector).off();
+        $(tableDeleteSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+
+            modalDelete.modal('show');
+
+            modalDeleteSubmit.off();
+            modalDeleteSubmit.on('click', function () {
+                sendRequestDeleteProcedure(clickedValue);
+            });
+        });
+    }
+
+    function initEditProcedureEvents() {
+        $(tableEditSpanSelector).off();
+        $(tableEditSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+            sendRequestGetProcedure(clickedValue);
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderEditStr);
+            modalEdit.modal('show');
+
+            modalEditSubmit.off();
+            modalEditSubmit.on('click', function () {
+                sendRequestEditProcedure(clickedValue);
+            });
+        });
+    }
+
+    function initAddProcedureEvent() {
+        addNewButton.off();
+        addNewButton.on('click', function () {
+            clearAddProcedureForm();
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderNewStr);
+            modalEdit.modal('show');
+
+            modalEditSubmit.off();
+            modalEditSubmit.on('click', function () {
+                sendRequestAddProcedure();
+            });
+        });
+    }
+
+    function clearAddProcedureForm() {
+        modalEditProcedure.val('');
+        modalEditCategory.val('');
+        modalEditMinPrice.val('');
+        modalEditMaxPrice.val('');
+        modalEditInfo.val('');
+    }
+
+    function processResponseGetAllProcedure(result) {
+        const table = createHeaderTable(
+            ['Категорія', 'Процедура', 'Мін. ціна', 'Макс. ціна']);
+        tableWrapper.html(table);
+        console.log(result);
+        fillTableWithRows(table, result.data);
+        initDataTable(table);
+
+        initDeleteProcedureEvents();
+        initEditProcedureEvents();
+        initAddProcedureEvent();
+    }
+
+    function processResponseGetProcedure(result) {
+        modalEditProcedure.val(result.data.name);
+        modalEditCategory.val(result.data.category_id);
+        modalEditMinPrice.val(result.data.price_min);
+        modalEditMaxPrice.val(result.data.price_max);
+        modalEditInfo.val(result.data.info);
+    }
+
+    function processResponseAddOrEditProcedure(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlock, result.message);
+        } else {
+            modalEdit.modal('hide');
+            showSuccess(result.message);
+            sendRequestGetAllProcedure();
+        }
+    }
+
+    function processRequestDeleteProcedure(result) {
+        modalDelete.modal('hide');
+        if (result.status === false) {
+            showError(result.message);
+        } else {
+            showSuccess(result.message);
+            sendRequestGetAllProcedure();
+        }
+    }
+
+    function processResponseGetAllCategories(result) {
+        $.each(result.data, function () {
+            const opt = $('<option></option>');
+            opt.append(this.name);
+            opt.attr('value', this.id);
+            modalSelect.append(opt);
+        })
+    }
+
+    function sendRequestGetAllCategories() {
+        $.ajax({
+            type: "GET",
+            url: "/api/categories",
+            success: processResponseGetAllCategories
+        });
+    }
+
+    function sendRequestGetAllProcedure() {
+        $.ajax({
+            type: "GET",
+            url: "/api/procedures",
+            success: processResponseGetAllProcedure
+        });
+    }
+
+    function sendRequestGetProcedure(id) {
+        $.ajax({
+            type: "GET",
+            url: "/api/procedures/" + id,
+            success: processResponseGetProcedure
+        });
+    }
+
+    function sendRequestAddProcedure() {
+        $.ajax({
+            type: "POST",
+            url: "/api/procedures",
+            data: {
+                'category_id': modalEditCategory.val(),
+                'name': modalEditProcedure.val(),
+                'price_min': modalEditMinPrice.val(),
+                'price_max': modalEditMaxPrice.val(),
+                'info': modalEditInfo.val(),
+                'csrf_token': csrfToken.val()
+            },
+            success: processResponseAddOrEditProcedure
+        });
+    }
+
+    function sendRequestEditProcedure(id) {
+        $.ajax({
+            type: "PUT",
+            url: "/api/procedures/" + id,
+            data: {
+                'category_id': modalEditCategory.val(),
+                'name': modalEditProcedure.val(),
+                'price_min': modalEditMinPrice.val(),
+                'price_max': modalEditMaxPrice.val(),
+                'info': modalEditInfo.val(),
+                'csrf_token': csrfToken.val()
+            },
+            success: processResponseAddOrEditProcedure
+        });
+    }
+
+    function sendRequestDeleteProcedure(id) {
+        $.ajax({
+            type: "DELETE",
+            url: "/api/procedures/" + id,
+            success: processRequestDeleteProcedure
+        });
+    }
+
+    $(document).ready(function () {
+        sendRequestGetAllProcedure();
+        sendRequestGetAllCategories();
+    });
+
+
+</script>
 {% endblock %}
