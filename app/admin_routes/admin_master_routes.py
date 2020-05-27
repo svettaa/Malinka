@@ -27,7 +27,7 @@ def get_master_and_their_procedures(master_id):
 @login_required
 @admin_only
 def masters_get():
-    return render_template('masters.html', masters=get_masters(),
+    return render_template('masters.html', masters=get_masters(), csrf_token=AdminMasterForm().csrf_token,
                            error=(request.args.get('error')),
                            success=(request.args.get('success')))
 

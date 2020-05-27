@@ -9,7 +9,6 @@ def json_one(row, additional=dict()):
         return None
     result = {}
     for item in row.items():
-        print(item, type(item[1]))
         if type(item[1]) == datetime:
             result[item[0]] = datetime.datetime.strftime(item[1], '%d.%m.%Y %H:%M')
         elif type(item[1]) == datetime.date:

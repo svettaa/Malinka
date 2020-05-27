@@ -11,6 +11,8 @@ from wtforms.fields.html5 import TelField, EmailField, IntegerField
 class BaseForm(FlaskForm):
     # def __init__(self, formdata=_Auto, **kwargs):
     #     super(BaseForm, self).__init__(formdata, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(BaseForm, self).__init__(meta={'csrf': False}, *args, **kwargs)
     pass
 
 
@@ -83,6 +85,15 @@ class AdminMasterForm(BaseForm):
     is_hired = RadioField('Статус', validators=[InputRequired('Оберіть статус')],
                           choices=[(1, 'Працює'), (0, 'Звільнено')], coerce=int)
     procedures = FieldList(FormField(AdminMasterProceduresForm))
+
+
+class AdminMasterForm2(BaseForm):
+    id = SelectField('Користувач', validators=[InputRequired('Виберіть користувача')],
+                     coerce=str)
+    even_schedule = RadioField('Графік', validators=[InputRequired('Оберіть графік')],
+                               choices=[(1, 'Парний'), (0, 'Непарний')], coerce=int)
+    is_hired = RadioField('Статус', validators=[InputRequired('Оберіть статус')],
+                          choices=[(1, 'Працює'), (0, 'Звільнено')], coerce=int)
 
 
 class AdminScheduleChangeForm(BaseForm):

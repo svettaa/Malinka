@@ -15,6 +15,13 @@ def api_clients_get():
     return build_list_data_reply(get_clients())
 
 
+@app.route('/api/clients/not_masters', methods=['GET'])
+@login_required
+@admin_only
+def api_clients_not_masters_get():
+    return build_list_data_reply(get_clients_no_masters())
+
+
 @app.route('/api/clients/<int:client_id>', methods=['GET'])
 @login_required
 @admin_only

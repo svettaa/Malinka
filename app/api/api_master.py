@@ -134,7 +134,7 @@ def update_master(master: Master):
 
 def update_master_procedures(master_id: int, procedures):
     for procedure in procedures:
-        if procedure.duration.data is not None and procedure.duration.data <= 0:
+        if procedure['duration'] is not None and procedure['duration'] <= 0:
             return False, 'Тривалість виконання має бути більше нуля'
 
     try:
@@ -145,13 +145,13 @@ def update_master_procedures(master_id: int, procedures):
 
         # insert new
         for procedure in procedures:
-            if procedure.duration.data is not None:
+            if procedure['duration'] is not None:
                 db.session.execute('INSERT INTO Master_Procedure '
                                    '            (master_id, procedure_id, duration) '
                                    'VALUES (:master_id, :procedure_id, :duration);',
                                    {'master_id': master_id,
-                                    'procedure_id': procedure.procedure_id.data,
-                                    'duration': procedure.duration.data})
+                                    'procedure_id': procedure['procedure_id'],
+                                    'duration': procedure['duration']})
 
         assert_master_procedures(get_master(master_id))
         db.session.commit()
