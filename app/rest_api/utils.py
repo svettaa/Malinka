@@ -45,4 +45,4 @@ def build_one_data_reply(data, additional=dict()):
 
 def build_message_reply(result):
     return jsonify({'status': result[0],
-                    'message': result[1]})
+                    'message': str(result[1])})

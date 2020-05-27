@@ -7,7 +7,6 @@ from app.api.api_appointment import *
 from app.api.api_master import *
 from app.api.api_client import *
 from app.api.api_procedure import *
-from app.api.api_appointment_paint import *
 from app.login import admin_only
 from app.rest_api.utils import *
 
@@ -48,13 +47,6 @@ def api_appointments_get():
 @admin_only
 def api_appointment_get(appointment_id):
     return build_one_data_reply(get_appointment(appointment_id))
-
-
-@app.route('/api/appointments/<int:appointment_id>/paints', methods=['GET'])
-@login_required
-@admin_only
-def api_appointment_paints_get(appointment_id):
-    return build_list_data_reply(get_appointment_paints(appointment_id))
 
 
 @app.route('/api/appointments', methods=['POST'])
