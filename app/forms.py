@@ -11,8 +11,6 @@ from wtforms.fields.html5 import TelField, EmailField, IntegerField
 class BaseForm(FlaskForm):
     # def __init__(self, formdata=_Auto, **kwargs):
     #     super(BaseForm, self).__init__(formdata, **kwargs)
-    def __init__(self, *args, **kwargs):
-        super(BaseForm, self).__init__(meta={'csrf': False}, *args, **kwargs)
     pass
 
 
