@@ -22,12 +22,12 @@ function clearMessagesBlock(block) {
     block.html('');
 }
 
-function initDataTable(table){
-    table.DataTable( {
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Ukrainian.json"
-            }
-        });
+function initDataTable(table) {
+    table.DataTable({
+        "language": {
+            "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Ukrainian.json"
+        }
+    });
 }
 
 function createIcon(id, className) {
@@ -93,5 +93,35 @@ function createHeaderTable(headers) {
     }
 
     return table;
+}
+
+function getDateFromDatetime(datetime) {
+    return datetime.substring(0, 10);
+}
+
+function getTimeFromDatetime(datetime) {
+    return datetime.substring(11, 16);
+}
+
+function initDatePicker(element) {
+    element.datetimepicker({
+        locale: 'ru',
+        format: 'L'
+    });
+}
+
+function initTimePicker(element) {
+    element.datetimepicker({
+        locale: 'ru',
+        format: 'LT'
+    });
+}
+
+function getCurrentDay() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    return dd + '.' + mm + '.' + yyyy;
 }
 

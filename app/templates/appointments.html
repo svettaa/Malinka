@@ -12,64 +12,447 @@
 
 
 {% block content %}
+{{ csrf_token }}
+
+<div id="modalDelete" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Видалення запису</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Ви впевнені, що хочете видалити запис?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger submit">Видалити</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalEdit" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messageEdit"></div>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Майстер</label>
+                                <div class="col-lg-9">
+                                    <select class="form-control" name="master_id" required="">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Процедура</label>
+                                <div class="col-lg-9">
+                                    <select class="form-control" name="procedure_id" required="">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Клієнт</label>
+                                <div class="col-lg-9">
+                                    <select class="form-control" name="client_id" required="">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">День</label>
+                                <div class="col-lg-5 input-group date" id="day_datetimepicker"
+                                     data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" name="day" required="">
+                                    <div class="input-group-append" data-target="#day_datetimepicker"
+                                         data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Початок</label>
+                                <div class="col-lg-5 input-group date" id="start_datetimepicker"
+                                     data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" name="start"
+                                           required="">
+                                    <div class="input-group-append" data-target="#start_datetimepicker"
+                                         data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Кінець</label>
+                                <div class="col-lg-5 input-group date" id="end_datetimepicker"
+                                     data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" name="end" required="">
+                                    <div class="input-group-append" data-target="#end_datetimepicker"
+                                         data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-clock"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Побажання</label>
+                                <div class="col-lg-9">
+                                    <textarea style="width: 100%;" name="preferences" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Ціна</label>
+                                <div class="col-lg-9">
+                                    <input type="number" min="1" step="1" name="price" required="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary submit">Зберегти</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Table - list of appointments -->
 <div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
-        <table class="table table-bordered table-responsive-lg entriesList">
-            <thead>
-            <tr>
-                <th style="width: 40px" scope="col"></th>
-                <th scope="col">Статус</th>
-                <th scope="col">Дата</th>
-                <th scope="col">Початок</th>
-                <th scope="col">Кінець</th>
-                <th scope="col">Майстер</th>
-                <th scope="col">Процедура</th>
-                <th scope="col">Клієнт</th>
-                <th scope="col">Ціна</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            {% for appointment in appointments %}
-            <tr>
-                <td>
-                    <div style="width: 60px" class="d-flex justify-content-between">
-                        <a class="btnEdit" href="{{ url_for('edit_appointment_post', appointment_id=appointment.id) }}">
-                            <span class="fa fa-edit"></span>
-                        </a>
-                        <a href="{{ url_for('delete_appointment_get', appointment_id=appointment.id) }}">
-                            <span class="fa fa-trash"></span>
-                        </a>
-                    </div>
-                </td>
-                <td>{% if appointment.status %}+{% else %}-{% endif %}</td>
-                <td>
-                    <div style="display:none;">
-                        {{ appointment.appoint_start.strftime('%Y\%m\%d') }}
-                    </div>
-                    {{ appointment.appoint_start.strftime('%d.%m.%Y') }}
-                </td>
-                <td>{{ appointment.appoint_start.strftime('%H:%M') }}</td>
-                <td>{{ appointment.appoint_end.strftime('%H:%M') }}</td>
-                <td>{{ appointment.master_surname }} {{ appointment.master_first_name }}</td>
-                <td>{{ appointment.procedure_name }}</td>
-                <td>{{ appointment.client_surname }} {{ appointment.client_first_name }}</td>
-                <td>{{ appointment.price }}</td>
-            </tr>
-            {% endfor %}
-
-            </tbody>
-        </table>
+    <div class="col-12 col-sm-10 mx-auto" id="table-wrapper">
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-10 offset-sm-1">
-        <a href="{{ url_for('new_appointment_get') }}">
-            <button type="submit" class="btn btn-primary">Додати</button>
-        </a>
+        <button type="submit" class="btn btn-primary add-new">Додати</button>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+
+    const addNewButton = $('.add-new');
+
+    const modalDelete = $('#modalDelete');
+    const modalDeleteSubmit = modalDelete.find('.submit').eq(0);
+
+    const modalEditDayPicker = $('#day_datetimepicker');
+    const modalEditStartPicker = $('#start_datetimepicker');
+    const modalEditEndPicker = $('#end_datetimepicker');
+
+    const modalEdit = $('#modalEdit');
+    const modalEditMaster = modalEdit.find('select[name="master_id"]').eq(0);
+    const modalEditProcedure = modalEdit.find('select[name="procedure_id"]').eq(0);
+    const modalEditClient = modalEdit.find('select[name="client_id"]').eq(0);
+    const modalEditDay = modalEdit.find('input[name="day"]').eq(0);
+    const modalEditStart = modalEdit.find('input[name="start"]').eq(0);
+    const modalEditEnd = modalEdit.find('input[name="end"]').eq(0);
+    const modalEditPreferences = modalEdit.find('textarea[name="preferences"]').eq(0);
+    const modalEditPrice = modalEdit.find('input[name="price"]').eq(0);
+    const modalEditSubmit = modalEdit.find('.submit').eq(0);
+    const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
+    const modalEditHeaderEditStr = 'Змінити запис';
+    const modalEditHeaderNewStr = 'Додати запис';
+    const modalEditMessageBlock = $('#messageEdit');
+
+    const tableWrapper = $('#table-wrapper');
+
+    const csrfToken = $('input[name="csrf_token"]').eq(0);
+
+    const tableEditSpanClassName = 'fa fa-edit table-edit-span';
+    const tableDeleteSpanClassName = 'fa fa-trash table-delete-span';
+    const tableEditSpanSelector = '.table-edit-span';
+    const tableDeleteSpanSelector = '.table-delete-span';
+
+    function fillTableWithRows(table, data) {
+        const tbody = table.find('tbody').eq(0);
+        $.each(data, function () {
+            const tr = $('<tr></tr>');
+            tr.append(createIconsTd(this.id, [tableEditSpanClassName, tableDeleteSpanClassName]));
+            tr.append(createTd(this.status ? '+' : '-'));
+            tr.append(createTd(getDateFromDatetime(this.appoint_start)));
+            tr.append(createTd(getTimeFromDatetime(this.appoint_start)));
+            tr.append(createTd(getTimeFromDatetime(this.appoint_end)));
+            tr.append(createTd(this.master_surname + ' ' + this.master_first_name));
+            tr.append(createTd(this.procedure_name));
+            tr.append(createTd(this.client_surname + ' ' + this.client_first_name));
+            tr.append(createTd(this.price));
+            tbody.append(tr);
+        });
+    }
+
+    function initDeleteCategoryEvents() {
+        $(tableDeleteSpanSelector).off();
+        $(tableDeleteSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+
+            modalDelete.modal('show');
+
+            modalDeleteSubmit.off();
+            modalDeleteSubmit.on('click', function () {
+                sendRequestDeleteAppointment(clickedValue);
+            });
+        });
+    }
+
+    function initEditCategoryEvents() {
+        $(tableEditSpanSelector).off();
+        $(tableEditSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+            sendRequestGetAppointment(clickedValue);
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderEditStr);
+            modalEdit.modal('show');
+
+            modalEdit.off('submit');
+            modalEdit.on('submit', function () {
+                sendRequestEditAppointment(clickedValue);
+                return false;
+            });
+        });
+    }
+
+    function initAddCategoryEvent() {
+        addNewButton.off();
+        addNewButton.on('click', function () {
+            clearAddCategoryForm();
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderNewStr);
+            modalEdit.modal('show');
+
+            modalEdit.off('submit');
+            modalEdit.on('submit', function () {
+                sendRequestAddAppointment();
+                return false;
+            });
+        });
+    }
+
+    function clearAddCategoryForm() {
+        modalEditMaster.val('');
+        modalEditProcedure.val('');
+        modalEditClient.val('');
+        modalEditDay.val(getCurrentDay());
+        modalEditStart.val('');
+        modalEditEnd.val('');
+        modalEditPreferences.val('');
+        modalEditPrice.val('');
+    }
+
+    function processResponseGetAllAppointments(result) {
+        const table = createHeaderTable(
+            ['Статус', 'Дата', 'Початок', 'Кінець', 'Майстер', 'Процедура', 'Клієнт', 'Ціна']);
+        tableWrapper.html(table);
+
+        fillTableWithRows(table, result.data);
+        initDataTable(table);
+
+        initDeleteCategoryEvents();
+        initEditCategoryEvents();
+        initAddCategoryEvent();
+    }
+
+    function processResponseGetMasters(result) {
+        modalEditMaster.html('');
+        $.each(result.data, function () {
+            const option = $('<option></option>');
+            option.val(this.id);
+            option.html(this.surname + ' ' + this.first_name);
+            modalEditMaster.append(option);
+        })
+    }
+
+    function processResponseGetClients(result) {
+        modalEditClient.html('');
+        $.each(result.data, function () {
+            const option = $('<option></option>');
+            option.val(this.id);
+            option.html(this.surname + ' ' + this.first_name + ', +38' + this.phone);
+            modalEditClient.append(option);
+        })
+    }
+
+    function processResponseGetProceduresByCategories(result) {
+        modalEditProcedure.html('');
+        $.each(result.data, function () {
+            const optgroup = $('<optgroup></optgroup>');
+            optgroup.attr('label', this.name)
+            $.each(this.procedures, function () {
+                const option = $('<option></option>');
+                option.val(this.id);
+                option.html(this.name);
+                optgroup.append(option);
+            });
+            modalEditProcedure.append(optgroup);
+        })
+    }
+
+    function processResponseGetAppointment(result) {
+        modalEditMaster.val(result.data.master_id);
+        modalEditProcedure.val(result.data.procedure_id);
+        modalEditClient.val(result.data.client_id);
+        modalEditDay.val(getDateFromDatetime(result.data.appoint_start));
+        modalEditStart.val(getTimeFromDatetime(result.data.appoint_start));
+        modalEditEnd.val(getTimeFromDatetime(result.data.appoint_end));
+        modalEditPreferences.val(result.data.preferences);
+        modalEditPrice.val(result.data.price);
+    }
+
+    function processResponseAddOrEditAppointment(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlock, result.message);
+        } else {
+            modalEdit.modal('hide');
+            showSuccess(result.message);
+            sendRequestGetAllAppointments();
+        }
+    }
+
+    function processRequestDeleteAppointment(result) {
+        modalDelete.modal('hide');
+        if (result.status === false) {
+            showError(result.message);
+        } else {
+            showSuccess(result.message);
+            sendRequestGetAllAppointments();
+        }
+    }
+
+    function sendRequestGetMasters() {
+        $.ajax({
+            type: "GET",
+            url: "/api/masters",
+            success: processResponseGetMasters
+        });
+    }
+
+    function sendRequestGetClients() {
+        $.ajax({
+            type: "GET",
+            url: "/api/clients",
+            success: processResponseGetClients
+        });
+    }
+
+    function sendRequestGetProceduresByCategories() {
+        $.ajax({
+            type: "GET",
+            url: "/api/categories/procedures",
+            success: processResponseGetProceduresByCategories
+        });
+    }
+
+    function sendRequestGetAllAppointments() {
+        $.ajax({
+            type: "GET",
+            url: "/api/appointments",
+            success: processResponseGetAllAppointments
+        });
+    }
+
+    function sendRequestGetAppointment(id) {
+        $.ajax({
+            type: "GET",
+            url: "/api/appointments/" + id,
+            success: processResponseGetAppointment
+        });
+    }
+
+    function sendRequestAddAppointment() {
+        $.ajax({
+            type: "POST",
+            url: "/api/appointments",
+            data: getAllEditData(),
+            success: processResponseAddOrEditAppointment
+        });
+    }
+
+    function sendRequestEditAppointment(id) {
+        $.ajax({
+            type: "PUT",
+            url: "/api/appointments/" + id,
+            data: getAllEditData(),
+            success: processResponseAddOrEditAppointment
+        });
+    }
+
+    function sendRequestDeleteAppointment(id) {
+        $.ajax({
+            type: "DELETE",
+            url: "/api/appointments/" + id,
+            success: processRequestDeleteAppointment
+        });
+    }
+
+    function getAllEditData() {
+        return {
+            'appoint_start': modalEditDay.val() + ' ' + modalEditStart.val(),
+            'appoint_end': modalEditDay.val() + ' ' + modalEditEnd.val(),
+            'master_id': modalEditMaster.val(),
+            'client_id': modalEditClient.val(),
+            'procedure_id': modalEditProcedure.val(),
+            'preferences': modalEditPreferences.val(),
+            'price': modalEditPrice.val(),
+            'csrf_token': csrfToken.val()
+        };
+    }
+
+    $(document).ready(function () {
+        sendRequestGetAllAppointments();
+        sendRequestGetMasters();
+        sendRequestGetClients();
+        sendRequestGetProceduresByCategories();
+
+        initDatePicker(modalEditDayPicker);
+        initTimePicker(modalEditStartPicker);
+        initTimePicker(modalEditEndPicker);
+    });
+
+
+</script>
 {% endblock %}

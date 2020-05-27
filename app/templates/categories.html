@@ -46,22 +46,24 @@
             <div class="row">
                 <div class="col-10 mx-auto" id="messageEdit"></div>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12 col-sm-10 mx-auto">
-                        <div class="form-group row">
-                            <label class="col-lg-3 col-form-label">Назва категорії</label>
-                            <div class="col-lg-9">
-                                <input class="form-control" name="name">
+            <form>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Назва категорії</label>
+                                <div class="col-lg-9">
+                                    <input class="form-control" name="name" required="">
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary submit">Зберегти</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary submit">Зберегти</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -143,9 +145,10 @@
             modalEditHeader.html(modalEditHeaderEditStr);
             modalEdit.modal('show');
 
-            modalEditSubmit.off();
-            modalEditSubmit.on('click', function () {
+            modalEdit.off('submit');
+            modalEdit.on('submit', function () {
                 sendRequestEditCategory(clickedValue);
+                return false;
             });
         });
     }
@@ -159,9 +162,10 @@
             modalEditHeader.html(modalEditHeaderNewStr);
             modalEdit.modal('show');
 
-            modalEditSubmit.off();
-            modalEditSubmit.on('click', function () {
+            modalEdit.off('submit');
+            modalEdit.on('submit', function () {
                 sendRequestAddCategory();
+                return false;
             });
         });
     }

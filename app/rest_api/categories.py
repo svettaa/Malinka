@@ -15,6 +15,27 @@ def api_categories_get():
     return build_list_data_reply(get_categories())
 
 
+@app.route('/api/categories/procedures', methods=['GET'])
+@login_required
+@admin_only
+def api_categories_procedures_get():
+    categories_proxy = db.engine.execute('SELECT id, name '
+                                         'FROM Category;').fetchall()
+
+    categories = []
+    for category in categories_proxy:
+        procedures = db.engine.execute('SELECT id, name, info, price_min, price_max '
+                                       'FROM Procedure '
+                                       'WHERE category_id = %s;',
+                                       category['id']).fetchall()
+        new_item = {'name': category['name'],
+                    'procedures': json_list(procedures)}
+        categories.append(new_item)
+
+    return jsonify({'status': True,
+                        'data': categories})
+
+
 @app.route('/api/categories/<int:category_id>', methods=['GET'])
 @login_required
 @admin_only
