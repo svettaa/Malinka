@@ -11,6 +11,12 @@
 {% endblock %}
 
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+{% endblock %}
+
+
 {% block content %}
 {{ csrf_token }}
 
@@ -53,7 +59,10 @@
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Майстер</label>
                                 <div class="col-lg-9">
-                                    <select class="form-control" name="master_id" required="">
+                                    <select data-live-search="true" title="Не обрано"
+                                            class="selectpicker form-control"
+                                            data-none-results-text="Немає результатів"
+                                            name="master_id" required="">
                                     </select>
                                 </div>
                             </div>
@@ -64,7 +73,10 @@
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Процедура</label>
                                 <div class="col-lg-9">
-                                    <select class="form-control" name="procedure_id" required="">
+                                    <select data-live-search="true" title="Не обрано"
+                                            class="selectpicker form-control"
+                                            data-none-results-text="Немає результатів"
+                                            name="procedure_id" required="">
                                     </select>
                                 </div>
                             </div>
@@ -75,7 +87,10 @@
                             <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Клієнт</label>
                                 <div class="col-lg-9">
-                                    <select class="form-control" name="client_id" required="">
+                                    <select data-live-search="true" title="Не обрано"
+                                            class="selectpicker form-control"
+                                            data-none-results-text="Немає результатів"
+                                            name="client_id" required="">
                                     </select>
                                 </div>
                             </div>
@@ -205,6 +220,7 @@
 
 {% block scripts %}
 {{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 <script src="{{ url_for('static', filename='js/api/admin/paints.js') }}"></script>
 <script src="{{ url_for('static', filename='js/api/admin/clients.js') }}"></script>
 <script src="{{ url_for('static', filename='js/api/admin/masters.js') }}"></script>
@@ -332,6 +348,10 @@
         modalEditEnd.val('');
         modalEditPreferences.val('');
         modalEditPrice.val('');
+
+        modalEditClient.selectpicker('refresh');
+        modalEditProcedure.selectpicker('refresh');
+        modalEditMaster.selectpicker('refresh');
     }
 
     function buildAppointmentsTable(result) {
@@ -355,6 +375,7 @@
             option.html(this.surname + ' ' + this.first_name);
             modalEditMaster.append(option);
         })
+        modalEditMaster.selectpicker('refresh');
     }
 
     function fillModalClientsSelect(result) {
@@ -365,6 +386,7 @@
             option.html(this.surname + ' ' + this.first_name + ', +38' + this.phone);
             modalEditClient.append(option);
         })
+        modalEditClient.selectpicker('refresh');
     }
 
     function fillModalProceduresByCategoriesSelect(result) {
@@ -380,6 +402,7 @@
             });
             modalEditProcedure.append(optgroup);
         })
+        modalEditProcedure.selectpicker('refresh');
     }
 
     function fillEditAppointmentForm(result) {
@@ -393,6 +416,10 @@
         modalEditEnd.val(getTimeFromDatetime(result.data.appoint_end));
         modalEditPreferences.val(result.data.preferences);
         modalEditPrice.val(result.data.price);
+
+        modalEditClient.selectpicker('refresh');
+        modalEditProcedure.selectpicker('refresh');
+        modalEditMaster.selectpicker('refresh');
     }
 
     function processResponseAddOrEditAppointment(result) {
