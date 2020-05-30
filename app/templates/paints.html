@@ -46,31 +46,33 @@
                 <div class="col-10 mx-auto" id="messageEdit"></div>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-12 col-sm-10 mx-auto">
-                        <div class="form-group row">
-                            <label for="paintNum" class="col-md-2 col-form-label">Номер фарби</label>
-                            <div class="col-md-10">
-                                <input type="text" class="form-control" id="paintNum" name="paintNum">
+                <form id="edit-form">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label for="paintNum" class="col-md-2 col-form-label">Номер фарби</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" id="paintNum" name="paintNum" required>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="paintName" class="col-md-2 col-form-label">Назва</label>
-                            <div class="col-md-10">
-                                <input type="text" class="form-control" id="paintName" name="paintName">
+                            <div class="form-group row">
+                                <label for="paintName" class="col-md-2 col-form-label">Назва</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" id="paintName" name="paintName" required>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <label for="paintLeft" class="col-md-2 col-form-label">Залишок</label>
-                            <div class="col-md-2">
-                                <span id="paintLeft" class="form-control"></span>
+                            <div class="form-group row">
+                                <label for="paintLeft" class="col-md-2 col-form-label">Залишок</label>
+                                <div class="col-md-2">
+                                    <span id="paintLeft" class="form-control"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary submit">Зберегти</button>
+                <button type="submit" form="edit-form" class="btn btn-primary submit">Зберегти</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
             </div>
         </div>
@@ -96,6 +98,7 @@
 
 {% block scripts %}
 {{ super() }}
+<script src="{{ url_for('static', filename='js/api/admin/paints.js') }}"></script>
 <script>
 
     const addNewButton = $('.add-new');
@@ -112,6 +115,7 @@
     const modalEditHeaderEditStr = 'Змінити фарбу';
     const modalEditHeaderNewStr = 'Додати фарбу';
     const modalEditMessageBlock = $('#messageEdit');
+    const modalEditForm = $('#edit-form');
 
     const tableWrapper = $('#table-wrapper');
 
@@ -143,7 +147,7 @@
 
             modalDeleteSubmit.off();
             modalDeleteSubmit.on('click', function () {
-                sendRequestDeletePaint(clickedValue);
+                sendRequestDeletePaint(clickedValue, processRequestDeletePaint);
             });
         });
     }
@@ -152,15 +156,16 @@
         $(tableEditSpanSelector).off();
         $(tableEditSpanSelector).on('click', function () {
             const clickedValue = $(this).attr('value');
-            sendRequestGetPaint(clickedValue);
+            sendRequestGetPaint(clickedValue, processResponseGetPaint);
 
             clearMessagesBlock(modalEditMessageBlock);
             modalEditHeader.html(modalEditHeaderEditStr);
             modalEdit.modal('show');
 
-            modalEditSubmit.off();
-            modalEditSubmit.on('click', function () {
-                sendRequestEditPaint(clickedValue);
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
+                sendRequestEditPaint(clickedValue, getEditData(), processResponseAddOrEditPaint);
+                return false;
             });
         });
     }
@@ -174,9 +179,10 @@
             modalEditHeader.html(modalEditHeaderNewStr);
             modalEdit.modal('show');
 
-            modalEditSubmit.off();
-            modalEditSubmit.on('click', function () {
-                sendRequestAddPaint();
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
+                sendRequestAddPaint(getEditData(), processResponseAddOrEditPaint);
+                return false;
             });
         });
     }
@@ -211,7 +217,7 @@
         } else {
             modalEdit.modal('hide');
             showSuccess(result.message);
-            sendRequestGetAllPaint();
+            sendRequestGetAllPaints(processResponseGetAllPaint);
         }
     }
 
@@ -221,64 +227,21 @@
             showError(result.message);
         } else {
             showSuccess(result.message);
-            sendRequestGetAllPaint();
+            sendRequestGetAllPaints(processResponseGetAllPaint);
         }
     }
 
-    function sendRequestGetAllPaint() {
-        $.ajax({
-            type: "GET",
-            url: "/api/paints",
-            success: processResponseGetAllPaint
-        });
-    }
-
-    function sendRequestGetPaint(id) {
-        $.ajax({
-            type: "GET",
-            url: "/api/paints/" + id,
-            success: processResponseGetPaint
-        });
-    }
-
-    function sendRequestAddPaint() {
-        $.ajax({
-            type: "POST",
-            url: "/api/paints",
-            data: {
-                'code': modalEditPaintNum.val(),
-                'name': modalEditPaintName.val(),
-                'left_ml': modalEditPaintLeft.val(),
-                'csrf_token': csrfToken.val()
-            },
-            success: processResponseAddOrEditPaint
-        });
-    }
-
-    function sendRequestEditPaint(id) {
-        $.ajax({
-            type: "PUT",
-            url: "/api/paints/" + id,
-            data: {
-                'code': modalEditPaintNum.val(),
-                'name': modalEditPaintName.val(),
-                'left_ml': modalEditPaintLeft.val(),
-                'csrf_token': csrfToken.val()
-            },
-            success: processResponseAddOrEditPaint
-        });
-    }
-
-    function sendRequestDeletePaint(id) {
-        $.ajax({
-            type: "DELETE",
-            url: "/api/paints/" + id,
-            success: processRequestDeletePaint
-        });
+    function getEditData() {
+        return {
+            'code': modalEditPaintNum.val(),
+            'name': modalEditPaintName.val(),
+            'left_ml': modalEditPaintLeft.val(),
+            'csrf_token': csrfToken.val()
+        };
     }
 
     $(document).ready(function () {
-        sendRequestGetAllPaint();
+        sendRequestGetAllPaints(processResponseGetAllPaint);
     });
 
 
