@@ -174,8 +174,8 @@
                         </div>
                         <div class="form-group row">
                             <form id="appointment-paint-form">
-                                <select name="paint-id"></select>
-                                <input type="number" min="1" name="paint-amount">
+                                <select name="paint-id" required></select>
+                                <input type="number" min="1" name="paint-amount" required>
                                 <button type="submit">Зберегти</button>
                             </form>
                         </div>
@@ -205,6 +205,12 @@
 
 {% block scripts %}
 {{ super() }}
+<script src="{{ url_for('static', filename='js/api/admin/paints.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/clients.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/masters.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/procedures.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/appointments.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/appointment_paints.js') }}"></script>
 <script>
 
     var currentAppointment = 0;
@@ -270,7 +276,7 @@
 
             modalDeleteSubmit.off();
             modalDeleteSubmit.on('click', function () {
-                sendRequestDeleteAppointment(clickedValue);
+                sendRequestDeleteAppointment(clickedValue, processRequestDeleteAppointment);
             });
         });
     }
@@ -282,8 +288,8 @@
 
             const clickedValue = $(this).attr('value');
             currentAppointment = clickedValue;
-            sendRequestGetAppointment(clickedValue);
-            sendRequestGetAppointmentPaints(clickedValue);
+            sendRequestGetAppointment(clickedValue, fillEditAppointmentForm);
+            sendRequestGetAppointmentPaints(clickedValue, buildAppointmentPaintsTable);
 
             clearMessagesBlock(modalEditMessageBlock);
             modalEditHeader.html(modalEditHeaderEditStr);
@@ -291,7 +297,7 @@
 
             modalEditForm.off('submit');
             modalEditForm.on('submit', function () {
-                sendRequestEditAppointment(clickedValue);
+                sendRequestEditAppointment(clickedValue, getAllEditData(), processResponseAddOrEditAppointment);
                 return false;
             });
         });
@@ -309,7 +315,7 @@
 
             modalEditForm.off('submit');
             modalEditForm.on('submit', function () {
-                sendRequestAddAppointment();
+                sendRequestAddAppointment(getAllEditData(), processResponseAddOrEditAppointment);
                 return false;
             });
         });
@@ -328,7 +334,7 @@
         modalEditPrice.val('');
     }
 
-    function processResponseGetAllAppointments(result) {
+    function buildAppointmentsTable(result) {
         const table = createHeaderTable(
             ['Статус', 'Дата', 'Початок', 'Кінець', 'Майстер', 'Процедура', 'Клієнт', 'Ціна']);
         tableWrapper.html(table);
@@ -341,7 +347,7 @@
         initAddAppointmentEvent();
     }
 
-    function processResponseGetMasters(result) {
+    function fillModalMastersSelect(result) {
         modalEditMaster.html('');
         $.each(result.data, function () {
             const option = $('<option></option>');
@@ -351,7 +357,7 @@
         })
     }
 
-    function processResponseGetClients(result) {
+    function fillModalClientsSelect(result) {
         modalEditClient.html('');
         $.each(result.data, function () {
             const option = $('<option></option>');
@@ -361,7 +367,7 @@
         })
     }
 
-    function processResponseGetProceduresByCategories(result) {
+    function fillModalProceduresByCategoriesSelect(result) {
         modalEditProcedure.html('');
         $.each(result.data, function () {
             const optgroup = $('<optgroup></optgroup>');
@@ -376,7 +382,7 @@
         })
     }
 
-    function processResponseGetAppointment(result) {
+    function fillEditAppointmentForm(result) {
         modalEditMaster.val(result.data.master_id);
         modalEditMaster.attr('disabled', '');
         modalEditProcedure.val(result.data.procedure_id);
@@ -395,7 +401,7 @@
         } else {
             modalEdit.modal('hide');
             showSuccess(result.message);
-            sendRequestGetAllAppointments();
+            sendRequestGetAllAppointments(buildAppointmentsTable);
         }
     }
 
@@ -405,74 +411,8 @@
             showError(result.message);
         } else {
             showSuccess(result.message);
-            sendRequestGetAllAppointments();
+            sendRequestGetAllAppointments(buildAppointmentsTable);
         }
-    }
-
-    function sendRequestGetMasters() {
-        $.ajax({
-            type: "GET",
-            url: "/api/masters",
-            success: processResponseGetMasters
-        });
-    }
-
-    function sendRequestGetClients() {
-        $.ajax({
-            type: "GET",
-            url: "/api/clients",
-            success: processResponseGetClients
-        });
-    }
-
-    function sendRequestGetProceduresByCategories() {
-        $.ajax({
-            type: "GET",
-            url: "/api/categories/procedures",
-            success: processResponseGetProceduresByCategories
-        });
-    }
-
-    function sendRequestGetAllAppointments() {
-        $.ajax({
-            type: "GET",
-            url: "/api/appointments",
-            success: processResponseGetAllAppointments
-        });
-    }
-
-    function sendRequestGetAppointment(id) {
-        $.ajax({
-            type: "GET",
-            url: "/api/appointments/" + id,
-            success: processResponseGetAppointment
-        });
-    }
-
-    function sendRequestAddAppointment() {
-        $.ajax({
-            type: "POST",
-            url: "/api/appointments",
-            data: getAllEditData(),
-            success: processResponseAddOrEditAppointment
-        });
-    }
-
-    function sendRequestEditAppointment(id) {
-        $.ajax({
-            type: "PUT",
-            url: "/api/appointments/" + id,
-            data: getAllEditData(),
-            success: processResponseAddOrEditAppointment
-        });
-    }
-
-    function sendRequestDeleteAppointment(id) {
-        $.ajax({
-            type: "DELETE",
-            url: "/api/appointments/" + id,
-            success: processRequestDeleteAppointment
-        });
     }
 
     function getAllEditData() {
@@ -507,7 +447,7 @@
     const paintEditSpanSelector = '.paint-edit-span';
     const paintDeleteSpanSelector = '.paint-delete-span';
 
-    function processResponseGetAppointmentPaints(result) {
+    function buildAppointmentPaintsTable(result) {
         modalEditPaintForm.hide();
         modalEditPaintsNone.hide();
         modalEditPaintsTable.hide();
@@ -537,7 +477,7 @@
         $(paintDeleteSpanSelector).off();
         $(paintDeleteSpanSelector).on('click', function () {
             const clickedValue = $(this).attr('value');
-            sendRequestDeleteAppointmentPaint(currentAppointment, clickedValue);
+            sendRequestDeleteAppointmentPaint(currentAppointment, clickedValue, processRequestDeleteAppointmentPaint);
         });
     }
 
@@ -550,7 +490,7 @@
 
             modalEditPaintForm.off('submit');
             modalEditPaintForm.on('submit', function () {
-                sendRequestAddAppointmentPaint(currentAppointment);
+                sendRequestAddAppointmentPaint(currentAppointment, getPaintData(), processResponseAddOrEditAppointmentPaint);
                 return false;
             });
         });
@@ -560,39 +500,28 @@
         $(paintEditSpanSelector).off();
         $(paintEditSpanSelector).on('click', function () {
             const clickedValue = $(this).attr('value');
-            sendRequestGetAppointmentPaint(currentAppointment, clickedValue);
+            sendRequestGetAppointmentPaint(currentAppointment, clickedValue, fillAppointmentPaintEditForm);
 
             modalEditPaintForm.show();
 
             modalEditPaintForm.off('submit');
             modalEditPaintForm.on('submit', function () {
-                sendRequestEditAppointmentPaint(currentAppointment, clickedValue);
+                sendRequestEditAppointmentPaint(currentAppointment, clickedValue, getPaintData(), processResponseAddOrEditAppointmentPaint);
                 return false;
             });
         });
     }
 
-    function sendRequestEditAppointmentPaint(appointmentID, paintID) {
-        $.ajax({
-            type: "PUT",
-            url: "/api/appointments/" + appointmentID + "/paints/" + paintID,
-            data: getPaintData(),
-            success: processResponseAddOrEditAppointmentPaint
-        });
-    }
-
-    function sendRequestGetAppointmentPaint(appointmentID, paintID) {
-        $.ajax({
-            type: "GET",
-            url: "/api/appointments/" + appointmentID + "/paints/" + paintID,
-            success: processResponseGetAppointmentPaint
-        });
-    }
-
-    function processResponseGetAppointmentPaint(result) {
+    function fillAppointmentPaintEditForm(result) {
         modalEditPaintsID.val(result.data.paint_id);
         modalEditPaintsID.attr('disabled', '');
         modalEditPaintsAmount.val(result.data.volume_ml);
+    }
+
+    function clearAddAppointmentPaintForm() {
+        modalEditPaintsID.val('');
+        modalEditPaintsID.removeAttr('disabled');
+        modalEditPaintsAmount.val('');
     }
 
     function processRequestDeleteAppointmentPaint(result) {
@@ -600,7 +529,7 @@
             showErrorBlock(modalEditMessageBlock, result.message);
         } else {
             showSuccessBlock(modalEditMessageBlock, result.message);
-            sendRequestGetAppointmentPaints(currentAppointment);
+            sendRequestGetAppointmentPaints(currentAppointment, buildAppointmentPaintsTable);
         }
     }
 
@@ -609,39 +538,8 @@
             showErrorBlock(modalEditMessageBlock, result.message);
         } else {
             showSuccessBlock(modalEditMessageBlock, result.message);
-            sendRequestGetAppointmentPaints(currentAppointment);
+            sendRequestGetAppointmentPaints(currentAppointment, buildAppointmentPaintsTable);
         }
-    }
-
-    function sendRequestGetAppointmentPaints(id) {
-        $.ajax({
-            type: "GET",
-            url: "/api/appointments/" + id + "/paints",
-            success: processResponseGetAppointmentPaints
-        });
-    }
-
-    function sendRequestAddAppointmentPaint(appointmentID) {
-        $.ajax({
-            type: "POST",
-            url: "/api/appointments/" + appointmentID + "/paints",
-            data: getPaintData(),
-            success: processResponseAddOrEditAppointmentPaint
-        });
-    }
-
-    function sendRequestDeleteAppointmentPaint(appointmentID, paintID) {
-        $.ajax({
-            type: "DELETE",
-            url: "/api/appointments/" + appointmentID + '/paints/' + paintID,
-            success: processRequestDeleteAppointmentPaint
-        });
-    }
-
-    function clearAddAppointmentPaintForm() {
-        modalEditPaintsID.val('');
-        modalEditPaintsID.removeAttr('disabled');
-        modalEditPaintsAmount.val('');
     }
 
     function getPaintData() {
@@ -652,15 +550,7 @@
         };
     }
 
-    function sendRequestGetAllPossiblePaints() {
-        $.ajax({
-            type: "GET",
-            url: "/api/paints",
-            success: processResponseGetAllPossiblePaints
-        });
-    }
-
-    function processResponseGetAllPossiblePaints(result) {
+    function fillModalAppointmentPaintsSelect(result) {
         modalEditPaintsID.html('');
         $.each(result.data, function () {
             const option = $('<option></option>');
@@ -674,11 +564,11 @@
 <script>
 
     $(document).ready(function () {
-        sendRequestGetAllAppointments();
-        sendRequestGetMasters();
-        sendRequestGetClients();
-        sendRequestGetProceduresByCategories();
-        sendRequestGetAllPossiblePaints();
+        sendRequestGetAllAppointments(buildAppointmentsTable);
+        sendRequestGetMasters(fillModalMastersSelect);
+        sendRequestGetClients(fillModalClientsSelect);
+        sendRequestGetProceduresByCategories(fillModalProceduresByCategoriesSelect);
+        sendRequestGetAllPaints(fillModalAppointmentPaintsSelect);
 
         initDatePicker(modalEditDayPicker);
         initTimePicker(modalEditStartPicker);

@@ -1,5 +1,13 @@
 
 
+function sendRequestGetProceduresByCategories(callback) {
+    $.ajax({
+        type: "GET",
+        url: "/api/categories/procedures",
+        success: callback
+    });
+}
+
 function sendRequestGetAllProcedure(callback) {
     $.ajax({
         type: "GET",
