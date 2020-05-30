@@ -10,52 +10,277 @@
 Список фарб
 {% endblock %}
 
-
 {% block content %}
-<!-- Table - list of paints -->
-<div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
-        <table class="table table-bordered table-responsive-lg entriesList">
-            <thead>
-            <tr>
-                <th style="width: 40px" scope="col"></th>
-                <th scope="col">Номер фарби</th>
-                <th scope="col">Назва</th>
-                <th scope="col">Залишок, мл</th>
-            </tr>
-            </thead>
-            <tbody>
+{{ csrf_token }}
 
-            {% for paint in paints %}
-            <tr>
-                <td>
-                    <div style="width: 60px" class="d-flex justify-content-between">
-                        <a href="{{ url_for('edit_paint_get', paint_id=paint.id) }}">
-                            <span class="fa fa-edit"></span>
-                        </a>
-                        <a
-                           href="{{ url_for('delete_paint_get', paint_id=paint.id) }}">
-                            <span class="fa fa-trash"></span>
-                        </a>
+<div id="modalDelete" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Видалення фарби</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Ви впевнені, що хочете видалити фарбу?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger submit">Видалити</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalEdit" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messageEdit"></div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-sm-10 mx-auto">
+                        <div class="form-group row">
+                            <label for="paintNum" class="col-md-2 col-form-label">Номер фарби</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="paintNum" name="paintNum">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="paintName" class="col-md-2 col-form-label">Назва</label>
+                            <div class="col-md-10">
+                                <input type="text" class="form-control" id="paintName" name="paintName">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="paintLeft" class="col-md-2 col-form-label">Залишок</label>
+                            <div class="col-md-2">
+                                <span id="paintLeft" class="form-control"></span>
+                            </div>
+                        </div>
                     </div>
-                </td>
-                <td>{{ paint.code }}</td>
-                <td>{{ paint.name }}</td>
-                <td class="paint_left">{{ paint.left_ml }}</td>
-            </tr>
-            {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary submit">Зберегти</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            </tbody>
-        </table>
+
+<!-- Table - list of categories -->
+
+<div class="row ">
+    <div class="col-12 col-md-10 mx-auto" id="table-wrapper">
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-10 offset-sm-1">
-        <a href="{{ url_for('new_paint_get') }}">
-            <button type="submit" class="btn btn-primary">Додати</button>
-        </a>
+    <div class="col-12 col-md-10 offset-sm-1">
+        <button class="btn btn-primary add-new">Додати</button>
     </div>
 </div>
 
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+
+    const addNewButton = $('.add-new');
+
+    const modalDelete = $('#modalDelete');
+    const modalDeleteSubmit = modalDelete.find('.submit').eq(0);
+
+    const modalEdit = $('#modalEdit');
+    const modalEditPaintNum = modalEdit.find('input[name="paintNum"]').eq(0);
+    const modalEditPaintName = modalEdit.find('input[name="paintName"]').eq(0);
+    const modalEditPaintLeft = modalEdit.find('span[id="paintLeft"]').eq(0);
+    const modalEditSubmit = modalEdit.find('.submit').eq(0);
+    const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
+    const modalEditHeaderEditStr = 'Змінити фарбу';
+    const modalEditHeaderNewStr = 'Додати фарбу';
+    const modalEditMessageBlock = $('#messageEdit');
+
+    const tableWrapper = $('#table-wrapper');
+
+    const csrfToken = $('input[name="csrf_token"]').eq(0);
+
+    const tableEditSpanClassName = 'fa fa-edit table-edit-span';
+    const tableDeleteSpanClassName = 'fa fa-trash table-delete-span';
+    const tableEditSpanSelector = '.table-edit-span';
+    const tableDeleteSpanSelector = '.table-delete-span';
+
+    function fillTableWithRows(table, data) {
+        const tbody = table.find('tbody').eq(0);
+        $.each(data, function () {
+            const tr = $('<tr></tr>');
+            tr.append(createIconsTd(this.id, [tableEditSpanClassName, tableDeleteSpanClassName]));
+            tr.append(createTd(this.code));
+            tr.append(createTd(this.name));
+            tr.append(createTd(this.left_ml));
+            tbody.append(tr);
+        });
+    }
+
+    function initDeletePaintEvents() {
+        $(tableDeleteSpanSelector).off();
+        $(tableDeleteSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+
+            modalDelete.modal('show');
+
+            modalDeleteSubmit.off();
+            modalDeleteSubmit.on('click', function () {
+                sendRequestDeletePaint(clickedValue);
+            });
+        });
+    }
+
+    function initEditPaintEvents() {
+        $(tableEditSpanSelector).off();
+        $(tableEditSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+            sendRequestGetPaint(clickedValue);
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderEditStr);
+            modalEdit.modal('show');
+
+            modalEditSubmit.off();
+            modalEditSubmit.on('click', function () {
+                sendRequestEditPaint(clickedValue);
+            });
+        });
+    }
+
+    function initAddPaintEvent() {
+        addNewButton.off();
+        addNewButton.on('click', function () {
+            clearAddPaintForm();
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderNewStr);
+            modalEdit.modal('show');
+
+            modalEditSubmit.off();
+            modalEditSubmit.on('click', function () {
+                sendRequestAddPaint();
+            });
+        });
+    }
+
+    function clearAddPaintForm() {
+        modalEditPaintNum.val('');
+        modalEditPaintName.val('');
+        modalEditPaintLeft.html('0');
+    }
+
+    function processResponseGetAllPaint(result) {
+        const table = createHeaderTable(['Номер фарби', 'Назва', 'Залишок, мл']);
+        tableWrapper.html(table);
+        console.log(result);
+        fillTableWithRows(table, result.data);
+        initDataTable(table);
+
+        initDeletePaintEvents();
+        initEditPaintEvents();
+        initAddPaintEvent();
+    }
+
+    function processResponseGetPaint(result) {
+        modalEditPaintNum.val(result.data.code);
+        modalEditPaintName.val(result.data.name);
+        modalEditPaintLeft.html(result.data.left_ml);
+    }
+
+    function processResponseAddOrEditPaint(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlock, result.message);
+        } else {
+            modalEdit.modal('hide');
+            showSuccess(result.message);
+            sendRequestGetAllPaint();
+        }
+    }
+
+    function processRequestDeletePaint(result) {
+        modalDelete.modal('hide');
+        if (result.status === false) {
+            showError(result.message);
+        } else {
+            showSuccess(result.message);
+            sendRequestGetAllPaint();
+        }
+    }
+
+    function sendRequestGetAllPaint() {
+        $.ajax({
+            type: "GET",
+            url: "/api/paints",
+            success: processResponseGetAllPaint
+        });
+    }
+
+    function sendRequestGetPaint(id) {
+        $.ajax({
+            type: "GET",
+            url: "/api/paints/" + id,
+            success: processResponseGetPaint
+        });
+    }
+
+    function sendRequestAddPaint() {
+        $.ajax({
+            type: "POST",
+            url: "/api/paints",
+            data: {
+                'code': modalEditPaintNum.val(),
+                'name': modalEditPaintName.val(),
+                'left_ml': modalEditPaintLeft.val(),
+                'csrf_token': csrfToken.val()
+            },
+            success: processResponseAddOrEditPaint
+        });
+    }
+
+    function sendRequestEditPaint(id) {
+        $.ajax({
+            type: "PUT",
+            url: "/api/paints/" + id,
+            data: {
+                'code': modalEditPaintNum.val(),
+                'name': modalEditPaintName.val(),
+                'left_ml': modalEditPaintLeft.val(),
+                'csrf_token': csrfToken.val()
+            },
+            success: processResponseAddOrEditPaint
+        });
+    }
+
+    function sendRequestDeletePaint(id) {
+        $.ajax({
+            type: "DELETE",
+            url: "/api/paints/" + id,
+            success: processRequestDeletePaint
+        });
+    }
+
+    $(document).ready(function () {
+        sendRequestGetAllPaint();
+    });
+
+
+</script>
 {% endblock %}
