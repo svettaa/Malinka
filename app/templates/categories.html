@@ -87,6 +87,7 @@
 
 {% block scripts %}
 {{ super() }}
+<script src="{{ url_for('static', filename='js/api/admin/categories.js') }}"></script>
 <script>
 
     const addNewButton = $('.add-new');
@@ -96,7 +97,6 @@
 
     const modalEdit = $('#modalEdit');
     const modalEditName = modalEdit.find('input[name="name"]').eq(0);
-    const modalEditSubmit = modalEdit.find('.submit').eq(0);
     const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
     const modalEditHeaderEditStr = 'Змінити категорію';
     const modalEditHeaderNewStr = 'Додати категорію';
@@ -130,7 +130,7 @@
 
             modalDeleteSubmit.off();
             modalDeleteSubmit.on('click', function () {
-                sendRequestDeleteCategory(clickedValue);
+                sendRequestDeleteCategory(clickedValue, processResponseDeleteCategory);
             });
         });
     }
@@ -139,7 +139,7 @@
         $(tableEditSpanSelector).off();
         $(tableEditSpanSelector).on('click', function () {
             const clickedValue = $(this).attr('value');
-            sendRequestGetCategory(clickedValue);
+            sendRequestGetCategory(clickedValue, fillEditCategoryForm);
 
             clearMessagesBlock(modalEditMessageBlock);
             modalEditHeader.html(modalEditHeaderEditStr);
@@ -147,7 +147,10 @@
 
             modalEdit.off('submit');
             modalEdit.on('submit', function () {
-                sendRequestEditCategory(clickedValue);
+                sendRequestEditCategory(clickedValue,
+                    getModalEditData(),
+                    processResponseAddOrEditCategory
+                );
                 return false;
             });
         });
@@ -164,7 +167,10 @@
 
             modalEdit.off('submit');
             modalEdit.on('submit', function () {
-                sendRequestAddCategory();
+                sendRequestAddCategory(
+                    getModalEditData(),
+                    processResponseAddOrEditCategory
+                );
                 return false;
             });
         });
@@ -174,7 +180,7 @@
         modalEditName.val('');
     }
 
-    function processResponseGetAllCategories(result) {
+    function buildCategoriesTable(result) {
         const table = createHeaderTable(['Назва']);
         tableWrapper.html(table);
 
@@ -186,7 +192,7 @@
         initAddCategoryEvent();
     }
 
-    function processResponseGetCategory(result) {
+    function fillEditCategoryForm(result) {
         modalEditName.val(result.data.name);
     }
 
@@ -196,70 +202,29 @@
         } else {
             modalEdit.modal('hide');
             showSuccess(result.message);
-            sendRequestGetAllCategories();
+            sendRequestGetAllCategories(buildCategoriesTable);
         }
     }
 
-    function processRequestDeleteCategory(result) {
+    function processResponseDeleteCategory(result) {
         modalDelete.modal('hide');
         if (result.status === false) {
             showError(result.message);
         } else {
             showSuccess(result.message);
-            sendRequestGetAllCategories();
+            sendRequestGetAllCategories(buildCategoriesTable);
         }
     }
 
-    function sendRequestGetAllCategories() {
-        $.ajax({
-            type: "GET",
-            url: "/api/categories",
-            success: processResponseGetAllCategories
-        });
-    }
-
-    function sendRequestGetCategory(id) {
-        $.ajax({
-            type: "GET",
-            url: "/api/categories/" + id,
-            success: processResponseGetCategory
-        });
-    }
-
-    function sendRequestAddCategory() {
-        $.ajax({
-            type: "POST",
-            url: "/api/categories",
-            data: {
-                'name': modalEditName.val(),
-                'csrf_token': csrfToken.val()
-            },
-            success: processResponseAddOrEditCategory
-        });
-    }
-
-    function sendRequestEditCategory(id) {
-        $.ajax({
-            type: "PUT",
-            url: "/api/categories/" + id,
-            data: {
-                'name': modalEditName.val(),
-                'csrf_token': csrfToken.val()
-            },
-            success: processResponseAddOrEditCategory
-        });
-    }
-
-    function sendRequestDeleteCategory(id) {
-        $.ajax({
-            type: "DELETE",
-            url: "/api/categories/" + id,
-            success: processRequestDeleteCategory
-        });
+    function getModalEditData() {
+        return {
+            'name': modalEditName.val(),
+            'csrf_token': csrfToken.val()
+        }
     }
 
     $(document).ready(function () {
-        sendRequestGetAllCategories();
+        sendRequestGetAllCategories(buildCategoriesTable);
     });
 
 
