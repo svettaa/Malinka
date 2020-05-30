@@ -46,8 +46,8 @@
             <div class="row">
                 <div class="col-10 mx-auto" id="messageEdit"></div>
             </div>
-            <form>
-                <div class="modal-body">
+            <div class="modal-body">
+                <form id="edit-form">
                     <div class="row">
                         <div class="col-12 col-sm-10 mx-auto">
                             <div class="form-group row">
@@ -147,12 +147,45 @@
                             </div>
                         </div>
                     </div>
+                </form>
+                <div class="row" id="appointment-paints">
+                    <div class="col-12 col-sm-10 mx-auto">
+                        <div class="form-group row">
+                            <h4 style="display: block; width:100%; text-align: center;">
+                                Фарби
+                            </h4>
+                            <p style="display: block; width:100%; text-align: center;">
+                                Запис не використовує фарби
+                            </p>
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Код</th>
+                                    <th scope="col">Назва</th>
+                                    <th scope="col">Кількість, мл</th>
+                                </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="form-group row">
+                            <button type="button" class="paint-add">Додати</button>
+                        </div>
+                        <div class="form-group row">
+                            <form id="appointment-paint-form">
+                                <select name="paint-id"></select>
+                                <input type="number" min="1" name="paint-amount">
+                                <button type="submit">Зберегти</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary submit">Зберегти</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
-                </div>
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary submit" form="edit-form">Зберегти</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
         </div>
     </div>
 </div>
@@ -173,6 +206,8 @@
 {% block scripts %}
 {{ super() }}
 <script>
+
+    var currentAppointment = 0;
 
     const addNewButton = $('.add-new');
 
@@ -224,7 +259,7 @@
         });
     }
 
-    function initDeleteCategoryEvents() {
+    function initDeleteAppointmentEvents() {
         $(tableDeleteSpanSelector).off();
         $(tableDeleteSpanSelector).on('click', function () {
             const clickedValue = $(this).attr('value');
@@ -238,13 +273,16 @@
         });
     }
 
-    function initEditCategoryEvents() {
+    function initEditAppointmentEvents() {
         $(tableEditSpanSelector).off();
         $(tableEditSpanSelector).on('click', function () {
             const clickedValue = $(this).attr('value');
+            currentAppointment = clickedValue;
             sendRequestGetAppointment(clickedValue);
+            sendRequestGetAppointmentPaints(clickedValue);
 
             clearMessagesBlock(modalEditMessageBlock);
+            modalEditPaints.hide();
             modalEditHeader.html(modalEditHeaderEditStr);
             modalEdit.modal('show');
 
@@ -256,12 +294,13 @@
         });
     }
 
-    function initAddCategoryEvent() {
+    function initAddAppointmentEvent() {
         addNewButton.off();
         addNewButton.on('click', function () {
-            clearAddCategoryForm();
+            clearAddAppointmentForm();
 
             clearMessagesBlock(modalEditMessageBlock);
+            modalEditPaints.hide();
             modalEditHeader.html(modalEditHeaderNewStr);
             modalEdit.modal('show');
 
@@ -273,12 +312,12 @@
         });
     }
 
-    function clearAddCategoryForm() {
+    function clearAddAppointmentForm() {
         modalEditMaster.val('');
-        modalEditMaster.removeAttr('readonly');
+        modalEditMaster.removeAttr('disabled');
         modalEditProcedure.val('');
         modalEditClient.val('');
-        modalEditClient.removeAttr('readonly');
+        modalEditClient.removeAttr('disabled');
         modalEditDay.val(getCurrentDay());
         modalEditStart.val('');
         modalEditEnd.val('');
@@ -294,9 +333,9 @@
         fillTableWithRows(table, result.data);
         initDataTable(table);
 
-        initDeleteCategoryEvents();
-        initEditCategoryEvents();
-        initAddCategoryEvent();
+        initDeleteAppointmentEvents();
+        initEditAppointmentEvents();
+        initAddAppointmentEvent();
     }
 
     function processResponseGetMasters(result) {
@@ -336,10 +375,10 @@
 
     function processResponseGetAppointment(result) {
         modalEditMaster.val(result.data.master_id);
-        modalEditMaster.attr('readonly', '');
+        modalEditMaster.attr('disabled', '');
         modalEditProcedure.val(result.data.procedure_id);
         modalEditClient.val(result.data.client_id);
-        modalEditClient.attr('readonly', '');
+        modalEditClient.attr('disabled', '');
         modalEditDay.val(getDateFromDatetime(result.data.appoint_start));
         modalEditStart.val(getTimeFromDatetime(result.data.appoint_start));
         modalEditEnd.val(getTimeFromDatetime(result.data.appoint_end));
@@ -446,17 +485,202 @@
         };
     }
 
+</script>
+<script>
+
+
+    const modalEditPaints = $('#appointment-paints');
+    const modalEditPaintsTable = modalEditPaints.find('table').eq(0);
+    const modalEditPaintsList = modalEditPaintsTable.find('tbody').eq(0);
+    const modalEditPaintsNone = modalEditPaints.find('p').eq(0);
+    const modalEditPaintsID = modalEditPaints.find('select[name="paint-id"]').eq(0);
+    const modalEditPaintsAmount = modalEditPaints.find('input[name="paint-amount"]').eq(0);
+    const modalEditPaintsAddNew = modalEditPaints.find('.paint-add');
+
+    const modalEditPaintForm = $('#appointment-paint-form');
+
+    const paintEditSpanClassName = 'fa fa-edit paint-edit-span';
+    const paintDeleteSpanClassName = 'fa fa-trash paint-delete-span';
+    const paintEditSpanSelector = '.paint-edit-span';
+    const paintDeleteSpanSelector = '.paint-delete-span';
+
+    function processResponseGetAppointmentPaints(result) {
+        modalEditPaintForm.hide();
+        modalEditPaintsNone.hide();
+        modalEditPaintsTable.hide();
+        modalEditPaintsList.html('');
+
+        if (result.data.length === 0) {
+            modalEditPaintsNone.show();
+        } else {
+            $.each(result.data, function () {
+                const tr = $('<tr></tr>');
+                tr.append(createIconsTd(this.paint_id, [paintEditSpanClassName, paintDeleteSpanClassName]));
+                tr.append(createTd(this.paint_code));
+                tr.append(createTd(this.paint_name));
+                tr.append(createTd(this.volume_ml));
+                modalEditPaintsList.append(tr);
+            });
+            modalEditPaintsTable.show();
+        }
+        modalEditPaints.show();
+
+        initDeleteAppointmentPaintEvents();
+        initEditAppointmentPaintEvents();
+        initAddAppointmentPaintEvent();
+    }
+
+    function initDeleteAppointmentPaintEvents() {
+        $(paintDeleteSpanSelector).off();
+        $(paintDeleteSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+            sendRequestDeleteAppointmentPaint(currentAppointment, clickedValue);
+        });
+    }
+
+    function initAddAppointmentPaintEvent() {
+        modalEditPaintsAddNew.off();
+        modalEditPaintsAddNew.on('click', function () {
+            clearAddAppointmentPaintForm();
+
+            modalEditPaintForm.show();
+
+            modalEditPaintForm.off('submit');
+            modalEditPaintForm.on('submit', function () {
+                sendRequestAddAppointmentPaint(currentAppointment);
+                return false;
+            });
+        });
+    }
+
+    function initEditAppointmentPaintEvents() {
+        $(paintEditSpanSelector).off();
+        $(paintEditSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+            sendRequestGetAppointmentPaint(currentAppointment, clickedValue);
+
+            modalEditPaintForm.show();
+
+            modalEditPaintForm.off('submit');
+            modalEditPaintForm.on('submit', function () {
+                sendRequestEditAppointmentPaint(currentAppointment, clickedValue);
+                return false;
+            });
+        });
+    }
+
+    function sendRequestEditAppointmentPaint(appointmentID, paintID) {
+        $.ajax({
+            type: "PUT",
+            url: "/api/appointments/" + appointmentID + "/paints/" + paintID,
+            data: getPaintData(),
+            success: processResponseAddOrEditAppointmentPaint
+        });
+    }
+
+    function sendRequestGetAppointmentPaint(appointmentID, paintID) {
+        $.ajax({
+            type: "GET",
+            url: "/api/appointments/" + appointmentID + "/paints/" + paintID,
+            success: processResponseGetAppointmentPaint
+        });
+    }
+
+    function processResponseGetAppointmentPaint(result) {
+        modalEditPaintsID.val(result.data.paint_id);
+        modalEditPaintsID.attr('disabled', '');
+        modalEditPaintsAmount.val(result.data.volume_ml);
+    }
+
+    function processRequestDeleteAppointmentPaint(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlock, result.message);
+        } else {
+            showSuccessBlock(modalEditMessageBlock, result.message);
+            sendRequestGetAppointmentPaints(currentAppointment);
+        }
+    }
+
+    function processResponseAddOrEditAppointmentPaint(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlock, result.message);
+        } else {
+            showSuccessBlock(modalEditMessageBlock, result.message);
+            sendRequestGetAppointmentPaints(currentAppointment);
+        }
+    }
+
+    function sendRequestGetAppointmentPaints(id) {
+        $.ajax({
+            type: "GET",
+            url: "/api/appointments/" + id + "/paints",
+            success: processResponseGetAppointmentPaints
+        });
+    }
+
+    function sendRequestAddAppointmentPaint(appointmentID) {
+        $.ajax({
+            type: "POST",
+            url: "/api/appointments/" + appointmentID + "/paints",
+            data: getPaintData(),
+            success: processResponseAddOrEditAppointmentPaint
+        });
+    }
+
+    function sendRequestDeleteAppointmentPaint(appointmentID, paintID) {
+        $.ajax({
+            type: "DELETE",
+            url: "/api/appointments/" + appointmentID + '/paints/' + paintID,
+            success: processRequestDeleteAppointmentPaint
+        });
+    }
+
+    function clearAddAppointmentPaintForm() {
+        modalEditPaintsID.val('');
+        modalEditPaintsID.removeAttr('disabled');
+        modalEditPaintsAmount.val('');
+    }
+
+    function getPaintData() {
+        return {
+            'paint_id': modalEditPaintsID.val(),
+            'volume_ml': modalEditPaintsAmount.val(),
+            'csrf_token': csrfToken.val()
+        };
+    }
+
+    function sendRequestGetAllPossiblePaints() {
+        $.ajax({
+            type: "GET",
+            url: "/api/paints",
+            success: processResponseGetAllPossiblePaints
+        });
+    }
+
+    function processResponseGetAllPossiblePaints(result) {
+        modalEditPaintsID.html('');
+        $.each(result.data, function () {
+            const option = $('<option></option>');
+            option.val(this.id);
+            option.html(this.code + ' - ' + this.name);
+            modalEditPaintsID.append(option);
+        })
+    }
+
+</script>
+<script>
+
     $(document).ready(function () {
         sendRequestGetAllAppointments();
         sendRequestGetMasters();
         sendRequestGetClients();
         sendRequestGetProceduresByCategories();
+        sendRequestGetAllPossiblePaints();
 
         initDatePicker(modalEditDayPicker);
         initTimePicker(modalEditStartPicker);
         initTimePicker(modalEditEndPicker);
     });
-
 
 </script>
 {% endblock %}
