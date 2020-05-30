@@ -46,8 +46,8 @@
             <div class="row">
                 <div class="col-10 mx-auto" id="messageEdit"></div>
             </div>
-            <form>
-                <div class="modal-body">
+            <div class="modal-body">
+                <form id="edit-form">
                     <div class="row">
                         <div class="col-12 col-sm-10 mx-auto">
                             <div class="form-group row">
@@ -58,12 +58,12 @@
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary submit">Зберегти</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary submit" form="edit-form">Зберегти</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
         </div>
     </div>
 </div>
@@ -94,6 +94,8 @@
 
     const modalDelete = $('#modalDelete');
     const modalDeleteSubmit = modalDelete.find('.submit').eq(0);
+
+    const modalEditForm = $('#edit-form');
 
     const modalEdit = $('#modalEdit');
     const modalEditName = modalEdit.find('input[name="name"]').eq(0);
@@ -145,8 +147,8 @@
             modalEditHeader.html(modalEditHeaderEditStr);
             modalEdit.modal('show');
 
-            modalEdit.off('submit');
-            modalEdit.on('submit', function () {
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
                 sendRequestEditCategory(clickedValue,
                     getModalEditData(),
                     processResponseAddOrEditCategory
@@ -165,8 +167,8 @@
             modalEditHeader.html(modalEditHeaderNewStr);
             modalEdit.modal('show');
 
-            modalEdit.off('submit');
-            modalEdit.on('submit', function () {
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
                 sendRequestAddCategory(
                     getModalEditData(),
                     processResponseAddOrEditCategory
