@@ -1,12 +1,7 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template
 from flask_login import login_required
 
 from app import app
-from app.api.api_appointment import *
-from app.api.api_client import get_clients
-from app.api.api_master import get_masters
-from app.api.api_procedure import get_procedures
-from app.api.api_appointment_paint import get_appointment_paints
 from app.forms import AdminAppointmentForm
 from app.login import admin_only
 

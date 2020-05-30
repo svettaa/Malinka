@@ -1,10 +1,8 @@
-from flask import render_template, request, redirect, url_for
+from flask import render_template
 from flask_login import login_required
 
 from app import app
 from app.forms import AdminProcedureForm
-from app.api.api_procedure import *
-from app.api.api_category import get_categories
 from app.login import admin_only
 
 
