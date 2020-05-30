@@ -213,7 +213,7 @@
             const tr = $('<tr></tr>');
             tr.append(createIconsTd(this.id, [tableEditSpanClassName, tableDeleteSpanClassName]));
             tr.append(createTd(this.status ? '+' : '-'));
-            tr.append(createTd(getDateFromDatetime(this.appoint_start)));
+            tr.append(createDateTd(getDateFromDatetime(this.appoint_start)));
             tr.append(createTd(getTimeFromDatetime(this.appoint_start)));
             tr.append(createTd(getTimeFromDatetime(this.appoint_end)));
             tr.append(createTd(this.master_surname + ' ' + this.master_first_name));
@@ -275,8 +275,10 @@
 
     function clearAddCategoryForm() {
         modalEditMaster.val('');
+        modalEditMaster.removeAttr('readonly');
         modalEditProcedure.val('');
         modalEditClient.val('');
+        modalEditClient.removeAttr('readonly');
         modalEditDay.val(getCurrentDay());
         modalEditStart.val('');
         modalEditEnd.val('');
@@ -334,8 +336,10 @@
 
     function processResponseGetAppointment(result) {
         modalEditMaster.val(result.data.master_id);
+        modalEditMaster.attr('readonly', '');
         modalEditProcedure.val(result.data.procedure_id);
         modalEditClient.val(result.data.client_id);
+        modalEditClient.attr('readonly', '');
         modalEditDay.val(getDateFromDatetime(result.data.appoint_start));
         modalEditStart.val(getTimeFromDatetime(result.data.appoint_start));
         modalEditEnd.val(getTimeFromDatetime(result.data.appoint_end));

@@ -60,6 +60,21 @@ function createTd(text) {
     return td;
 }
 
+function createDateTd(text) {
+    const year = text.substring(6);
+    const month = text.substring(3, 5);
+    const day = text.substring(0, 2);
+
+    const invisible = $('<span></span>');
+    invisible.css('display', 'none');
+    invisible.html(year + '.' + month + '.' + day);
+
+    const td = $('<td></td>');
+    td.append(invisible);
+    td.append(text);
+    return td;
+}
+
 function createIconTh() {
     const th = $('<th style="width:60px;"></th>');
     th.attr('scope', 'col');
