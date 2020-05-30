@@ -46,6 +46,7 @@
                 <div class="col-10 mx-auto" id="messageEdit"></div>
             </div>
             <div class="modal-body">
+                <form id="edit-form">
                 <div class="row">
                     <div class="col-12 col-sm-10 mx-auto">
 
@@ -59,17 +60,17 @@
                         <div class="form-group row">
                             <label for="procedure" class="col-md-3 col-form-label">Назва процедури</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="procedure" name="procedure">
+                                <input type="text" class="form-control" id="procedure" name="procedure" required>
                             </div>
                         </div>
                         <div class="form-group row ">
                             <label for="min" class="col-md-3 col-form-label">Мінімальна ціна</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control" id="min" name="min">
+                                <input type="number" min="0" class="form-control" id="min" name="min" required>
                             </div>
                             <label for="max" class="col-md-3 col-form-label">Максимальна ціна</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control" id="max" name="max">
+                                <input type="number" min="0" class="form-control" id="max" name="max">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -80,9 +81,13 @@
                         </div>
                     </div>
                 </div>
+                </form>
+                <div class="row" id="favourites-amount">
+                    <p>Улюблена у <span></span> користувачів(а)</p>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary submit">Зберегти</button>
+                <button type="submit" class="btn btn-primary submit" form="edit-form">Зберегти</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
             </div>
         </div>
@@ -100,24 +105,21 @@
         <button class="btn btn-primary add-new">Додати</button>
     </div>
 </div>
-<!--<div>-->
-<!--    {% if not new_procedure %}-->
-<!--    <div class="form-group row pl-3 mt-5">-->
-<!--        Улюблена у {{ favourite_clients_amount }} користувачів(а)-->
-<!--    </div>-->
-<!--    {% endif %}-->
-<!--</div>-->
 
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
+<script src="{{ url_for('static', filename='js/api/admin/procedures.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/categories.js') }}"></script>
 <script>
 
     const addNewButton = $('.add-new');
 
     const modalDelete = $('#modalDelete');
     const modalDeleteSubmit = modalDelete.find('.submit').eq(0);
+
+    const modalEditForm = $('#edit-form');
 
     const modalEdit = $('#modalEdit');
     const modalEditCategory = modalEdit.find('select[name="category"]').eq(0);
@@ -130,6 +132,8 @@
     const modalEditHeaderEditStr = 'Змінити процедуру';
     const modalEditHeaderNewStr = 'Додати процедуру';
     const modalEditMessageBlock = $('#messageEdit');
+    const modalFavouritesAmount = $('#favourites-amount');
+    const modalFavouritesAmountSpan = modalFavouritesAmount.find('span').eq(0);
     const modalSelect = $('select');
 
     const tableWrapper = $('#table-wrapper');
@@ -163,7 +167,7 @@
 
             modalDeleteSubmit.off();
             modalDeleteSubmit.on('click', function () {
-                sendRequestDeleteProcedure(clickedValue);
+                sendRequestDeleteProcedure(clickedValue, processResponseDeleteProcedure);
             });
         });
     }
@@ -171,16 +175,19 @@
     function initEditProcedureEvents() {
         $(tableEditSpanSelector).off();
         $(tableEditSpanSelector).on('click', function () {
+            modalFavouritesAmount.hide();
+
             const clickedValue = $(this).attr('value');
-            sendRequestGetProcedure(clickedValue);
+            sendRequestGetProcedure(clickedValue, fillEditProcedureForm);
 
             clearMessagesBlock(modalEditMessageBlock);
             modalEditHeader.html(modalEditHeaderEditStr);
             modalEdit.modal('show');
 
-            modalEditSubmit.off();
-            modalEditSubmit.on('click', function () {
-                sendRequestEditProcedure(clickedValue);
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
+                sendRequestEditProcedure(clickedValue, getEditData(), processResponseAddOrEditProcedure);
+                return false;
             });
         });
     }
@@ -188,15 +195,17 @@
     function initAddProcedureEvent() {
         addNewButton.off();
         addNewButton.on('click', function () {
+            modalFavouritesAmount.hide();
             clearAddProcedureForm();
 
             clearMessagesBlock(modalEditMessageBlock);
             modalEditHeader.html(modalEditHeaderNewStr);
             modalEdit.modal('show');
 
-            modalEditSubmit.off();
-            modalEditSubmit.on('click', function () {
-                sendRequestAddProcedure();
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
+                sendRequestAddProcedure(getEditData(), processResponseAddOrEditProcedure);
+                return false;
             });
         });
     }
@@ -209,7 +218,7 @@
         modalEditInfo.val('');
     }
 
-    function processResponseGetAllProcedure(result) {
+    function buildProceduresTable(result) {
         const table = createHeaderTable(
             ['Категорія', 'Процедура', 'Мін. ціна', 'Макс. ціна']);
         tableWrapper.html(table);
@@ -222,12 +231,15 @@
         initAddProcedureEvent();
     }
 
-    function processResponseGetProcedure(result) {
+    function fillEditProcedureForm(result) {
         modalEditProcedure.val(result.data.name);
         modalEditCategory.val(result.data.category_id);
         modalEditMinPrice.val(result.data.price_min);
         modalEditMaxPrice.val(result.data.price_max);
         modalEditInfo.val(result.data.info);
+
+        modalFavouritesAmountSpan.html(result.data.favourite_clients);
+        modalFavouritesAmount.show();
     }
 
     function processResponseAddOrEditProcedure(result) {
@@ -236,21 +248,21 @@
         } else {
             modalEdit.modal('hide');
             showSuccess(result.message);
-            sendRequestGetAllProcedure();
+            sendRequestGetAllProcedure(buildProceduresTable);
         }
     }
 
-    function processRequestDeleteProcedure(result) {
+    function processResponseDeleteProcedure(result) {
         modalDelete.modal('hide');
         if (result.status === false) {
             showError(result.message);
         } else {
             showSuccess(result.message);
-            sendRequestGetAllProcedure();
+            sendRequestGetAllProcedure(buildProceduresTable);
         }
     }
 
-    function processResponseGetAllCategories(result) {
+    function fillModalCategoriesSelect(result) {
         $.each(result.data, function () {
             const opt = $('<option></option>');
             opt.append(this.name);
@@ -259,73 +271,20 @@
         })
     }
 
-    function sendRequestGetAllCategories() {
-        $.ajax({
-            type: "GET",
-            url: "/api/categories",
-            success: processResponseGetAllCategories
-        });
-    }
-
-    function sendRequestGetAllProcedure() {
-        $.ajax({
-            type: "GET",
-            url: "/api/procedures",
-            success: processResponseGetAllProcedure
-        });
-    }
-
-    function sendRequestGetProcedure(id) {
-        $.ajax({
-            type: "GET",
-            url: "/api/procedures/" + id,
-            success: processResponseGetProcedure
-        });
-    }
-
-    function sendRequestAddProcedure() {
-        $.ajax({
-            type: "POST",
-            url: "/api/procedures",
-            data: {
-                'category_id': modalEditCategory.val(),
-                'name': modalEditProcedure.val(),
-                'price_min': modalEditMinPrice.val(),
-                'price_max': modalEditMaxPrice.val(),
-                'info': modalEditInfo.val(),
-                'csrf_token': csrfToken.val()
-            },
-            success: processResponseAddOrEditProcedure
-        });
-    }
-
-    function sendRequestEditProcedure(id) {
-        $.ajax({
-            type: "PUT",
-            url: "/api/procedures/" + id,
-            data: {
-                'category_id': modalEditCategory.val(),
-                'name': modalEditProcedure.val(),
-                'price_min': modalEditMinPrice.val(),
-                'price_max': modalEditMaxPrice.val(),
-                'info': modalEditInfo.val(),
-                'csrf_token': csrfToken.val()
-            },
-            success: processResponseAddOrEditProcedure
-        });
-    }
-
-    function sendRequestDeleteProcedure(id) {
-        $.ajax({
-            type: "DELETE",
-            url: "/api/procedures/" + id,
-            success: processRequestDeleteProcedure
-        });
+    function getEditData() {
+        return {
+            'category_id': modalEditCategory.val(),
+            'name': modalEditProcedure.val(),
+            'price_min': modalEditMinPrice.val(),
+            'price_max': modalEditMaxPrice.val(),
+            'info': modalEditInfo.val(),
+            'csrf_token': csrfToken.val()
+        };
     }
 
     $(document).ready(function () {
-        sendRequestGetAllProcedure();
-        sendRequestGetAllCategories();
+        sendRequestGetAllProcedure(buildProceduresTable);
+        sendRequestGetAllCategories(fillModalCategoriesSelect);
     });
 
 

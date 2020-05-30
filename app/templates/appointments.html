@@ -276,13 +276,14 @@
     function initEditAppointmentEvents() {
         $(tableEditSpanSelector).off();
         $(tableEditSpanSelector).on('click', function () {
+            modalEditPaints.hide();
+
             const clickedValue = $(this).attr('value');
             currentAppointment = clickedValue;
             sendRequestGetAppointment(clickedValue);
             sendRequestGetAppointmentPaints(clickedValue);
 
             clearMessagesBlock(modalEditMessageBlock);
-            modalEditPaints.hide();
             modalEditHeader.html(modalEditHeaderEditStr);
             modalEdit.modal('show');
 
@@ -297,10 +298,10 @@
     function initAddAppointmentEvent() {
         addNewButton.off();
         addNewButton.on('click', function () {
+            modalEditPaints.hide();
             clearAddAppointmentForm();
 
             clearMessagesBlock(modalEditMessageBlock);
-            modalEditPaints.hide();
             modalEditHeader.html(modalEditHeaderNewStr);
             modalEdit.modal('show');
 
