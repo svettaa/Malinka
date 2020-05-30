@@ -218,6 +218,8 @@
     const modalEditStartPicker = $('#start_datetimepicker');
     const modalEditEndPicker = $('#end_datetimepicker');
 
+    const modalEditForm = $('#edit-form');
+
     const modalEdit = $('#modalEdit');
     const modalEditMaster = modalEdit.find('select[name="master_id"]').eq(0);
     const modalEditProcedure = modalEdit.find('select[name="procedure_id"]').eq(0);
@@ -287,8 +289,8 @@
             modalEditHeader.html(modalEditHeaderEditStr);
             modalEdit.modal('show');
 
-            modalEdit.off('submit');
-            modalEdit.on('submit', function () {
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
                 sendRequestEditAppointment(clickedValue);
                 return false;
             });
@@ -305,8 +307,8 @@
             modalEditHeader.html(modalEditHeaderNewStr);
             modalEdit.modal('show');
 
-            modalEdit.off('submit');
-            modalEdit.on('submit', function () {
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
                 sendRequestAddAppointment();
                 return false;
             });
