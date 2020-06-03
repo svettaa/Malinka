@@ -33,6 +33,7 @@ def update_schedule(schedule: ScheduleChange):
 
     session = get_serializable_session()
     try:
+        assert_schedule_matters(schedule, session)
         session.execute('UPDATE Schedule_Change '
                         'SET change_start = :change_start,'
                         '    change_end = :change_end, '
@@ -68,6 +69,7 @@ def add_schedule(schedule: ScheduleChange):
 
     session = get_serializable_session()
     try:
+        assert_schedule_matters(schedule, session)
         session.execute('INSERT INTO Schedule_Change (change_start, change_end, is_working, master_id) '
                         'VALUES (:change_start, :change_end, :is_working, :master_id);',
                         {'change_start': schedule.change_start,

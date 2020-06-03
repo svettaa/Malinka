@@ -18,6 +18,20 @@ def assert_schedule_no_overlaps(schedule: ScheduleChange, session: Session):
         raise AssertionError('Зміни в графіку не можуть перетинатися')
 
 
+def assert_schedule_matters(schedule: ScheduleChange, session: Session):
+    if schedule.change_start.date() != schedule.change_end.date():
+        return
+    even_schedule = session.execute(""" SELECT even_schedule
+                                          FROM Master
+                                          WHERE id = :master_id;
+                                        """,
+                       {'master_id': schedule.master_id}).scalar()
+    change_even_day = schedule.change_start.date().day % 2 == 0
+
+    if (even_schedule == change_even_day) == schedule.is_working:
+        raise AssertionError('Дана зміна в графіку не має ефекту')
+
+
 def assert_schedule_working_or_even_schedule(schedule: ScheduleChange, session: Session):
     future_dates = session.execute('SELECT appoint_start '
                                    'FROM Appointment '
