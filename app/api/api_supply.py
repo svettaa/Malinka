@@ -31,6 +31,7 @@ def update_supply(supply: PaintSupply):
 
     session = get_serializable_session()
     try:
+        assert_paint_supply_before_today(supply)
         old_amount = session.execute('SELECT amount '
                                      'FROM Paint_Supply '
                                      'WHERE id = :id;',
@@ -76,6 +77,7 @@ def add_supply(supply: PaintSupply):
 
     session = get_serializable_session()
     try:
+        assert_paint_supply_before_today(supply)
         session.execute('INSERT INTO Paint_Supply (paint_id, amount, supply_date) '
                         'VALUES (:paint_id, :amount, :supply_date);',
                         {'paint_id': supply.paint_id,
@@ -91,6 +93,9 @@ def add_supply(supply: PaintSupply):
     except IntegrityError:
         session.rollback()
         return False, 'Порушення цілісності поставок'
+    except AssertionError as e:
+        session.rollback()
+        return False, e
     except OperationalError:
         session.rollback()
         return add_supply(supply)

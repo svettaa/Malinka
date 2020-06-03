@@ -1,7 +1,16 @@
+from datetime import datetime
+
+import pytz
 from sqlalchemy.orm import Session
 
 from app import db
-from app.models import AppointmentPaint
+from app.models import AppointmentPaint, PaintSupply
+
+
+def is_before_today_supply(supply: PaintSupply):
+    supply_date = supply.supply_date.date()
+    now = datetime.now(pytz.timezone('Europe/Kiev')).date()
+    return supply_date <= now
 
 
 def assert_paint_enough(paint_id: int, session: Session):
@@ -10,6 +19,11 @@ def assert_paint_enough(paint_id: int, session: Session):
                        'WHERE id = :paint_id;',
                        {'paint_id': paint_id}).scalar() < 0:
         raise AssertionError('Неможливо виконати операцію, недостатньо фарби')
+
+
+def assert_paint_supply_before_today(supply: PaintSupply):
+    if not is_before_today_supply(supply):
+        raise AssertionError('Неможливо вказати поставку у майбутньому')
 
 
 def assert_appointment_not_uses_paint(appointment_paint: AppointmentPaint, session: Session):
