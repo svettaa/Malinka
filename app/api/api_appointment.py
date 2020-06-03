@@ -40,16 +40,17 @@ def get_appointment(appointment_id: int):
 
 
 def get_master_date_appointments(master_id: int, date_obj: datetime):
-    return db.engine.execute('SELECT  C.surname AS client_surname, '
-                             '        C.first_name AS client_first_name, '
-                             '        Procedure.name AS procedure_name, '
-                             '        status, appoint_start, appoint_end, '
-                             '        preferences '
-                             'FROM (Appointment INNER JOIN Client C ON Appointment.client_id = C.id)'
-                             '     INNER JOIN Procedure ON Appointment.procedure_id = Procedure.id '
-                             'WHERE master_id = %s AND Date(appoint_start) = %s '
-                             'ORDER BY appoint_start;',
-                             (master_id, date_obj.date())).fetchall()
+    return db.session.execute('SELECT  C.surname AS client_surname, '
+                              '        C.first_name AS client_first_name, '
+                              '        Procedure.name AS procedure_name, '
+                              '        status, appoint_start, appoint_end, '
+                              '        preferences '
+                              'FROM (Appointment INNER JOIN Client C ON Appointment.client_id = C.id)'
+                              '     INNER JOIN Procedure ON Appointment.procedure_id = Procedure.id '
+                              'WHERE master_id = :master_id AND Date(appoint_start) = :date_obj '
+                              'ORDER BY appoint_start;',
+                              {'master_id': master_id,
+                               'date_obj': date_obj}).fetchall()
 
 
 def get_client_future_appointments(client_id: int):

@@ -80,10 +80,11 @@ def get_interval_used_paints_by_paints(date_start: datetime, date_end: datetime)
 
 
 def get_interval_supply_amount_by_paints(date_start: datetime, date_end: datetime):
-    return db.engine.execute('SELECT code, name, COALESCE(SUM(amount), 0) AS amount '
-                             'FROM Paint_Supply INNER JOIN Paint '
-                             '     ON paint_id = Paint.id '
-                             'WHERE (supply_date BETWEEN %s AND %s) '
-                             'GROUP BY code, name '
-                             'ORDER BY code, name;',
-                             (date_start, date_end)).fetchall()
+    return db.session.execute('SELECT code, name, SUM(amount) AS amount '
+                              'FROM Paint_Supply INNER JOIN Paint '
+                              '     ON paint_id = Paint.id '
+                              'WHERE (supply_date BETWEEN :date_start AND :date_end) '
+                              'GROUP BY code, name '
+                              'ORDER BY code, name;',
+                              {'date_start': date_start,
+                               'date_end': date_end}).fetchall()

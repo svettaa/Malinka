@@ -3,7 +3,6 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
-from flask_socketio import SocketIO
 from datetime import time
 
 import os
@@ -30,7 +29,6 @@ login_manager = LoginManager(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 admin = Admin(app, template_mode='bootstrap3')
-socketio = SocketIO(app)
 
 from app.routes import *
 from app.admin_routes import *

@@ -30,7 +30,7 @@ def api_appointment_paint_post(appointment_id):
     form = AdminAppointmentPaintForm(data=request.args)
     form.paint_id.choices = [('', 'Не обрано')] + \
                             [(str(paint['id']), paint['code'] + ' - ' + paint['name'])
-                             for paint in get_spare_appointment_paints(appointment_id)]
+                             for paint in get_paints()]
 
     if not form.validate():
         return build_form_invalid_reply(form)

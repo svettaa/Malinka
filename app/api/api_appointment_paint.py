@@ -1,7 +1,6 @@
 from sqlalchemy.exc import IntegrityError
 
 from app import db
-from app.models import AppointmentPaint
 from app.api.asserts.asserts_paint import *
 
 
@@ -33,6 +32,7 @@ def update_appointment_paint(appointment_paint: AppointmentPaint):
     if appointment_paint.volume_ml <= 0:
         return False, 'Кількість має бути більше нуля'
     try:
+        assert_appointment_uses_paint(appointment_paint)
         old_amount = db.session.execute('SELECT volume_ml '
                                         'FROM Appointment_Paint '
                                         'WHERE appointment_id = :appointment_id AND paint_id = :paint_id;',
@@ -68,6 +68,7 @@ def add_appointment_paint(appointment_paint: AppointmentPaint):
     if appointment_paint.volume_ml <= 0:
         return False, 'Кількість має бути більше нуля'
     try:
+        assert_appointment_not_uses_paint(appointment_paint)
         db.session.execute('INSERT INTO Appointment_Paint (appointment_id, paint_id, volume_ml) '
                            'VALUES (:appointment_id, :paint_id, :volume_ml);',
                            {'appointment_id': appointment_paint.appointment_id,
