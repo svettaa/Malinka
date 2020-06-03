@@ -164,6 +164,14 @@ def reset_client_password(client_id: int):
     return True, 'Успішно оновлено пароль, останні 6 цифр телефону'
 
 
+def delete_client_password(client_id: int):
+    db.engine.execute('UPDATE Client '
+                      'SET password = NULL '
+                      'WHERE id = %s;',
+                      client_id)
+    return True, 'Успішно видалено пароль'
+
+
 def set_client_password(client_id: int, password: str):
     hashed_password = generate_password_hash(password)
     db.engine.execute('UPDATE Client '

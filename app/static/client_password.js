@@ -21,6 +21,21 @@ function resetPassword(){
     });
 }
 
+function deletePassword(){
+    const id = $(this).val();
+
+    $.ajax({
+                    type: "GET",
+                    url: "/delete_password",
+                    data: {'id': id},
+                    success: showPasswordMessage,
+                    error: function(error) {
+                        console.log(error);
+                    }
+    });
+}
+
 $(document).ready(function(){
     $('#reset-password').on('click', resetPassword);
+    $('#delete-password').on('click', deletePassword);
 });
