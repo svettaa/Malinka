@@ -143,7 +143,7 @@ class AdminAppointmentForm(BaseForm):
     preferences = TextAreaField('Побажання', render_kw={"rows": 4})
     status = BooleanField('Підтверджено')
     price = IntegerField('Ціна',
-                         validators=[InputRequired('Введіть ціну'),
+                         validators=[Optional(),
                                      NumberRange(min=0, message='Ціна не може бути від\'ємною')])
     master_id = SelectField('Майстер', validators=[InputRequired('Виберіть майстра')], coerce=str)
     client_id = SelectField('Клієнт', validators=[InputRequired('Виберіть клієнта')], coerce=str)

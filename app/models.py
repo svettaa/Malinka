@@ -134,7 +134,7 @@ class Appointment(db.Model):
     appoint_end = db.Column(db.TIMESTAMP(timezone=True), nullable=False)
     preferences = db.Column(db.String(300))
     status = db.Column(db.Boolean, nullable=False)
-    price = db.Column(db.Numeric(precision=14, scale=2), nullable=False)
+    price = db.Column(db.Numeric(precision=14, scale=2))
 
     client_id = db.Column(
         db.Integer, db.ForeignKey('client.id', onupdate='RESTRICT', ondelete='RESTRICT'), nullable=False)

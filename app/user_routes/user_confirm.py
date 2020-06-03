@@ -67,7 +67,7 @@ def confirm_get():
         assert_start_future(start)
 
         end = start + datetime.timedelta(minutes=duration)
-        price = get_procedure(procedure_id).price_min
+        price = None
 
         appointment = Appointment(appoint_start=start, appoint_end=end,
                                   status=False, price=price,

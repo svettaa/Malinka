@@ -155,9 +155,19 @@
                     <div class="row">
                         <div class="col-12 col-sm-10 mx-auto">
                             <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Підтверджено</label>
+                                <div class="col-lg-9">
+                                    <input type="checkbox" name="status">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
                                 <label class="col-lg-3 col-form-label">Ціна</label>
                                 <div class="col-lg-9">
-                                    <input type="number" min="1" step="1" name="price" required="">
+                                    <input type="number" min="1" step="1" name="price">
                                 </div>
                             </div>
                         </div>
@@ -253,6 +263,7 @@
     const modalEditStart = modalEdit.find('input[name="start"]').eq(0);
     const modalEditEnd = modalEdit.find('input[name="end"]').eq(0);
     const modalEditPreferences = modalEdit.find('textarea[name="preferences"]').eq(0);
+    const modalEditStatus = modalEdit.find('input[name="status"]').eq(0);
     const modalEditPrice = modalEdit.find('input[name="price"]').eq(0);
     const modalEditSubmit = modalEdit.find('.submit').eq(0);
     const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
@@ -351,6 +362,7 @@
         modalEditEnd.val('');
         modalEditPreferences.val('');
         modalEditPrice.val('');
+        modalEditStatus.prop('checked', true);
 
         modalEditClient.selectpicker('refresh');
         modalEditProcedure.selectpicker('refresh');
@@ -419,6 +431,7 @@
         modalEditEnd.val(getTimeFromDatetime(result.data.appoint_end));
         modalEditPreferences.val(result.data.preferences);
         modalEditPrice.val(result.data.price);
+        modalEditStatus.prop('checked', result.data.status);
 
         modalEditClient.selectpicker('refresh');
         modalEditProcedure.selectpicker('refresh');
@@ -454,6 +467,7 @@
             'procedure_id': modalEditProcedure.val(),
             'preferences': modalEditPreferences.val(),
             'price': modalEditPrice.val(),
+            'status': modalEditStatus.prop('checked'),
             'csrf_token': csrfToken.val()
         };
     }
