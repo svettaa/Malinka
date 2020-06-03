@@ -76,7 +76,6 @@ def update_client(client: Client):
     except IntegrityError:
         return False, 'Користувач з таким телефоном вже існує'
     except DataError:
-        db.session.rollback()
         return False, 'Занадто довге значення'
 
 
@@ -103,7 +102,6 @@ def add_client_favourite_master(client_id: int, master_id: int):
                           (client_id, master_id))
         return True, 'Успішно додано улюбленого майстра'
     except AssertionError as e:
-        db.session.rollback()
         return False, e
 
 
@@ -115,7 +113,6 @@ def add_client_favourite_procedure(client_id: int, procedure_id: int):
                           (client_id, procedure_id))
         return True, 'Успішно додано улюблену процедуру'
     except AssertionError as e:
-        db.session.rollback()
         return False, e
 
 
@@ -140,7 +137,6 @@ def delete_client_favourite_master(client_id: int, master_id: int):
                           (client_id, master_id))
         return True, 'Успішно видалено улюбленого майстра'
     except AssertionError as e:
-        db.session.rollback()
         return False, e
 
 
@@ -153,7 +149,6 @@ def delete_client_favourite_procedure(client_id: int, procedure_id: int):
                           (client_id, procedure_id))
         return True, 'Успішно видалено улюблену процедуру'
     except AssertionError as e:
-        db.session.rollback()
         return False, e
 
 

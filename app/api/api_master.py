@@ -1,8 +1,9 @@
 from datetime import datetime
 
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, OperationalError
 
-from app import db, app
+from app import db
+from app.api.utils import *
 from app.api.asserts.asserts_master import *
 
 
@@ -113,23 +114,30 @@ def get_master_favourite_clients_amount(master_id: int):
 
 
 def update_master(master: Master):
+    session = get_serializable_session()
     try:
-        db.session.execute('UPDATE Master '
-                           'SET even_schedule =:even_schedule,'
-                           '    is_hired = :is_hired '
-                           'WHERE id = :id;',
-                           {'even_schedule': bool(master.even_schedule),
-                            'is_hired': bool(master.is_hired),
-                            'id': master.id})
-        assert_master_is_hired(master)
-        assert_master_even_schedule_or_working(master)
-        db.session.commit()
+        session.execute('UPDATE Master '
+                        'SET even_schedule =:even_schedule,'
+                        '    is_hired = :is_hired '
+                        'WHERE id = :id;',
+                        {'even_schedule': bool(master.even_schedule),
+                         'is_hired': bool(master.is_hired),
+                         'id': master.id})
+        assert_master_is_hired(master, session)
+        assert_master_even_schedule_or_working(master, session)
+        session.commit()
         return True, 'Успішно оновлено майстра'
     except IntegrityError:
+        session.rollback()
         return False, ''
     except AssertionError as e:
-        db.session.rollback()
+        session.rollback()
         return False, e
+    except OperationalError:
+        session.rollback()
+        return update_master(master)
+    finally:
+        session.close()
 
 
 def update_master_procedures(master_id: int, procedures):
@@ -137,31 +145,37 @@ def update_master_procedures(master_id: int, procedures):
         if procedure['duration'] is not None and procedure['duration'] <= 0:
             return False, 'Тривалість виконання має бути більше нуля'
 
+    session = get_serializable_session()
     try:
         # delete old
-        db.session.execute('DELETE FROM Master_Procedure '
-                           'WHERE master_id = :master_id;',
-                           {'master_id': master_id})
+        session.execute('DELETE FROM Master_Procedure '
+                        'WHERE master_id = :master_id;',
+                        {'master_id': master_id})
 
         # insert new
         for procedure in procedures:
             if procedure['duration'] is not None:
-                db.session.execute('INSERT INTO Master_Procedure '
-                                   '            (master_id, procedure_id, duration) '
-                                   'VALUES (:master_id, :procedure_id, :duration);',
-                                   {'master_id': master_id,
-                                    'procedure_id': procedure['procedure_id'],
-                                    'duration': procedure['duration']})
+                session.execute('INSERT INTO Master_Procedure '
+                                '            (master_id, procedure_id, duration) '
+                                'VALUES (:master_id, :procedure_id, :duration);',
+                                {'master_id': master_id,
+                                 'procedure_id': procedure['procedure_id'],
+                                 'duration': procedure['duration']})
 
-        assert_master_procedures(get_master(master_id))
-        db.session.commit()
+        assert_master_procedures(get_master(master_id), session)
+        session.commit()
         return True, 'Успішно змінено процедури майстра'
     except IntegrityError:
-        db.session.rollback()
+        session.rollback()
         return False, 'Некоректний номер процедури'
     except AssertionError as e:
-        db.session.rollback()
+        session.rollback()
         return False, e
+    except OperationalError:
+        session.rollback()
+        return update_master_procedures(master_id, procedures)
+    finally:
+        session.close()
 
 
 def add_master(master: Master):

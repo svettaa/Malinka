@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
 from datetime import time
+from sqlalchemy.engine import create_engine
 
 import os
 from dotenv import load_dotenv
@@ -27,6 +28,7 @@ app.config['WORKING_DAY_END'] = time(20, 0, 0)
 
 login_manager = LoginManager(app)
 db = SQLAlchemy(app)
+engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 migrate = Migrate(app, db)
 admin = Admin(app, template_mode='bootstrap3')
 

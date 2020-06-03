@@ -1,6 +1,7 @@
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, OperationalError
 
 from app import db
+from app.api.utils import *
 from app.models import PaintSupply
 from app.api.asserts.asserts_paint import *
 
@@ -27,80 +28,103 @@ def update_supply(supply: PaintSupply):
         return False, 'Поставка має бути більше нуля'
     if int(supply.paint_id) != get_supply(supply.id).paint_id:
         return False, 'Не можна змінювати фарбу у поставках'
+
+    session = get_serializable_session()
     try:
-        old_amount = db.session.execute('SELECT amount '
-                                        'FROM Paint_Supply '
-                                        'WHERE id = :id;',
-                                        {'id': supply.id}).scalar()
-        db.session.execute('UPDATE Paint_Supply '
-                           'SET paint_id = :paint_id,'
-                           '    amount = :amount,'
-                           '    supply_date = :supply_date '
-                           'WHERE id = :id;',
-                           {'paint_id': supply.paint_id,
-                            'amount': supply.amount,
-                            'supply_date': supply.supply_date,
-                            'id': supply.id})
-        db.session.execute('UPDATE Paint '
-                           'SET left_ml = left_ml - :old_amount '
-                           'WHERE id = :paint_id',
-                           {'old_amount': old_amount,
-                            'paint_id': supply.paint_id})
-        db.session.execute('UPDATE Paint '
-                           'SET left_ml = left_ml + :amount '
-                           'WHERE id = :paint_id',
-                           {'amount': supply.amount,
-                            'paint_id': supply.paint_id})
-        assert_paint_enough(supply.paint_id)
-        db.session.commit()
+        old_amount = session.execute('SELECT amount '
+                                     'FROM Paint_Supply '
+                                     'WHERE id = :id;',
+                                     {'id': supply.id}).scalar()
+        session.execute('UPDATE Paint_Supply '
+                        'SET paint_id = :paint_id,'
+                        '    amount = :amount,'
+                        '    supply_date = :supply_date '
+                        'WHERE id = :id;',
+                        {'paint_id': supply.paint_id,
+                         'amount': supply.amount,
+                         'supply_date': supply.supply_date,
+                         'id': supply.id})
+        session.execute('UPDATE Paint '
+                        'SET left_ml = left_ml - :old_amount '
+                        'WHERE id = :paint_id',
+                        {'old_amount': old_amount,
+                         'paint_id': supply.paint_id})
+        session.execute('UPDATE Paint '
+                        'SET left_ml = left_ml + :amount '
+                        'WHERE id = :paint_id',
+                        {'amount': supply.amount,
+                         'paint_id': supply.paint_id})
+        assert_paint_enough(supply.paint_id, session)
+        session.commit()
         return True, 'Успішно оновлено поставку'
     except IntegrityError:
+        session.rollback()
         return False, 'Порушення цілісності поставок'
     except AssertionError as e:
-        db.session.rollback()
+        session.rollback()
         return False, e
+    except OperationalError:
+        session.rollback()
+        return update_supply(supply)
+    finally:
+        session.close()
 
 
 def add_supply(supply: PaintSupply):
     if supply.amount <= 0:
         return False, 'Поставка має бути більше нуля'
+
+    session = get_serializable_session()
     try:
-        db.session.execute('INSERT INTO Paint_Supply (paint_id, amount, supply_date) '
-                           'VALUES (:paint_id, :amount, :supply_date);',
-                           {'paint_id': supply.paint_id,
-                            'amount': supply.amount,
-                            'supply_date': supply.supply_date})
-        db.session.execute('UPDATE Paint '
-                           'SET left_ml = left_ml + :amount '
-                           'WHERE id = :paint_id',
-                           {'amount': supply.amount,
-                            'paint_id': supply.paint_id})
-        db.session.commit()
+        session.execute('INSERT INTO Paint_Supply (paint_id, amount, supply_date) '
+                        'VALUES (:paint_id, :amount, :supply_date);',
+                        {'paint_id': supply.paint_id,
+                         'amount': supply.amount,
+                         'supply_date': supply.supply_date})
+        session.execute('UPDATE Paint '
+                        'SET left_ml = left_ml + :amount '
+                        'WHERE id = :paint_id',
+                        {'amount': supply.amount,
+                         'paint_id': supply.paint_id})
+        session.commit()
         return True, 'Успішно додано поставку'
     except IntegrityError:
+        session.rollback()
         return False, 'Порушення цілісності поставок'
+    except OperationalError:
+        session.rollback()
+        return add_supply(supply)
+    finally:
+        session.close()
 
 
 def delete_supply(supply_id: int):
+    session = get_serializable_session()
     try:
-        old = db.session.execute('SELECT amount, paint_id '
-                                 'FROM Paint_Supply '
-                                 'WHERE id = :id;',
-                                 {'id': supply_id}).fetchone()
-        db.session.execute('DELETE '
-                           'FROM Paint_Supply '
-                           'WHERE id = :id',
-                           {'id': supply_id})
-        db.session.execute('UPDATE Paint '
-                           'SET left_ml = left_ml - :amount '
-                           'WHERE id = :id',
-                           {'amount': old.amount,
-                            'id': old.paint_id})
-        assert_paint_enough(old.paint_id)
-        db.session.commit()
+        old = session.execute('SELECT amount, paint_id '
+                              'FROM Paint_Supply '
+                              'WHERE id = :id;',
+                              {'id': supply_id}).fetchone()
+        session.execute('DELETE '
+                        'FROM Paint_Supply '
+                        'WHERE id = :id',
+                        {'id': supply_id})
+        session.execute('UPDATE Paint '
+                        'SET left_ml = left_ml - :amount '
+                        'WHERE id = :id',
+                        {'amount': old.amount,
+                         'id': old.paint_id})
+        assert_paint_enough(old.paint_id, session)
+        session.commit()
         return True, 'Успішно видалено поставку'
     except IntegrityError:
+        session.rollback()
         return False, 'Порушення цілісності поставок'
     except AssertionError as e:
-        db.session.rollback()
+        session.rollback()
         return False, e
+    except OperationalError:
+        session.rollback()
+        return delete_supply(supply_id)
+    finally:
+        session.close()

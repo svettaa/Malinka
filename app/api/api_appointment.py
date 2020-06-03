@@ -1,6 +1,9 @@
-from sqlalchemy.exc import IntegrityError, DataError
+import time
+
+from sqlalchemy.exc import IntegrityError, DataError, OperationalError
 
 from app import db, app
+from app.api.utils import *
 from app.api.asserts.asserts_appointment import *
 
 
@@ -98,44 +101,51 @@ def update_appointment(appointment: Appointment):
         return False, 'Не можна змінювати майстра у записі'
     if int(appointment.client_id) != original_appointment.client_id:
         return False, 'Не можна змінювати клієнта у записі'
+
+    session = get_serializable_session()
     try:
         assert_appointment_is_in_nearest_future(appointment)
-        assert_appointment_master_does_procedure(appointment)
-        db.session.execute('UPDATE Appointment '
-                           'SET appoint_start = :appoint_start, '
-                           '    appoint_end = :appoint_end, '
-                           '    preferences = :preferences,'
-                           '    status = :status, '
-                           '    price = :price, '
-                           '    client_id = :client_id, '
-                           '    master_id = :master_id, '
-                           '    procedure_id = :procedure_id '
-                           'WHERE id = :id;',
-                           {'appoint_start': appointment.appoint_start,
-                            'appoint_end': appointment.appoint_end,
-                            'preferences': appointment.preferences,
-                            'status': appointment.status,
-                            'price': appointment.price,
-                            'client_id': appointment.client_id,
-                            'master_id': appointment.master_id,
-                            'procedure_id': appointment.procedure_id,
-                            'id': appointment.id})
-        assert_client_has_not_many_future_appointments(appointment)
-        assert_appointment_is_hired(appointment)
-        assert_appointment_even_schedule_or_working(appointment)
-        assert_appointment_master_no_vacation(appointment)
-        assert_appointment_no_overlaps_client(appointment)
-        assert_appointment_no_overlaps_master(appointment)
-        db.session.commit()
+        assert_appointment_master_does_procedure(appointment, session)
+        session.execute('UPDATE Appointment '
+                        'SET appoint_start = :appoint_start, '
+                        '    appoint_end = :appoint_end, '
+                        '    preferences = :preferences,'
+                        '    status = :status, '
+                        '    price = :price, '
+                        '    client_id = :client_id, '
+                        '    master_id = :master_id, '
+                        '    procedure_id = :procedure_id '
+                        'WHERE id = :id;',
+                        {'appoint_start': appointment.appoint_start,
+                         'appoint_end': appointment.appoint_end,
+                         'preferences': appointment.preferences,
+                         'status': appointment.status,
+                         'price': appointment.price,
+                         'client_id': appointment.client_id,
+                         'master_id': appointment.master_id,
+                         'procedure_id': appointment.procedure_id,
+                         'id': appointment.id})
+        assert_client_has_not_many_future_appointments(appointment, session)
+        assert_appointment_is_hired(appointment, session)
+        assert_appointment_even_schedule_or_working(appointment, session)
+        assert_appointment_master_no_vacation(appointment, session)
+        assert_appointment_no_overlaps_client(appointment, session)
+        assert_appointment_no_overlaps_master(appointment, session)
+        session.commit()
         return True, 'Успішно оновлено запис'
     except IntegrityError:
         return False, 'Вже існує запис для даного клієнта чи майстра на цей час'
     except AssertionError as e:
-        db.session.rollback()
+        session.rollback()
         return False, e
     except DataError:
-        db.session.rollback()
+        session.rollback()
         return False, 'Занадто довге значення'
+    except OperationalError:
+        session.rollback()
+        return update_appointment(appointment)
+    finally:
+        session.close()
 
 
 def add_appointment(appointment: Appointment):
@@ -148,37 +158,44 @@ def add_appointment(appointment: Appointment):
         return False, 'Запис має бути в межах робочого дня'
     if appointment.master_id == appointment.client_id:
         return False, 'Неможливо записати майстра до себе'
+
+    session = get_serializable_session()
     try:
         assert_appointment_is_in_nearest_future(appointment)
-        assert_appointment_master_does_procedure(appointment)
-        db.session.execute('INSERT INTO Appointment (appoint_start, appoint_end, preferences,'
-                           '                         status, price, client_id, master_id, procedure_id) '
-                           'VALUES (:appoint_start, :appoint_end, :preferences,'
-                           '        :status, :price, :client_id, :master_id, :procedure_id);',
-                           {'appoint_start': appointment.appoint_start,
-                            'appoint_end': appointment.appoint_end,
-                            'preferences': appointment.preferences,
-                            'status': appointment.status,
-                            'price': appointment.price,
-                            'client_id': appointment.client_id,
-                            'master_id': appointment.master_id,
-                            'procedure_id': appointment.procedure_id})
-        assert_client_has_not_many_future_appointments(appointment)
-        assert_appointment_is_hired(appointment)
-        assert_appointment_even_schedule_or_working(appointment)
-        assert_appointment_master_no_vacation(appointment)
-        assert_appointment_no_overlaps_client(appointment)
-        assert_appointment_no_overlaps_master(appointment)
-        db.session.commit()
+        assert_appointment_master_does_procedure(appointment, session)
+        session.execute('INSERT INTO Appointment (appoint_start, appoint_end, preferences,'
+                        '                         status, price, client_id, master_id, procedure_id) '
+                        'VALUES (:appoint_start, :appoint_end, :preferences,'
+                        '        :status, :price, :client_id, :master_id, :procedure_id);',
+                        {'appoint_start': appointment.appoint_start,
+                         'appoint_end': appointment.appoint_end,
+                         'preferences': appointment.preferences,
+                         'status': appointment.status,
+                         'price': appointment.price,
+                         'client_id': appointment.client_id,
+                         'master_id': appointment.master_id,
+                         'procedure_id': appointment.procedure_id})
+        assert_client_has_not_many_future_appointments(appointment, session)
+        assert_appointment_is_hired(appointment, session)
+        assert_appointment_even_schedule_or_working(appointment, session)
+        assert_appointment_master_no_vacation(appointment, session)
+        assert_appointment_no_overlaps_client(appointment, session)
+        assert_appointment_no_overlaps_master(appointment, session)
+        session.commit()
         return True, 'Успішно додано запис'
     except IntegrityError:
         return False, 'Вже існує запис для даного клієнта чи майстра на цей час'
     except AssertionError as e:
-        db.session.rollback()
+        session.rollback()
         return False, e
     except DataError:
-        db.session.rollback()
+        session.rollback()
         return False, 'Занадто довге значення'
+    except OperationalError:
+        session.rollback()
+        return add_appointment(appointment)
+    finally:
+        session.close()
 
 
 def delete_appointment(appointment_id: int):
