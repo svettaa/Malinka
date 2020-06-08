@@ -185,7 +185,7 @@ def add_master(master: Master):
                           (master.id, bool(master.even_schedule), bool(master.is_hired)))
         return True, 'Успішно додано майстра'
     except IntegrityError:
-        return False, ''
+        return False, 'Вже існує такий майстер'
 
 
 def delete_master(master_id: int):

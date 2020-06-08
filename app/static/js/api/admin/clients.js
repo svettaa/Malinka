@@ -7,3 +7,11 @@ function sendRequestGetClients(callback) {
         success: callback
     });
 }
+
+function sendRequestGetClientsNotMasters(callback) {
+    $.ajax({
+        type: "GET",
+        url: "/api/clients/not_masters",
+        success: callback
+    });
+}
