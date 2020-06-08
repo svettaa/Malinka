@@ -46,3 +46,10 @@ def categories_get():
 @admin_only
 def appointments_get():
     return render_template('admin/appointments.html', csrf_token=AdminAppointmentForm().csrf_token)
+
+
+@app.route('/supplies')
+@login_required
+@admin_only
+def supplies_get():
+    return render_template('admin/supplies.html', csrf_token=AdminSupplyForm().csrf_token)
