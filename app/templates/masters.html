@@ -11,6 +11,12 @@
 {% endblock %}
 
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+{% endblock %}
+
+
 {% block content %}
 {{ csrf_token }}
 
@@ -94,16 +100,16 @@
                                 <label class="col-lg-3 col-form-label">Графік</label>
                                 <div class="col-lg-9" id="">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="schedule1"
-                                               id="schedule1" value="1" checked>
-                                        <label class="form-check-label" for="schedule1">
+                                        <input class="form-check-input" type="radio" name="schedule"
+                                               value="1" id="schedule-even">
+                                        <label class="form-check-label" for="schedule-even">
                                             Парний
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="schedule2"
-                                               id="schedule2" value="0">
-                                        <label class="form-check-label" for="schedule2">
+                                        <input class="form-check-input" type="radio" name="schedule"
+                                               value="0" id="schedule-odd">
+                                        <label class="form-check-label" for="schedule-odd">
                                             Непарний
                                         </label>
                                     </div>
@@ -113,16 +119,16 @@
                                 <label class="col-lg-3 col-form-label">Статус</label>
                                 <div class="col-lg-9">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="status1"
-                                               id="status1" value="1" checked>
-                                        <label class="form-check-label" for="status1">
+                                        <input class="form-check-input" type="radio" name="status"
+                                               value="1" id="status-hired">
+                                        <label class="form-check-label" for="status-hired">
                                             Працює
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="status2"
-                                               id="status2" value="0">
-                                        <label class="form-check-label" for="status2">
+                                        <input class="form-check-input" type="radio" name="status"
+                                               value="0" id ="status-not-hired">
+                                        <label class="form-check-label" for="status-not-hired">
                                             Звільнено
                                         </label>
                                     </div>
@@ -131,6 +137,9 @@
                         </div>
                     </div>
                 </form>
+                <div class="row" id="favourites-amount">
+                    <p>Улюблений у <span></span> користувачів(а)</p>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" form="edit-form" class="btn btn-primary submit">Зберегти</button>
@@ -141,7 +150,7 @@
 </div>
 
 
-<!-- Table - list of categories -->
+<!-- Table - list of masters -->
 
 <div class="row">
     <div class="col-12 col-md-10 mx-auto" id="table-wrapper">
@@ -158,7 +167,9 @@
 
 {% block scripts %}
 {{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 <script src="{{ url_for('static', filename='js/api/admin/masters.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/clients.js') }}"></script>
 <script>
 
     const addNewButton = $('.add-new');
@@ -168,20 +179,23 @@
 
     const modalEdit = $('#modalEdit');
     const modalEditMasterClient = modalEdit.find('select[name="client_id"]').eq(0);
-    const modalEditMasterEven = modalEdit.find('input[name="schedule1"]').eq(0);
-    const modalEditMasterOdd = modalEdit.find('input[name="schedule2"]').eq(0);
-    const modalEditMasterWork = modalEdit.find('input[name="status1"]').eq(0);
-    const modalEditMasterNotWork = modalEdit.find('input[name="status2"]').eq(0);
-    const modalEditSubmit = modalEdit.find('.submit').eq(0);
+    const modalEditMasterSchedule= modalEdit.find('input[name="schedule"]').eq(0);
+    const modalEditMasterScheduleEven= modalEdit.find('#schedule-even').eq(0);
+    const modalEditMasterScheduleOdd= modalEdit.find('#schedule-odd').eq(0);
+    const modalEditMasterStatus = modalEdit.find('input[name="status"]').eq(0);
+    const modalEditMasterStatusHired= modalEdit.find('#status-hired').eq(0);
+    const modalEditMasterStatusNotHired= modalEdit.find('#status-not-hired').eq(0);
     const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
     const modalEditHeaderEditStr = 'Змінити майстра';
     const modalEditHeaderNewStr = 'Додати майстра';
     const modalEditMessageBlock = $('#messageEdit');
     const modalEditForm = $('#edit-form');
+    const modalFavouritesAmount = $('#favourites-amount');
+    const modalFavouritesAmountSpan = modalFavouritesAmount.find('span').eq(0);
 
-    const modalProcedures = $('#modalEditProcedures');
-    const modalProceduresHeader = modalProcedures.find('.modal-header h4').eq(0);
-    const modalProceduresSubmit = modalProcedures.find('.submit').eq(0);
+    // const modalProcedures = $('#modalEditProcedures');
+    // const modalProceduresHeader = modalProcedures.find('.modal-header h4').eq(0);
+    // const modalProceduresSubmit = modalProcedures.find('.submit').eq(0);
 
     const tableWrapper = $('#table-wrapper');
     const tableProcedures = $('#table-modal')
@@ -192,8 +206,11 @@
     const tableDeleteSpanClassName = 'fa fa-trash table-delete-span';
     const tableEditProcSpanClassName = 'fa fa-wrench table-edit-proc-span';
     const tableEditSpanSelector = '.table-edit-span';
-    const tableDEditProcSpanSelector = '.table-delete-span';
-    const tableDeleteSpanSelector = '.table-edit-proc-span';
+    const tableDeleteSpanSelector = '.table-delete-span';
+    // const tableDeleteSpanSelector = '.table-edit-proc-span';
+
+    const modalEditMasterScheduleSelector = 'input[name="schedule"]:checked';
+    const modalEditMasterStatusSelector = 'input[name="status"]:checked';
 
     function fillTableWithRows(table, data) {
         const tbody = table.find('tbody').eq(0);
@@ -203,12 +220,24 @@
             tr.append(createTd(this.surname));
             tr.append(createTd(this.first_name));
             tr.append(createTd(this.second_name));
-            tr.append(createTd(this.is_male));
-            tr.append(createTd(this.phone));
-            tr.append(createTd(this.even_schedule));
-            tr.append(createTd(this.is_hired));
+            tr.append(createTd(this.is_male ? 'Чол' : 'Жін'));
+            tr.append(createTd('+38' + this.phone));
+            tr.append(createTd(this.even_schedule ? 'Парний' : 'Непарний'));
+            tr.append(createTd(this.is_hired ? '+' : '-'));
             tbody.append(tr);
         });
+    }
+
+    function buildMastersTable(result) {
+        const table = createHeaderTable(['Прізвище', 'Ім`я', 'По-батькові', 'Стать', 'Номер телефону',
+            'Графік', 'Працює']);
+        tableWrapper.html(table);
+        fillTableWithRows(table, result.data);
+        initDataTable(table);
+
+        initDeleteMasterEvents();
+        initEditMasterEvents();
+        initAddMasterEvent();
     }
 
     /*function fillModalTableWithRows(table, data) {
@@ -231,7 +260,7 @@
 
             modalDeleteSubmit.off();
             modalDeleteSubmit.on('click', function () {
-                sendRequestDeleteMaster(clickedValue, processRequestDeleteMaster());
+                sendRequestDeleteMaster(clickedValue, processRequestDeleteMaster);
             });
         });
     }
@@ -239,8 +268,10 @@
     function initEditMasterEvents() {
         $(tableEditSpanSelector).off();
         $(tableEditSpanSelector).on('click', function () {
+            modalFavouritesAmount.hide();
+
             const clickedValue = $(this).attr('value');
-            sendRequestGetMaster(clickedValue, processResponseGetMaster);
+            sendRequestGetMaster(clickedValue, fillEditMasterForm);
 
             clearMessagesBlock(modalEditMessageBlock);
             modalEditHeader.html(modalEditHeaderEditStr);
@@ -257,6 +288,7 @@
     function initAddMasterEvent() {
         addNewButton.off();
         addNewButton.on('click', function () {
+            modalFavouritesAmount.hide();
             clearAddMasterForm();
 
             clearMessagesBlock(modalEditMessageBlock);
@@ -271,37 +303,50 @@
         });
     }
 
+    function fillModalClientsSelect(result) {
+        modalEditMasterClient.html('');
+        $.each(result.data, function () {
+            const option = $('<option></option>');
+            option.val(this.id);
+            option.html(this.surname + ' ' + this.first_name + ', +38' + this.phone);
+            modalEditMasterClient.append(option);
+        })
+        modalEditMasterClient.selectpicker('refresh');
+    }
+
     function clearAddMasterForm() {
         modalEditMasterClient.val('');
-        modalEditMasterWork.val('');
-        modalEditMasterNotWork.val('');
-        modalEditMasterOdd.val('');
-        modalEditMasterEven.val('');
+        modalEditMasterClient.removeAttr('disabled');
+        modalEditMasterClient.selectpicker('refresh');
+
+        modalEditMasterSchedule.prop("checked", true);
+        modalEditMasterStatus.prop("checked", true);
+        modalEditMasterSchedule.prop("checked", false);
+        modalEditMasterStatus.prop("checked", false);
     }
 
-    function processResponseGetAllMasters(result) {
-        const table = createHeaderTable(['Прізвище', 'Ім`я', 'По-батькові', 'Стать', 'Номер телефону',
-            'Графік', 'Працює']);
-        tableWrapper.html(table);
-        console.log(result);
-        fillTableWithRows(table, result.data);
-        initDataTable(table);
+    function fillEditMasterForm(result) {
+        modalEditMasterClient.val(result.data.id);
+        modalEditMasterClient.attr('disabled', '');
+        modalEditMasterClient.selectpicker('refresh');
 
-        initDeleteMasterEvents();
-        initEditMasterEvents();
-        initAddMasterEvent();
-    }
+        modalEditMasterSchedule.prop("checked", false);
+        modalEditMasterStatus.prop("checked", false);
 
-    function processResponseGetMaster(result) {
-        modalEditPaintNum.val(result.data.code);
-        modalEditPaintName.val(result.data.name);
-        modalEditPaintLeft.html(result.data.left_ml);
+        if (result.data.even_schedule === true) {
+            modalEditMasterScheduleEven.prop('checked', true);
+        } else {
+            modalEditMasterScheduleOdd.prop('checked', true);
+        }
 
-        modalEditMasterClient.val(result.data.client_id);
-        modalEditMasterWork.val('');///////////////
-        modalEditMasterNotWork.val('');
-        modalEditMasterOdd.val('');
-        modalEditMasterEven.val('');
+        if (result.data.is_hired === true) {
+            modalEditMasterStatusHired.prop('checked', true);
+        } else {
+            modalEditMasterStatusNotHired.prop('checked', true);
+        }
+
+        modalFavouritesAmountSpan.html(result.data.favourite_clients_amount);
+        modalFavouritesAmount.show();
     }
 
     function processResponseAddOrEditMaster(result) {
@@ -310,7 +355,7 @@
         } else {
             modalEdit.modal('hide');
             showSuccess(result.message);
-            sendRequestGetAllMasters(processResponseGetAllMasters);
+            sendRequestGetAllMasters(buildMastersTable);
         }
     }
 
@@ -320,21 +365,22 @@
             showError(result.message);
         } else {
             showSuccess(result.message);
-            sendRequestGetAllMasters(processResponseGetAllMasters);
+            sendRequestGetAllMasters(buildMastersTable);
         }
     }
 
     function getEditData() {
         return {
-            'code': modalEditPaintNum.val(),
-            'name': modalEditPaintName.val(),
-            'left_ml': modalEditPaintLeft.val(),
+            'id': modalEditMasterClient.val(),
+            'even_schedule': $(modalEditMasterScheduleSelector).val(),
+            'is_hired': $(modalEditMasterStatusSelector).val(),
             'csrf_token': csrfToken.val()
         };
     }
 
     $(document).ready(function () {
-        sendRequestGetAllMasters(processResponseGetAllMasters);
+        sendRequestGetAllMasters(buildMastersTable);
+        sendRequestGetClients(fillModalClientsSelect);
     });
 
 
