@@ -3,6 +3,7 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_admin import Admin
+from flask_uploads import UploadSet, configure_uploads, IMAGES
 from datetime import time
 from sqlalchemy.engine import create_engine
 
@@ -22,6 +23,7 @@ app.config['CSRF_ENABLED'] = os.environ.get('CSRF_ENABLED')
 app.config['CSRF_SESSION_KEY'] = os.environ.get('CSRF_SESSION_KEY')
 app.config['WTF_CSRF_SECRET_KEY'] = os.environ.get('WTF_CSRF_SECRET_KEY')
 app.config['WTF_CSRF_TIME_LIMIT'] = int(os.environ.get('WTF_CSRF_TIME_LIMIT'))
+app.config['UPLOADED_PHOTOS_DEST'] = os.environ.get('UPLOADED_PHOTOS_DEST')
 
 app.config['WORKING_DAY_START'] = time(9, 0, 0)
 app.config['WORKING_DAY_END'] = time(20, 0, 0)
@@ -31,6 +33,8 @@ db = SQLAlchemy(app)
 engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
 migrate = Migrate(app, db)
 admin = Admin(app, template_mode='bootstrap3')
+photos = UploadSet('photos', IMAGES)
+configure_uploads(app, (photos,))
 
 from app.routes import *
 from app.admin_routes import *

@@ -38,7 +38,6 @@ function sendRequestGetMasterProcedures(master_id, callback) {
 }
 
 function sendRequestRefreshMasterProcedures(id, data, callback) {
-    console.log(data)
     $.ajax({
         type: "PUT",
         url: "/api/masters/" + id + "/procedures",
@@ -53,6 +52,19 @@ function sendRequestDeleteMaster(id, callback) {
     $.ajax({
         type: "DELETE",
         url: "/api/masters/" + id,
+        success: callback
+    });
+}
+
+function sendRequestRefreshMasterPhoto(id, data, callback) {
+    console.log(data);
+    $.ajax({
+        type: "POST",
+        url: "/api/masters/" + id + "/photo",
+        contentType: false,
+        cache: false,
+        processData: false,
+        data: data,
         success: callback
     });
 }
