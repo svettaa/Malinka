@@ -10,56 +10,315 @@
 Список користувачів
 {% endblock %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+{% endblock %}
+
+
 
 {% block content %}
-<div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
-        <table class="table table-bordered table-responsive-lg entriesList">
-            <thead>
-            <tr>
-                <th style="width: 40px" scope="col"></th>
-                <th scope="col">Прізвище</th>
-                <th scope="col">Ім'я</th>
-                <th scope="col">По-батькові</th>
-                <th scope="col">Стать</th>
-                <th scope="col">Номер телефону</th>
-                <th scope="col">E-mail</th>
-            </tr>
-            </thead>
-            <tbody>
+{{ csrf_token }}
 
-            {% for client in clients %}
-            <tr>
-                <td>
-                    <div style="width: 60px" class="d-flex justify-content-between">
-                        <a href="{{ url_for('edit_client_get', client_id=client.id) }}">
-                            <span class="fa fa-edit"></span>
-                        </a>
-                        <a href="{{ url_for('delete_client_get', client_id=client.id) }}">
-                            <span class="fa fa-trash"></span>
-                        </a>
+<div id="modalDelete" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Видалення користувача</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Ви впевнені, що хочете видалити користувача?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger submit">Видалити</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalEdit" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messageEdit"></div>
+            </div>
+            <div class="modal-body">
+                <form id="edit-form">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+
+                            <div class="form-group row">
+                                <label for="surname" class="col-md-3 col-form-label">Прізвище</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="surname" name="surname" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="firstname" class="col-md-3 col-form-label">Ім'я</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="firstname" name="firstname" required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="lastname" class="col-md-3 col-form-label">По-батькові</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="lastname" name="lastname">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Стать</label>
+                                <div class="col-lg-9">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="isman"
+                                               value="1" id="man">
+                                        <label class="form-check-label" for="man">
+                                            Чоловіча
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="isman"
+                                               value="0" id="woman">
+                                        <label class="form-check-label" for="woman">
+                                            Жіноча
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="phone" class="col-md-3 col-form-label">Телефон, +38</label>
+                                <div class="col-md-9">
+                                    <input type="tel" id="phone" name="phone" class="form-control"
+                                           placeholder="050 000 0000"
+                                           pattern="[0-9]{10}"  required>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="email" class="col-md-3 col-form-label">E-mail</label>
+                                <div class="col-md-9">
+                                    <input type="tel" class="form-control" id="email" name="email"
+                                           placeholder="you@example.com">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </td>
-                <td>{{ client.surname }}</td>
-                <td>{{ client.first_name }}</td>
-                <td>{% if client.second_name %}{{ client.second_name }}{% endif %}</td>
-                <td>{% if client.is_male %}Чол{% else %}Жін{% endif %}</td>
-                <td>+38{{ client.phone }}</td>
-                <td>{% if client.email %}{{ client.email }}{% endif %}</td>
-            </tr>
-            {% endfor %}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary submit" form="edit-form">Зберегти</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            </tbody>
-        </table>
+
+<div class="row ">
+    <div class="col-12 col-md-10 mx-auto" id="table-wrapper">
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-10 offset-sm-1">
-        <a href="{{ url_for('new_client_get') }}">
-            <button type="submit" class="btn btn-primary">Додати</button>
-        </a>
+    <div class="col-12 col-md-10 offset-sm-1">
+        <button class="btn btn-primary add-new">Додати</button>
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<script src="{{ url_for('static', filename='js/api/admin/clients.js') }}"></script>
+
+
+<script>
+    const addNewButton = $('.add-new');
+
+    const modalDelete = $('#modalDelete');
+    const modalDeleteSubmit = modalDelete.find('.submit').eq(0);
+
+    const modalEditForm = $('#edit-form');
+
+    const modalEdit = $('#modalEdit');
+    const modalEditSurname = modalEdit.find('input[name="surname"]').eq(0);
+    const modalEditFirstName = modalEdit.find('input[name="firstname"]').eq(0);
+    const modalEditSecondName = modalEdit.find('input[name="secondname"]').eq(0);
+    const modalEditPhone = modalEdit.find('input[name="phone"]').eq(0);
+    const modalEditEmail = modalEdit.find('input[name="email"]').eq(0);
+
+    const modalEditIsMan = modalEdit.find('input[name="isman"]').eq(0);
+    const modalEditIsManMan = modalEdit.find('#man').eq(0);
+    const modalEditIsManWoman = modalEdit.find('#woman').eq(0);
+    const modalEditSubmit = modalEdit.find('.submit').eq(0);
+    const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
+    const modalEditHeaderEditStr = 'Змінити користувача';
+    const modalEditHeaderNewStr = 'Додати користувача';
+    const modalEditMessageBlock = $('#messageEdit');
+    const modalSelect = $('select');
+
+    const tableWrapper = $('#table-wrapper');
+
+    const csrfToken = $('input[name="csrf_token"]').eq(0);
+
+    const tableEditSpanClassName = 'fa fa-edit table-edit-span';
+    const tableDeleteSpanClassName = 'fa fa-trash table-delete-span';
+    const tableEditSpanSelector = '.table-edit-span';
+    const tableDeleteSpanSelector = '.table-delete-span';
+
+    const modalEditIsManSelector = 'input[name="isman"]:checked';
+
+    function fillTableWithRows(table, data) {
+        const tbody = table.find('tbody').eq(0);
+        $.each(data, function () {
+            const tr = $('<tr></tr>');
+            tr.append(createIconsTd(this.id, [tableEditSpanClassName, tableDeleteSpanClassName]));
+            tr.append(createTd(this.surname));
+            tr.append(createTd(this.first_name));
+            tr.append(createTd(this.second_name));
+            tr.append(createTd(this.is_male ? 'Чол' : 'Жін'));
+            tr.append(createTd(this.phone));
+            tr.append(createTd(this.email));////
+            tbody.append(tr);
+        });
+    }
+
+    function initDeleteClientEvents() {
+        $(tableDeleteSpanSelector).off();
+        $(tableDeleteSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+
+            modalDelete.modal('show');
+
+            modalDeleteSubmit.off();
+            modalDeleteSubmit.on('click', function () {
+                sendRequestDeleteClient(clickedValue, processResponseDeleteClient);
+            });
+        });
+    }
+
+    function initEditClientEvents() {
+        $(tableEditSpanSelector).off();
+        $(tableEditSpanSelector).on('click', function () {
+
+            const clickedValue = $(this).attr('value');
+            sendRequestGetClient(clickedValue, fillEditClientForm);
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderEditStr);
+            modalEdit.modal('show');
+
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
+                sendRequestEditClient(clickedValue, getEditData(), processResponseAddOrEditClient);
+                return false;
+            });
+        });
+    }
+
+    function initAddClientEvent() {
+        addNewButton.off();
+        addNewButton.on('click', function () {
+            clearAddClientForm();
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderNewStr);
+            modalEdit.modal('show');
+
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
+                sendRequestAddClient(getEditData(), processResponseAddOrEditClient);
+                return false;
+            });
+        });
+    }
+
+    function clearAddClientForm() {
+        modalEditSurname.val('');
+        modalEditFirstName.val('');
+        modalEditSecondName.val('');
+        modalEditPhone.val('');
+        modalEditEmail.val('');
+
+        modalEditIsMan.prop("checked", true);
+        modalEditIsMan.prop("checked", false);
+
+
+    }
+
+    function processResponseGetAllClient(result) {
+        console.log(result);
+        const table = createHeaderTable(
+            ['Прізвище', 'Ім`я', 'По-батькові', 'Стать', 'Номер телефону', 'E-mail']);
+        tableWrapper.html(table);
+        fillTableWithRows(table, result.data);
+        initDataTable(table);
+
+        initDeleteClientEvents();
+        initEditClientEvents();
+        initAddClientEvent();
+    }
+
+    function fillEditClientForm(result) {
+        modalEditSurname.val(result.data.surname);
+        modalEditFirstName.val(result.data.first_name);
+        modalEditSecondName.val(result.data.second_name);
+        modalEditPhone.val(result.data.phone);
+        modalEditEmail.val(result.data.email);
+
+        modalEditIsMan.prop("checked", false);
+
+        if (result.data.is_male === true) {
+            modalEditIsManMan.prop('checked', true);
+        } else {
+            modalEditIsManWoman.prop('checked', true);
+        }
+    }
+
+    function processResponseAddOrEditClient(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlock, result.message);
+        } else {
+            modalEdit.modal('hide');
+            showSuccess(result.message);
+            sendRequestGetAllClient(processResponseGetAllClient);
+        }
+    }
+
+    function processResponseDeleteClient(result) {
+        modalDelete.modal('hide');
+        if (result.status === false) {
+            showError(result.message);
+        } else {
+            showSuccess(result.message);
+            sendRequestGetAllClient(processResponseGetAllClient);
+        }
+    }
+
+
+    function getEditData() {
+        return {
+            'surname': modalEditSurname.val(),
+            'first_name': modalEditFirstName.val(),
+            'second_name': modalEditSecondName.val(),
+            'is_male': $(modalEditIsManSelector).val(),
+            'phone': modalEditPhone.val(),
+            'email': modalEditEmail.val(),
+            'csrf_token': csrfToken.val()
+        };
+    }
+
+    $(document).ready(function () {
+        sendRequestGetAllClient(processResponseGetAllClient);
+    });
+
+</script>
 {% endblock %}
