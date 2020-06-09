@@ -53,3 +53,9 @@ def appointments_get():
 @admin_only
 def supplies_get():
     return render_template('admin/supplies.html', csrf_token=AdminSupplyForm().csrf_token)
+
+@app.route('/masters', methods=['GET'])
+@login_required
+@admin_only
+def masters_get():
+    return render_template('admin/masters.html', csrf_token=AdminMasterForm().csrf_token)
