@@ -6,8 +6,8 @@ from flask import jsonify, request
 
 from app import app, pytz
 from app.socket_io import json_one, json_list
-from app.api.api_master import *
-from app.api.api_client import get_client_loves_master
+from app.db_api.masters import *
+from app.db_api.clients import get_client_loves_master
 from app.socket_io.journal_socketio import get_vacations_list, get_not_working_list, get_appointments_list
 
 

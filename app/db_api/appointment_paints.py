@@ -1,8 +1,8 @@
 from sqlalchemy.exc import IntegrityError, OperationalError
 
 from app import db
-from app.api.utils import *
-from app.api.asserts.asserts_paint import *
+from app.db_api.utils import *
+from app.db_api.asserts.paints import *
 
 
 def get_appointment_paints(appointment_id: int):

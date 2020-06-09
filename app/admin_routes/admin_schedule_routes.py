@@ -4,8 +4,8 @@ from flask_login import login_required
 
 from app import app
 from app.forms import AdminScheduleChangeForm
-from app.api.api_schedule import *
-from app.api.api_master import get_masters
+from app.db_api.schedules import *
+from app.db_api.masters import get_masters
 from app.login import admin_only
 
 

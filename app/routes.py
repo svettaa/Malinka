@@ -3,7 +3,7 @@ from flask_login import current_user
 from datetime import datetime
 
 from app import app, db
-from app.api.api_client import get_client_favourite_procedures
+from app.db_api.clients import get_client_favourite_procedures
 
 
 @app.context_processor

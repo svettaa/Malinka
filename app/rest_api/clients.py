@@ -3,7 +3,7 @@ from flask_login import login_required
 
 from app import app
 from app.forms import AdminClientForm
-from app.api.api_client import *
+from app.db_api.clients import *
 from app.login import admin_only
 from app.rest_api.utils import *
 

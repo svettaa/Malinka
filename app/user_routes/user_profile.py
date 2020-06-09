@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 
 from app import app
 from app.forms import AdminClientForm
-from app.api.api_client import *
+from app.db_api.clients import *
 
 
 @app.route('/cabinet/edit', methods=['GET'])

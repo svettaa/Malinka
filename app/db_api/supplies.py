@@ -1,9 +1,9 @@
 from sqlalchemy.exc import IntegrityError, OperationalError
 
 from app import db
-from app.api.utils import *
+from app.db_api.utils import *
 from app.models import PaintSupply
-from app.api.asserts.asserts_paint import *
+from app.db_api.asserts.paints import *
 
 
 def get_supplies():

@@ -5,7 +5,7 @@ import datetime
 from app import app
 from app.login import admin_only
 from app.socket_io import json_list
-from app.api.api_statistics import *
+from app.db_api.statistics import *
 
 
 @app.route('/get_base_statistics', methods=['GET'])

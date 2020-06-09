@@ -4,7 +4,7 @@ from werkzeug.security import check_password_hash
 
 from app import app
 from app.forms import ChangePasswordForm
-from app.api.api_client import *
+from app.db_api.clients import *
 
 
 @app.route('/cabinet/password', methods=['GET'])

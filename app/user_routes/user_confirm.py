@@ -5,9 +5,9 @@ import datetime
 
 from app import app
 from app.models import Appointment
-from app.api.api_master import get_master, get_master_procedure_duration
-from app.api.api_procedure import get_procedure
-from app.api.api_appointment import add_appointment
+from app.db_api.masters import get_master, get_master_procedure_duration
+from app.db_api.procedures import get_procedure
+from app.db_api.appointments import add_appointment
 
 
 def assert_master_exists(master_id):

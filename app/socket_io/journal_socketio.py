@@ -6,8 +6,8 @@ from flask import jsonify, request
 from app import app
 from app.login import admin_only
 from app.socket_io import json_one, json_list
-from app.api.api_appointment import get_master_date_appointments
-from app.api.api_master import *
+from app.db_api.appointments import get_master_date_appointments
+from app.db_api.masters import *
 
 
 def normalize_time(start, end, date_obj):

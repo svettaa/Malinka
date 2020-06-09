@@ -3,8 +3,8 @@ import time
 from sqlalchemy.exc import IntegrityError, DataError, OperationalError
 
 from app import db, app
-from app.api.utils import *
-from app.api.asserts.asserts_appointment import *
+from app.db_api.utils import *
+from app.db_api.asserts.appointments import *
 
 
 def get_appointments():

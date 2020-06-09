@@ -1,8 +1,8 @@
 from sqlalchemy.exc import IntegrityError, OperationalError
 
 from app import db
-from app.api.utils import *
-from app.api.asserts.asserts_schedule import *
+from app.db_api.utils import *
+from app.db_api.asserts.schedules import *
 
 
 def get_schedules():

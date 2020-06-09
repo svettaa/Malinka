@@ -5,7 +5,7 @@ from flask import jsonify, request
 from app import app
 from app.login import master_only
 from app.socket_io import json_one, json_list
-from app.api.api_appointment import get_master_date_appointments
+from app.db_api.appointments import get_master_date_appointments
 from app.socket_io.journal_socketio import get_vacations_list, get_not_working_list
 
 

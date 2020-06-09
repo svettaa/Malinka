@@ -3,10 +3,10 @@ from flask_login import login_required
 
 from app import app
 from app.forms import AdminAppointmentForm
-from app.api.api_appointment import *
-from app.api.api_master import *
-from app.api.api_client import *
-from app.api.api_procedure import *
+from app.db_api.appointments import *
+from app.db_api.masters import *
+from app.db_api.clients import *
+from app.db_api.procedures import *
 from app.login import admin_only
 from app.rest_api.utils import *
 

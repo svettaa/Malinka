@@ -6,8 +6,8 @@ from flask_uploads import UploadNotAllowed
 
 from app import app, photos
 from app.forms import AdminMasterForm2
-from app.api.api_client import *
-from app.api.api_master import *
+from app.db_api.clients import *
+from app.db_api.masters import *
 from app.login import admin_only
 from app.rest_api.utils import *
 

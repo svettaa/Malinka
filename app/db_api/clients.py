@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash
 
 from app import db
 from app.models import Client
-from app.api.asserts.asserts_client import *
+from app.db_api.asserts.clients import *
 
 
 def get_clients():
