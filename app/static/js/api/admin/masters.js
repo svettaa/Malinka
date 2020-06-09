@@ -1,5 +1,3 @@
-
-
 function sendRequestGetAllMasters(callback) {
     $.ajax({
         type: "GET",
@@ -8,10 +6,45 @@ function sendRequestGetAllMasters(callback) {
     });
 }
 
-function sendRequestGetMastersProcedures(master_id, callback) {
+function sendRequestGetMasterProcedures(master_id, callback) {
     $.ajax({
         type: "GET",
         url: "/api/masters/" + master_id + "/procedures",
+        success: function (result) {
+            var newResultData = [];
+
+            var lastCategory;
+            var currElement;
+            $.each(result.data, function () {
+                const currCategory = this.category_name;
+                if (lastCategory === undefined || lastCategory !== currCategory) {
+                    currElement = {};
+                    currElement.category_name = currCategory;
+                    currElement.procedures = [];
+                    lastCategory = currCategory;
+                    newResultData.push(currElement);
+                }
+                currElement.procedures.push({
+                    'id': this.procedure_id,
+                    'name': this.procedure_name,
+                    'duration': this.duration
+                });
+            })
+
+            result.data = newResultData;
+            callback(result);
+        }
+    });
+}
+
+function sendRequestRefreshMasterProcedures(id, data, callback) {
+    console.log(data)
+    $.ajax({
+        type: "PUT",
+        url: "/api/masters/" + id + "/procedures",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+        dataType: "json",
         success: callback
     });
 }

@@ -60,6 +60,12 @@ function createTd(text) {
     return td;
 }
 
+function createH5(text) {
+    const td = $('<h5></h5>');
+    td.html(text);
+    return td;
+}
+
 function createDateTd(text) {
     const year = text.substring(6);
     const month = text.substring(3, 5);

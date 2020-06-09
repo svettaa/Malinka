@@ -21,7 +21,7 @@ def api_masters_get():
 @admin_only
 def api_master_get(master_id):
     return build_one_data_reply(get_master(master_id),
-                                {'favourite_clients_amount': json_list(get_master_favourite_clients_amount(master_id))})
+                                {'favourite_clients_amount': (get_master_favourite_clients_amount(master_id))})
 
 
 @app.route('/api/masters/<int:master_id>/procedures', methods=['GET'])
@@ -52,7 +52,7 @@ def api_master_post():
     form = AdminMasterForm2(data=request.args)
     form.id.choices = [('', 'Не обрано')] + \
                       [(str(user['id']), user['surname'] + ' ' + user['first_name'] + ', +38' + user['phone'])
-                       for user in get_clients_no_masters()]
+                       for user in get_clients()]
 
     if not form.validate():
         return build_form_invalid_reply(form)

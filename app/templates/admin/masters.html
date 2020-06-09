@@ -1,0 +1,487 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+Список майстрів
+{% endblock %}
+
+
+{% block header %}
+Список майстрів
+{% endblock %}
+
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+{% endblock %}
+
+
+{% block content %}
+{{ csrf_token }}
+
+<div id="modalDelete" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Видалення майстра</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Ви впевнені, що хочете видалити майстра?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger submit">Видалити</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalProcedures" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messageProcedures"></div>
+            </div>
+            <div class="modal-body">
+                <form id="procedures-form">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <div id="procedures-table-wrapper">
+                                    <!--                                <label class="col-lg-3 col-form-label">Користувач</label>-->
+                                    <!--                                <div class="col-lg-9">-->
+                                    <!--                                    <select data-live-search="true" title="Не обрано"-->
+                                    <!--                                            class="selectpicker form-control"-->
+                                    <!--                                            data-none-results-text="Немає результатів"-->
+                                    <!--                                            name="client_id" required="">-->
+                                    <!--                                    </select>-->
+                                    <!--                                </div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="procedures-form" class="btn btn-primary submit">Зберегти</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalEdit" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messageEdit"></div>
+            </div>
+            <div class="modal-body">
+                <form id="edit-form">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Користувач</label>
+                                <div class="col-lg-9">
+                                    <select data-live-search="true" title="Не обрано"
+                                            class="selectpicker form-control"
+                                            data-none-results-text="Немає результатів"
+                                            name="client_id" required="">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Графік</label>
+                                <div class="col-lg-9" id="">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="schedule"
+                                               value="1" id="schedule-even">
+                                        <label class="form-check-label" for="schedule-even">
+                                            Парний
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="schedule"
+                                               value="0" id="schedule-odd">
+                                        <label class="form-check-label" for="schedule-odd">
+                                            Непарний
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Статус</label>
+                                <div class="col-lg-9">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="status"
+                                               value="1" id="status-hired">
+                                        <label class="form-check-label" for="status-hired">
+                                            Працює
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="status"
+                                               value="0" id="status-not-hired">
+                                        <label class="form-check-label" for="status-not-hired">
+                                            Звільнено
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="row" id="favourites-amount">
+                    <p>Улюблений у <span></span> користувачів(а)</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="edit-form" class="btn btn-primary submit">Зберегти</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Table - list of masters -->
+
+<div class="row">
+    <div class="col-12 col-md-10 mx-auto" id="table-wrapper">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-10 offset-sm-1">
+        <button class="btn btn-primary add-new">Додати</button>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<script src="{{ url_for('static', filename='js/api/admin/masters.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/clients.js') }}"></script>
+<script>
+
+    const addNewButton = $('.add-new');
+
+    const modalDelete = $('#modalDelete');
+    const modalDeleteSubmit = modalDelete.find('.submit').eq(0);
+
+    const modalEdit = $('#modalEdit');
+    const modalEditMasterClient = modalEdit.find('select[name="client_id"]').eq(0);
+    const modalEditMasterSchedule = modalEdit.find('input[name="schedule"]').eq(0);
+    const modalEditMasterScheduleEven = modalEdit.find('#schedule-even').eq(0);
+    const modalEditMasterScheduleOdd = modalEdit.find('#schedule-odd').eq(0);
+    const modalEditMasterStatus = modalEdit.find('input[name="status"]').eq(0);
+    const modalEditMasterStatusHired = modalEdit.find('#status-hired').eq(0);
+    const modalEditMasterStatusNotHired = modalEdit.find('#status-not-hired').eq(0);
+    const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
+    const modalEditHeaderEditStr = 'Змінити майстра';
+    const modalEditHeaderNewStr = 'Додати майстра';
+    const modalEditMessageBlock = $('#messageEdit');
+    const modalEditForm = $('#edit-form');
+    const modalFavouritesAmount = $('#favourites-amount');
+    const modalFavouritesAmountSpan = modalFavouritesAmount.find('span').eq(0);
+
+    const tableWrapper = $('#table-wrapper');
+
+    const csrfToken = $('input[name="csrf_token"]').eq(0);
+
+    const tableEditSpanClassName = 'fa fa-edit table-edit-span';
+    const tableDeleteSpanClassName = 'fa fa-trash table-delete-span';
+    const tableEditSpanSelector = '.table-edit-span';
+    const tableDeleteSpanSelector = '.table-delete-span';
+
+    const modalEditMasterScheduleSelector = 'input[name="schedule"]:checked';
+    const modalEditMasterStatusSelector = 'input[name="status"]:checked';
+
+    function fillTableWithRows(table, data) {
+        const tbody = table.find('tbody').eq(0);
+        $.each(data, function () {
+            const tr = $('<tr></tr>');
+            tr.append(createIconsTd(this.id, [tableEditSpanClassName, tableEditProcSpanClassName, tableDeleteSpanClassName]));
+            tr.append(createTd(this.surname));
+            tr.append(createTd(this.first_name));
+            tr.append(createTd(this.second_name));
+            tr.append(createTd(this.is_male ? 'Чол' : 'Жін'));
+            tr.append(createTd('+38' + this.phone));
+            tr.append(createTd(this.even_schedule ? 'Парний' : 'Непарний'));
+            tr.append(createTd(this.is_hired ? '+' : '-'));
+            tbody.append(tr);
+        });
+    }
+
+    function buildMastersTable(result) {
+        const table = createHeaderTable(['Прізвище', 'Ім`я', 'По-батькові', 'Стать', 'Номер телефону',
+            'Графік', 'Працює']);
+        tableWrapper.html(table);
+        fillTableWithRows(table, result.data);
+        initDataTable(table);
+
+        initDeleteMasterEvents();
+        initEditMasterEvents();
+        initAddMasterEvent();
+        initMasterProceduresEvent();
+    }
+
+    function initDeleteMasterEvents() {
+        $(tableDeleteSpanSelector).off();
+        $(tableDeleteSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+
+            modalDelete.modal('show');
+
+            modalDeleteSubmit.off();
+            modalDeleteSubmit.on('click', function () {
+                sendRequestDeleteMaster(clickedValue, processRequestDeleteMaster);
+            });
+        });
+    }
+
+    function initEditMasterEvents() {
+        $(tableEditSpanSelector).off();
+        $(tableEditSpanSelector).on('click', function () {
+            modalFavouritesAmount.hide();
+
+            const clickedValue = $(this).attr('value');
+            sendRequestGetMaster(clickedValue, fillEditMasterForm);
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderEditStr);
+            modalEdit.modal('show');
+
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
+                sendRequestEditMaster(clickedValue, getEditData(), processResponseAddOrEditMaster);
+                return false;
+            });
+        });
+    }
+
+    function initAddMasterEvent() {
+        addNewButton.off();
+        addNewButton.on('click', function () {
+            modalFavouritesAmount.hide();
+            clearAddMasterForm();
+
+            clearMessagesBlock(modalEditMessageBlock);
+            modalEditHeader.html(modalEditHeaderNewStr);
+            modalEdit.modal('show');
+
+            modalEditForm.off('submit');
+            modalEditForm.on('submit', function () {
+                sendRequestAddMaster(getEditData(), processResponseAddOrEditMaster);
+                return false;
+            });
+        });
+    }
+
+    function fillModalClientsSelect(result) {
+        modalEditMasterClient.html('');
+        $.each(result.data, function () {
+            const option = $('<option></option>');
+            option.val(this.id);
+            option.html(this.surname + ' ' + this.first_name + ', +38' + this.phone);
+            modalEditMasterClient.append(option);
+        })
+        modalEditMasterClient.selectpicker('refresh');
+    }
+
+    function clearAddMasterForm() {
+        modalEditMasterClient.val('');
+        modalEditMasterClient.removeAttr('disabled');
+        modalEditMasterClient.selectpicker('refresh');
+
+        modalEditMasterSchedule.prop("checked", true);
+        modalEditMasterStatus.prop("checked", true);
+        modalEditMasterSchedule.prop("checked", false);
+        modalEditMasterStatus.prop("checked", false);
+    }
+
+    function fillEditMasterForm(result) {
+        modalEditMasterClient.val(result.data.id);
+        modalEditMasterClient.attr('disabled', '');
+        modalEditMasterClient.selectpicker('refresh');
+
+        modalEditMasterSchedule.prop("checked", false);
+        modalEditMasterStatus.prop("checked", false);
+
+        if (result.data.even_schedule === true) {
+            modalEditMasterScheduleEven.prop('checked', true);
+        } else {
+            modalEditMasterScheduleOdd.prop('checked', true);
+        }
+
+        if (result.data.is_hired === true) {
+            modalEditMasterStatusHired.prop('checked', true);
+        } else {
+            modalEditMasterStatusNotHired.prop('checked', true);
+        }
+
+        modalFavouritesAmountSpan.html(result.data.favourite_clients_amount);
+        modalFavouritesAmount.show();
+    }
+
+    function processResponseAddOrEditMaster(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlock, result.message);
+        } else {
+            modalEdit.modal('hide');
+            showSuccess(result.message);
+            sendRequestGetAllMasters(buildMastersTable);
+        }
+    }
+
+    function processRequestDeleteMaster(result) {
+        modalDelete.modal('hide');
+        if (result.status === false) {
+            showError(result.message);
+        } else {
+            showSuccess(result.message);
+            sendRequestGetAllMasters(buildMastersTable);
+        }
+    }
+
+    function getEditData() {
+        return {
+            'id': modalEditMasterClient.val(),
+            'even_schedule': $(modalEditMasterScheduleSelector).val(),
+            'is_hired': $(modalEditMasterStatusSelector).val(),
+            'csrf_token': csrfToken.val()
+        };
+    }
+
+
+</script>
+<script>
+
+    const modalProcedures = $('#modalProcedures');
+    const modalProceduresTableWrapper = $('#procedures-table-wrapper');
+    const modalProceduresMessage = $('#messageProcedures');
+    const modalProceduresForm = $('#procedures-form');
+    const modalProceduresHeader = modalProcedures.find('h4').eq(0);
+
+    const tableEditProcSpanClassName = 'fa fa-wrench table-edit-proc-span';
+    const tableEditProcSpanSelector = '.table-edit-proc-span';
+
+    const procedureDurationInputClassName = 'procedure-duration';
+    const procedureDurationInputSelector = '.procedure-duration';
+
+
+    function getClickedMasterName(icon) {
+        const td = $(icon).closest('td');
+        const surnameTd = td.next();
+        const firstNameTd = surnameTd.next();
+        const secondNameTd = firstNameTd.next();
+        return surnameTd.html() + ' ' + firstNameTd.html() + ' ' + secondNameTd.html();
+    }
+
+    function initMasterProceduresEvent() {
+        $(tableEditProcSpanSelector).off();
+        $(tableEditProcSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+            sendRequestGetMasterProcedures(clickedValue, fillMasterProceduresForm);
+
+            clearMessagesBlock(modalProceduresMessage);
+            modalProceduresHeader.html(getClickedMasterName(this));
+            modalProcedures.modal('show');
+
+            modalProceduresForm.off('submit');
+            modalProceduresForm.on('submit', function () {
+                sendRequestRefreshMasterProcedures(
+                    clickedValue, getProceduresData(), processResponseRefreshMasterProcedures
+                );
+                return false;
+            });
+        });
+    }
+
+    function processResponseRefreshMasterProcedures(result) {
+        if (result.status === false) {
+            showErrorBlock(modalProceduresMessage, result.message);
+        } else {
+            modalProcedures.modal('hide');
+            showSuccess(result.message);
+        }
+    }
+
+    function buildDurationInput(procedure_id, duration) {
+        const input = $('<input>');
+        input.attr('type', 'number');
+        input.attr('min', '1');
+        input.attr('procedure', procedure_id);
+        input.addClass(procedureDurationInputClassName);
+        input.val(duration);
+        return input;
+    }
+
+    function buildMasterCategoryProcedures(procedures) {
+        const table = createHeaderTable(['Процедура', 'Тривалість, хв']);
+        const tbody = table.find('tbody').eq(0);
+        const thead = table.find('thead').eq(0);
+
+        thead.find('th').first().remove();
+
+        $.each(procedures, function () {
+            const tr = $('<tr></tr>');
+            tr.append(createTd(this.name));
+            tr.append(createTd(buildDurationInput(this.id, this.duration)));
+            tbody.append(tr);
+        })
+
+        return table;
+    }
+
+    function fillMasterProceduresForm(result) {
+        modalProceduresTableWrapper.html('');
+
+        $.each(result.data, function () {
+            modalProceduresTableWrapper.append($('<br>'));
+            modalProceduresTableWrapper.append(createH5(this.category_name));
+            modalProceduresTableWrapper.append(buildMasterCategoryProcedures(this.procedures));
+        });
+    }
+
+    function getProceduresData() {
+        const inputs = $(procedureDurationInputSelector);
+        const procedures = []
+
+        $.each(inputs, function () {
+            const thisElement = $(this);
+            if (thisElement.val() !== '') {
+                procedures.push({
+                    'procedure_id': Number(thisElement.attr('procedure')),
+                    'duration': Number(thisElement.val())
+                });
+            }
+        })
+        return procedures;
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        sendRequestGetAllMasters(buildMastersTable);
+        sendRequestGetClients(fillModalClientsSelect);
+    });
+</script>
+{% endblock %}
