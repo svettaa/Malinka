@@ -98,7 +98,7 @@
                                 <label for="phone" class="col-md-3 col-form-label">Телефон, +38</label>
                                 <div class="col-md-9">
                                     <input type="tel" id="phone" name="phone" class="form-control"
-                                           placeholder="050 000 0000"
+                                           placeholder="1234567890"
                                            pattern="[0-9]{10}"  required>
                                 </div>
                             </div>
@@ -151,7 +151,7 @@
     const modalEdit = $('#modalEdit');
     const modalEditSurname = modalEdit.find('input[name="surname"]').eq(0);
     const modalEditFirstName = modalEdit.find('input[name="firstname"]').eq(0);
-    const modalEditSecondName = modalEdit.find('input[name="secondname"]').eq(0);
+    const modalEditSecondName = modalEdit.find('input[name="lastname"]').eq(0);
     const modalEditPhone = modalEdit.find('input[name="phone"]').eq(0);
     const modalEditEmail = modalEdit.find('input[name="email"]').eq(0);
 
@@ -163,7 +163,6 @@
     const modalEditHeaderEditStr = 'Змінити користувача';
     const modalEditHeaderNewStr = 'Додати користувача';
     const modalEditMessageBlock = $('#messageEdit');
-    const modalSelect = $('select');
 
     const tableWrapper = $('#table-wrapper');
 
@@ -185,8 +184,8 @@
             tr.append(createTd(this.first_name));
             tr.append(createTd(this.second_name));
             tr.append(createTd(this.is_male ? 'Чол' : 'Жін'));
-            tr.append(createTd(this.phone));
-            tr.append(createTd(this.email));////
+            tr.append(createTd('+38' + this.phone));
+            tr.append(createTd(this.email));
             tbody.append(tr);
         });
     }
@@ -254,8 +253,7 @@
 
     }
 
-    function processResponseGetAllClient(result) {
-        console.log(result);
+    function buildClientsTable(result) {
         const table = createHeaderTable(
             ['Прізвище', 'Ім`я', 'По-батькові', 'Стать', 'Номер телефону', 'E-mail']);
         tableWrapper.html(table);
@@ -289,7 +287,7 @@
         } else {
             modalEdit.modal('hide');
             showSuccess(result.message);
-            sendRequestGetAllClient(processResponseGetAllClient);
+            sendRequestGetClients(buildClientsTable);
         }
     }
 
@@ -299,7 +297,7 @@
             showError(result.message);
         } else {
             showSuccess(result.message);
-            sendRequestGetAllClient(processResponseGetAllClient);
+            sendRequestGetClients(buildClientsTable);
         }
     }
 
@@ -317,7 +315,7 @@
     }
 
     $(document).ready(function () {
-        sendRequestGetAllClient(processResponseGetAllClient);
+        sendRequestGetClients(buildClientsTable);
     });
 
 </script>

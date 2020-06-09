@@ -9,7 +9,8 @@ from app.db_api.asserts.clients import *
 def get_clients():
     return db.engine.execute('SELECT id, surname, first_name, second_name, is_male, '
                              '       phone, email '
-                             'FROM Client;').fetchall()
+                             'FROM Client '
+                             'ORDER BY id;').fetchall()
 
 
 def get_clients_no_masters():

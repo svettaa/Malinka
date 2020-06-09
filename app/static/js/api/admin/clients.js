@@ -16,16 +16,6 @@ function sendRequestGetClientsNotMasters(callback) {
     });
 }
 
-
-
-function sendRequestGetAllClient(callback) {
-    $.ajax({
-        type: "GET",
-        url: "/api/clients",
-        success: callback
-    });
-}
-
 function sendRequestGetClient(id, callback) {
     $.ajax({
         type: "GET",
