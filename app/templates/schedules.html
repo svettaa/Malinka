@@ -58,8 +58,8 @@
                         <div class="col-12 col-sm-10 mx-auto">
 
                             <div class="form-group row">
-                                <label for="master" class="col-md-3 col-form-label">Майстер</label>
-                                <div class="col-md-9">
+                                <label for="master" class="col-lg-3 col-form-label">Майстер</label>
+                                <div class="col-9">
                                     <select data-live-search="true" title="Не обрано"
                                             class="selectpicker form-control"
                                             data-none-results-text="Немає результатів"
@@ -68,29 +68,74 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="startday_datetimepicker" class="col-lg-3 col-form-label">Початок</label>
-                                <div class="col-lg-5 input-group date" id="startday_datetimepicker"
-                                     data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" name="startday" required="">
-                                    <div class="input-group-append" data-target="#startday_datetimepicker"
-                                         data-toggle="datetimepicker">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                <label for="start" class="col-lg-3 col-form-label">Початок</label>
+                                <div class="col-9" id="start">
+                                    <div class="row">
+                                        <div class="col-lg-6 input-group date mb-3 mb-lg-0" id="startday_datetimepicker"
+                                             data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" name="startday"
+                                                   required="">
+                                            <div class="input-group-append" data-target="#startday_datetimepicker"
+                                                 data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 input-group date" id="starttime_datetimepicker"
+                                             data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input"
+                                                   name="starttime" required="">
+                                            <div class="input-group-append" data-target="#starttime_datetimepicker"
+                                                 data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="endday_datetimepicker" class="col-lg-3 col-form-label">Кінець</label>
-                                <div class="col-lg-5 input-group date" id="endday_datetimepicker"
-                                     data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" name="endday" required="">
-                                    <div class="input-group-append" data-target="#endday_datetimepicker"
-                                         data-toggle="datetimepicker">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                <label for="end" class="col-lg-3 col-form-label">Кінець</label>
+                                <div class="col-9" id="end">
+                                    <div class="row">
+                                        <div class="col-lg-6 input-group date mb-3 mb-lg-0" id="endday_datetimepicker"
+                                             data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" name="endday"
+                                                   required="">
+                                            <div class="input-group-append" data-target="#endday_datetimepicker"
+                                                 data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 input-group date" id="endtime_datetimepicker"
+                                             data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input" name="endtime"
+                                                   required="">
+                                            <div class="input-group-append" data-target="#endtime_datetimepicker"
+                                                 data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
 
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Працює</label>
+                                <div class="col-lg-9">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="works"
+                                               value="1" id="status-works">
+                                        <label class="form-check-label" for="status-works">
+                                            Так
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="works"
+                                               value="0" id="status-not-works">
+                                        <label class="form-check-label" for="status-not-works">
+                                            Ні
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -136,6 +181,12 @@
     const modalEditMaster = modalEdit.find('select[name="master"]').eq(0);
     const modalEditStartDay = modalEdit.find('input[name="startday"]').eq(0);
     const modalEditEndDay = modalEdit.find('input[name="endday"]').eq(0);
+    const modalEditStartTime = modalEdit.find('input[name="starttime"]').eq(0);
+    const modalEditEndTime = modalEdit.find('input[name="endtime"]').eq(0);
+
+    const modalEditWorkStatus = modalEdit.find('input[name="works"]').eq(0);
+    const modalEditWorkStatusWorks = modalEdit.find('#status-works').eq(0);
+    const modalEditWorkStatusNotWorks = modalEdit.find('#status-not-works').eq(0);
     const modalEditSubmit = modalEdit.find('.submit').eq(0);
     const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
     const modalEditHeaderEditStr = 'Змінити зміну у графіку';
@@ -144,6 +195,8 @@
     const modalSelect = $('select');
     const modalEditStartDayPicker = $('#startday_datetimepicker');
     const modalEditEndDayPicker = $('#endday_datetimepicker');
+    const modalEditStartTimePicker = $('#starttime_datetimepicker');
+    const modalEditEndTimePicker = $('#endtime_datetimepicker');
 
     const tableWrapper = $('#table-wrapper');
 
@@ -154,14 +207,16 @@
     const tableEditSpanSelector = '.table-edit-span';
     const tableDeleteSpanSelector = '.table-delete-span';
 
+    const modalEditWorkStatusSelector = 'input[name="works"]:checked';
+
     function fillTableWithRows(table, data) {
         const tbody = table.find('tbody').eq(0);
         $.each(data, function () {
             const tr = $('<tr></tr>');
             tr.append(createIconsTd(this.id, [tableEditSpanClassName, tableDeleteSpanClassName]));
             tr.append(createTd(this.surname + ' ' + this.first_name + ', +38' + this.phone));
-            tr.append(createTd(this.change_start));////////////
-            tr.append(createTd(this.change_end));//////////
+            tr.append(createTd(this.change_start));
+            tr.append(createTd(this.change_end));
             tr.append(createTd(this.is_working ? '+' : '-'));
             tbody.append(tr);
         });
@@ -203,7 +258,7 @@
     function initAddScheduleEvent() {
         addNewButton.off();
         addNewButton.on('click', function () {
-            clearAddSupplyForm();
+            clearAddScheduleForm();
 
             clearMessagesBlock(modalEditMessageBlock);
             modalEditHeader.html(modalEditHeaderNewStr);
@@ -220,17 +275,22 @@
     function clearAddScheduleForm() {
         modalEditMaster.val('');
         modalEditMaster.removeAttr('disabled');
+        modalEditMaster.selectpicker('refresh');
         modalEditStartDay.val(getCurrentDay());
-        modalEditEndDay.val('');
+        modalEditStartTime.val("9:00");
+        modalEditEndDay.val(getCurrentDay());
+        modalEditEndTime.val("20:00");
 
-        modalEditPaint.selectpicker('refresh');
+        modalEditWorkStatus.prop("checked", true);
+        modalEditWorkStatus.prop("checked", false);
+
+
     }
 
     function processResponseGetAllSchedule(result) {
         const table = createHeaderTable(
             ['Майстер', 'Початок', 'Кінець', 'Працює']);
         tableWrapper.html(table);
-        console.log(result);
         fillTableWithRows(table, result.data);
         initDataTable(table);
 
@@ -240,12 +300,22 @@
     }
 
     function fillEditScheduleForm(result) {
-        modalEditMaster.val(result.data.surname + ' ' + result.data.first_name + ', +38' + result.data.phone);
+        modalEditMaster.val(result.data.master_id);
         modalEditMaster.attr('disabled', '');
-        modalEditStartDay.val(result.data.change_start);
-        modalEditEndDay.val(result.data.change_end);
-
         modalEditMaster.selectpicker('refresh');
+
+        modalEditStartDay.val(getDateFromDatetime(result.data.change_start));
+        modalEditEndDay.val(getDateFromDatetime(result.data.change_end));
+        modalEditStartTime.val(getTimeFromDatetime(result.data.change_start));
+        modalEditEndTime.val(getTimeFromDatetime(result.data.change_end));
+
+        modalEditWorkStatus.prop("checked", false);
+
+        if (result.data.is_working === true) {
+            modalEditWorkStatusWorks.prop('checked', true);
+        } else {
+            modalEditWorkStatusNotWorks.prop('checked', true);
+        }
     }
 
     function fillModalMastersSelect(result) {
@@ -281,19 +351,22 @@
 
     function getEditData() {
         return {
-            'paint_id': modalEditPaint.val(),
-            'amount': modalEditAmount.val(),
-            'supply_date': modalEditDay.val(),
+            'master_id': modalEditMaster.val(),
+            'change_start': modalEditStartDay.val() + " " + modalEditStartTime.val(),
+            'change_end': modalEditEndDay.val() + " " + modalEditEndTime.val(),
+            'is_working': $(modalEditWorkStatusSelector).val(),
             'csrf_token': csrfToken.val()
         };
     }
 
     $(document).ready(function () {
         sendRequestGetAllSchedule(processResponseGetAllSchedule);
-        sendRequestGetAllMasters(fillModalMastersSelect());
+        sendRequestGetAllMasters(fillModalMastersSelect);
 
         initDatePicker(modalEditStartDayPicker);
         initDatePicker(modalEditEndDayPicker);
+        initTimePicker(modalEditStartTimePicker);
+        initTimePicker(modalEditEndTimePicker);
     });
 
 
