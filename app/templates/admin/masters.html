@@ -388,6 +388,14 @@
     const procedureDurationInputSelector = '.procedure-duration';
 
 
+    function getClickedMasterName(icon) {
+        const td = $(icon).closest('td');
+        const surnameTd = td.next();
+        const firstNameTd = surnameTd.next();
+        const secondNameTd = firstNameTd.next();
+        return surnameTd.html() + ' ' + firstNameTd.html() + ' ' + secondNameTd.html();
+    }
+
     function initMasterProceduresEvent() {
         $(tableEditProcSpanSelector).off();
         $(tableEditProcSpanSelector).on('click', function () {
@@ -395,7 +403,7 @@
             sendRequestGetMasterProcedures(clickedValue, fillMasterProceduresForm);
 
             clearMessagesBlock(modalProceduresMessage);
-            modalProceduresHeader.html(clickedValue);
+            modalProceduresHeader.html(getClickedMasterName(this));
             modalProcedures.modal('show');
 
             modalProceduresForm.off('submit');
