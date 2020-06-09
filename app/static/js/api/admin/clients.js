@@ -8,10 +8,22 @@ function sendRequestGetClients(callback) {
     });
 }
 
-function sendRequestGetClientsNotMasters(callback) {
+
+
+function sendRequestResetClientPassword(id, callback){
     $.ajax({
         type: "GET",
-        url: "/api/clients/not_masters",
+        url: "/reset_password",
+        data: {'id': id},
+        success: callback
+    });
+}
+
+function sendRequestDeleteClientPassword(id, callback){
+    $.ajax({
+        type: "GET",
+        url: "/delete_password",
+        data: {'id': id},
         success: callback
     });
 }

@@ -127,6 +127,18 @@
                         <ul id="ul-procedures"></ul>
                     </div>
                 </div>
+                <div id="passwords">
+                    <div class="row">
+                        <button type="button" class="btn btn-danger" id="reset-password">
+                            Скинути пароль
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn-danger" id="delete-password">
+                            Видалити пароль
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary submit" form="edit-form">Зберегти</button>
@@ -179,6 +191,9 @@
     const modalEditHeaderNewStr = 'Додати користувача';
     const modalEditMessageBlock = $('#messageEdit');
 
+    const modalEditPasswords = $('#passwords');
+    const modalEditResetPassword = $('#reset-password');
+    const modalEditDeletePassword = $('#delete-password');
     const modalEditFavouriteMasters = $('#favourite-masters');
     const modalEditFavouriteMastersUl = $('#ul-masters');
     const modalEditFavouriteProcedures = $('#favourite-procedures');
@@ -229,6 +244,7 @@
         $(tableEditSpanSelector).on('click', function () {
             modalEditFavouriteMasters.hide();
             modalEditFavouriteProcedures.hide();
+            modalEditPasswords.hide();
 
             const clickedValue = $(this).attr('value');
             sendRequestGetClient(clickedValue, fillEditClientForm);
@@ -242,7 +258,25 @@
                 sendRequestEditClient(clickedValue, getEditData(), processResponseAddOrEditClient);
                 return false;
             });
+
+            modalEditDeletePassword.off();
+            modalEditDeletePassword.on('click', function () {
+                sendRequestDeleteClientPassword(clickedValue, processPasswordResponse);
+            });
+
+            modalEditResetPassword.off();
+            modalEditResetPassword.on('click', function () {
+                sendRequestResetClientPassword(clickedValue, processPasswordResponse);
+            });
         });
+    }
+
+    function processPasswordResponse(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlock, result.message);
+        } else {
+            showSuccessBlock(modalEditMessageBlock, result.message);
+        }
     }
 
     function initAddClientEvent() {
@@ -250,6 +284,7 @@
         addNewButton.on('click', function () {
             modalEditFavouriteMasters.hide();
             modalEditFavouriteProcedures.hide();
+            modalEditPasswords.hide();
             clearAddClientForm();
 
             clearMessagesBlock(modalEditMessageBlock);
@@ -325,6 +360,8 @@
                 modalEditFavouriteProceduresUl.append(li);
             })
         }
+
+        modalEditPasswords.show();
         modalEditFavouriteMasters.show();
         modalEditFavouriteProcedures.show();
     }
