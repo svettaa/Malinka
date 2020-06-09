@@ -81,6 +81,23 @@ function createDateTd(text) {
     return td;
 }
 
+function createDateTimeTd(text) {
+    const year = text.substring(6, 10);
+    const month = text.substring(3, 5);
+    const day = text.substring(0, 2);
+    const hour = text.substring(11, 13);
+    const min = text.substring(14);
+
+    const invisible = $('<span></span>');
+    invisible.css('display', 'none');
+    invisible.html(year + '.' + month + '.' + day + ' ' + hour + ':' + min);
+
+    const td = $('<td></td>');
+    td.append(invisible);
+    td.append(text);
+    return td;
+}
+
 function createIconTh() {
     const th = $('<th style="width:60px;"></th>');
     th.attr('scope', 'col');

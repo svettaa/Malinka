@@ -215,8 +215,8 @@
             const tr = $('<tr></tr>');
             tr.append(createIconsTd(this.id, [tableEditSpanClassName, tableDeleteSpanClassName]));
             tr.append(createTd(this.surname + ' ' + this.first_name + ', +38' + this.phone));
-            tr.append(createTd(this.change_start));
-            tr.append(createTd(this.change_end));
+            tr.append(createDateTimeTd(this.change_start));
+            tr.append(createDateTimeTd(this.change_end));
             tr.append(createTd(this.is_working ? '+' : '-'));
             tbody.append(tr);
         });
