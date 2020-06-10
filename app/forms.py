@@ -35,6 +35,7 @@ class AdminProcedureForm(BaseForm):
                              validators=[Optional(),
                                          NumberRange(min=0, message='Ціна не може бути від\'ємною')])
     info = TextAreaField('Додаткова інформація', validators=[Optional()])
+    uses_paints = BooleanField('Використовує фарби', validators=[InputRequired('Не вказано чи використовує фарби')])
 
 
 class AdminPaintForm(BaseForm):
@@ -141,7 +142,7 @@ class AdminAppointmentForm(BaseForm):
                                 render_kw={'data-target': '#admin_appointment_end_datetimepicker'},
                                 format='%d.%m.%Y %H:%M')
     preferences = TextAreaField('Побажання', render_kw={"rows": 4})
-    status = BooleanField('Підтверджено')
+    status = BooleanField('Підтверджено', validators=[InputRequired('Не вказано чи використовує фарби')])
     price = IntegerField('Ціна',
                          validators=[Optional(),
                                      NumberRange(min=0, message='Ціна не може бути від\'ємною')])

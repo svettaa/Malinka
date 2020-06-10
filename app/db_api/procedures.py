@@ -5,7 +5,7 @@ from app.models import Procedure
 
 
 def get_procedures():
-    return db.engine.execute('SELECT Procedure.id, price_min, price_max, info, '
+    return db.engine.execute('SELECT Procedure.id, price_min, price_max, info, uses_paints, '
                              '       Procedure.name AS procedure_name, '
                              '       Category.name AS category_name '
                              'FROM Procedure INNER JOIN Category '
@@ -14,7 +14,7 @@ def get_procedures():
 
 
 def get_procedure(procedure_id: int):
-    return db.engine.execute('SELECT id, name, category_id, price_min, price_max, info '
+    return db.engine.execute('SELECT id, name, category_id, price_min, price_max, info, uses_paints '
                              'FROM Procedure '
                              'WHERE id = %s;',
                              procedure_id).fetchone()
@@ -37,10 +37,11 @@ def update_procedure(procedure: Procedure):
                           '    name = %s,'
                           '    price_min = %s,'
                           '    price_max = %s, '
-                          '    info = %s '
+                          '    info = %s, '
+                          '    uses_paints = %s '
                           'WHERE id = %s;',
                           (procedure.category_id, procedure.name, procedure.price_min,
-                           procedure.price_max, procedure.info, procedure.id))
+                           procedure.price_max, procedure.info, procedure.uses_paints, procedure.id))
         return True, 'Успішно оновлено процедуру'
     except IntegrityError:
         return False, 'Процедура з такою назвою вже існує'
@@ -54,10 +55,10 @@ def add_procedure(procedure: Procedure):
             procedure.price_max <= procedure.price_min:
         return False, 'Мінімальна ціна має бути меншою за максимальну'
     try:
-        db.engine.execute('INSERT INTO Procedure (category_id, name, price_min, price_max, info) '
-                          'VALUES (%s, %s, %s, %s, %s);',
+        db.engine.execute('INSERT INTO Procedure (category_id, name, price_min, price_max, info, uses_paints) '
+                          'VALUES (%s, %s, %s, %s, %s, %s);',
                           (procedure.category_id, procedure.name, procedure.price_min,
-                           procedure.price_max, procedure.info))
+                           procedure.price_max, procedure.info, procedure.uses_paints))
         return True, 'Успішно додано процедуру'
     except IntegrityError:
         return False, 'Процедура з такою назвою вже існує'

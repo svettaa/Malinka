@@ -83,6 +83,12 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="uses-paints" class="col-lg-3 col-form-label">Використовує фарби</label>
+                            <div class="col-lg-9">
+                                <input type="checkbox" id="uses-paints" name="uses-paints">
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="info" class="col-lg-3 col-form-label">Додаткова інформація</label>
                             <div class="col-lg-9">
                                 <textarea class="form-control" rows="3" id="info" name="info"></textarea>
@@ -136,6 +142,7 @@
     const modalEditProcedure = modalEdit.find('input[name="procedure"]').eq(0);
     const modalEditMinPrice = modalEdit.find('input[name="min"]').eq(0);
     const modalEditMaxPrice = modalEdit.find('input[name="max"]').eq(0);
+    const modalEditUsesPaints = modalEdit.find('input[name="uses-paints"]').eq(0);
     const modalEditInfo = modalEdit.find('textarea[name="info"]').eq(0);
     const modalEditSubmit = modalEdit.find('.submit').eq(0);
     const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
@@ -164,6 +171,7 @@
             tr.append(createTd(this.procedure_name));
             tr.append(createTd(this.price_min));
             tr.append(createTd(this.price_max));
+            tr.append(createTd(this.uses_paints ? '+' : '-'));
             tbody.append(tr);
         });
     }
@@ -226,15 +234,15 @@
         modalEditMinPrice.val('');
         modalEditMaxPrice.val('');
         modalEditInfo.val('');
+        modalEditUsesPaints.prop('checked', false);
 
         modalEditCategory.selectpicker('refresh');
     }
 
     function buildProceduresTable(result) {
         const table = createHeaderTable(
-            ['Категорія', 'Процедура', 'Мін. ціна', 'Макс. ціна']);
+            ['Категорія', 'Процедура', 'Мін. ціна', 'Макс. ціна', 'Фарби']);
         tableWrapper.html(table);
-        console.log(result);
         fillTableWithRows(table, result.data);
         initDataTable(table);
 
@@ -249,6 +257,7 @@
         modalEditMinPrice.val(result.data.price_min);
         modalEditMaxPrice.val(result.data.price_max);
         modalEditInfo.val(result.data.info);
+        modalEditUsesPaints.prop('checked', result.data.uses_paints);
 
         modalFavouritesAmountSpan.html(result.data.favourite_clients);
         modalFavouritesAmount.show();
@@ -294,6 +303,7 @@
             'price_min': modalEditMinPrice.val(),
             'price_max': modalEditMaxPrice.val(),
             'info': modalEditInfo.val(),
+            'uses_paints': modalEditUsesPaints.prop('checked'),
             'csrf_token': csrfToken.val()
         };
     }
