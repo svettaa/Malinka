@@ -356,7 +356,7 @@
     function initAddFavouriteMasterEvent() {
         addNewMasterButton.off();
         addNewMasterButton.on('click', function () {
-            //modalEditFavouriteProcedures.hide();
+            clearMessagesBlock(modalEditMessageBlockAddMaster);
             clearAddFavouriteMasterForm();
 
             modalAddFavouriteMaster.modal('show');
@@ -377,7 +377,7 @@
     function initAddFavouriteProcedureEvent() {
         addNewProcedureButton.off();
         addNewProcedureButton.on('click', function () {
-            //modalEditFavouriteProcedures.hide();
+            clearMessagesBlock(modalEditMessageBlockAddProcedure);
             clearAddFavouriteProcedureForm();
 
             modalAddFavouriteProcedure.modal('show');
@@ -399,6 +399,7 @@
     function initChangePasswordEvent() {
         changePasswordButton.off();
         changePasswordButton.on('click', function () {
+            clearMessagesBlock(modalEditMessageChangePassword);
             clearChangePasswordForm();
 
             modalChangePassword.modal('show');
@@ -461,7 +462,9 @@
 
                 span.off();
                 span.on("click", function () {
-                    sendRequestDeleteFavouriteMaster(clientId, $(this).attr('value'), processResponseDeleteFavouriteMaster);
+                    sendRequestDeleteFavouriteMaster(
+                        clientId, $(this).attr('value'), processResponseDeleteFavouriteMasterOrProcedure
+                    );
                 })
                 favouriteMastersUl.append(li);
             })
@@ -481,7 +484,9 @@
 
                 span.off();
                 span.on("click", function () {
-                    sendRequestDeleteFavouriteProcedure(clientId, $(this).attr('value'), processResponseDeleteFavouriteProcedure);
+                    sendRequestDeleteFavouriteProcedure(
+                        clientId, $(this).attr('value'), processResponseDeleteFavouriteMasterOrProcedure
+                    );
                 });
                 favouriteProceduresUl.append(li);
             })
@@ -498,7 +503,7 @@
         }
     }
 
-    function processResponseDeleteFavouriteMaster(result) {
+    function processResponseDeleteFavouriteMasterOrProcedure(result) {
         if (result.status === false) {
             showError(result.message);
         } else {
@@ -518,15 +523,6 @@
         }
     }
 
-    function processResponseDeleteFavouriteProcedure(result) {
-        if (result.status === false) {
-            showError(result.message);
-        } else {
-            showSuccess(result.message);
-            sendRequestGetClient(clientId, fillEditFavouritesForm);
-        }
-    }
-
     function processResponseEditClient(result) {
         if (result.status === false) {
             showError(result.message);
@@ -540,7 +536,8 @@
         if (result.status === false) {
             showErrorBlock(modalEditMessageChangePassword, result.message);
         } else {
-            showSuccessBlock(modalEditMessageChangePassword, result.message);
+            showSuccess(result.message);
+            modalChangePassword.modal('hide');
         }
     }
 

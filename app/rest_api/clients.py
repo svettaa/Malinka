@@ -84,7 +84,7 @@ def api_client_favourite_master_put(client_id):
         return build_message_reply((False, 'Заборонено доступ'))
 
     form = AddFavouriteMaster()
-    form.master_id.choices = [str(master['id'])
+    form.master_id.choices = [(str(master['id']), '')
                               for master in get_relevant_masters_short()]
 
     if not form.validate_on_submit():
@@ -109,7 +109,7 @@ def api_client_favourite_procedure_put(client_id):
         return build_message_reply((False, 'Заборонено доступ'))
 
     form = AddFavouriteProcedure()
-    form.procedure_id.choices = [str(procedure['id'])
+    form.procedure_id.choices = [(str(procedure['id']), '')
                                  for procedure in get_relevant_procedures_short()]
 
     if not form.validate_on_submit():
