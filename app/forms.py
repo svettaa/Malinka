@@ -36,6 +36,7 @@ class AdminProcedureForm(BaseForm):
                                          NumberRange(min=0, message='Ціна не може бути від\'ємною')])
     info = TextAreaField('Додаткова інформація', validators=[Optional()])
     uses_paints = BooleanField('Використовує фарби', validators=[InputRequired('Не вказано чи використовує фарби')])
+    is_relevant = BooleanField('Актуальна', validators=[InputRequired('Не вказано чи актуальна')])
 
 
 class AdminPaintForm(BaseForm):

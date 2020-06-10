@@ -89,6 +89,12 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label for="is-relevant" class="col-lg-3 col-form-label">Чи актуальна</label>
+                            <div class="col-lg-9">
+                                <input type="checkbox" id="is-relevant" name="is-relevant">
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label for="info" class="col-lg-3 col-form-label">Додаткова інформація</label>
                             <div class="col-lg-9">
                                 <textarea class="form-control" rows="3" id="info" name="info"></textarea>
@@ -143,6 +149,7 @@
     const modalEditMinPrice = modalEdit.find('input[name="min"]').eq(0);
     const modalEditMaxPrice = modalEdit.find('input[name="max"]').eq(0);
     const modalEditUsesPaints = modalEdit.find('input[name="uses-paints"]').eq(0);
+    const modalEditIsRelevant = modalEdit.find('input[name="is-relevant"]').eq(0);
     const modalEditInfo = modalEdit.find('textarea[name="info"]').eq(0);
     const modalEditSubmit = modalEdit.find('.submit').eq(0);
     const modalEditHeader = modalEdit.find('.modal-header h4').eq(0);
@@ -172,6 +179,7 @@
             tr.append(createTd(this.price_min));
             tr.append(createTd(this.price_max));
             tr.append(createTd(this.uses_paints ? '+' : '-'));
+            tr.append(createTd(this.is_relevant ? '+' : '-'));
             tbody.append(tr);
         });
     }
@@ -235,13 +243,14 @@
         modalEditMaxPrice.val('');
         modalEditInfo.val('');
         modalEditUsesPaints.prop('checked', false);
+        modalEditIsRelevant.prop('checked', true);
 
         modalEditCategory.selectpicker('refresh');
     }
 
     function buildProceduresTable(result) {
         const table = createHeaderTable(
-            ['Категорія', 'Процедура', 'Мін. ціна', 'Макс. ціна', 'Фарби']);
+            ['Категорія', 'Процедура', 'Мін. ціна', 'Макс. ціна', 'Фарби', 'Актуальна']);
         tableWrapper.html(table);
         fillTableWithRows(table, result.data);
         initDataTable(table);
@@ -258,6 +267,7 @@
         modalEditMaxPrice.val(result.data.price_max);
         modalEditInfo.val(result.data.info);
         modalEditUsesPaints.prop('checked', result.data.uses_paints);
+        modalEditIsRelevant.prop('checked', result.data.is_relevant);
 
         modalFavouritesAmountSpan.html(result.data.favourite_clients);
         modalFavouritesAmount.show();
@@ -304,6 +314,7 @@
             'price_max': modalEditMaxPrice.val(),
             'info': modalEditInfo.val(),
             'uses_paints': modalEditUsesPaints.prop('checked'),
+            'is_relevant': modalEditIsRelevant.prop('checked'),
             'csrf_token': csrfToken.val()
         };
     }

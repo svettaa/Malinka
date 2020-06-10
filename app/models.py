@@ -108,6 +108,7 @@ class Procedure(db.Model):
     price_max = db.Column(db.Numeric(precision=14, scale=2))
     info = db.Column(db.String(300))
     uses_paints = db.Column(db.Boolean, nullable=False)
+    is_relevant = db.Column(db.Boolean, nullable=False)
 
     category_id = db.Column(
         db.Integer, db.ForeignKey('category.id', onupdate='RESTRICT', ondelete='RESTRICT'), nullable=False)
