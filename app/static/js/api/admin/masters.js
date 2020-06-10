@@ -76,6 +76,14 @@ function sendRequestRefreshMasterPhoto(id, data, callback) {
     });
 }
 
+function sendRequestDeleteMasterPhoto(id, callback) {
+    $.ajax({
+        type: "DELETE",
+        url: "/api/masters/" + id + "/photo",
+        success: callback
+    });
+}
+
 function sendRequestEditMaster(id, data, callback) {
     $.ajax({
         type: "PUT",

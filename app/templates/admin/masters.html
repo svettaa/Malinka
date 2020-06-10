@@ -174,9 +174,17 @@
                     <div class="row">
                         <div class="col-12 col-sm-10 mx-auto">
                             <div class="form-group row">
+<!--                                <div class="col-lg-12">-->
+<!--                                    <img style="width: 75%; max-width: 200px; display: block; margin: 10px auto;">-->
+<!--                                </div>-->
                                 <label class="col-lg-3 col-form-label">Фото</label>
                                 <div class="col-lg-9">
                                     <input type="file" name="photo" accept="image/*" required>
+                                </div>
+                                <div class="col-lg-12"><br><br>
+                                    <button type="button" id="delete-photo" class="btn btn-danger">
+                                        Видалити фото
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -522,9 +530,11 @@
 <script>
 
     const modalPhoto = $('#modalPhoto');
+    // const modalPhotoImg = modalPhoto.find('img').eq(0);
     const modalPhotoMessage = $('#messagePhoto');
     const modalPhotoForm = $('#photo-form');
     const modalPhotoHeader = modalPhoto.find('h4').eq(0);
+    const modalPhotoDelete = $('#delete-photo');
 
     const tableEditPhotoSpanClassName = 'fas fa-user table-edit-photo-span';
     const tableEditPhotoSpanSelector = '.table-edit-photo-span';
@@ -541,6 +551,7 @@
             modalPhotoHeader.html(getClickedMasterName(this));
             modalPhoto.modal('show');
             $(masterPhotoInputSelector).val('');
+            // modalPhotoImg.attr('src', '/api/masters/' + clickedValue + '/photo');
 
             modalPhotoForm.off('submit');
             modalPhotoForm.on('submit', function () {
@@ -548,6 +559,11 @@
                     clickedValue, getPhotoData(), processResponseRefreshMasterPhoto
                 );
                 return false;
+            });
+
+            modalPhotoDelete.off();
+            modalPhotoDelete.on('click', function () {
+                sendRequestDeleteMasterPhoto(clickedValue, processResponseRefreshMasterPhoto);
             });
         });
     }

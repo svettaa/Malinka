@@ -82,6 +82,10 @@ def api_master_photo_get(master_id):
     return send_file(os.path.join('photos', 'default.png'))
 
 
+def generate_photo_name(master_id):
+    return '_' + str(master_id) + '.png'
+
+
 @app.route('/api/masters/<int:master_id>/photo', methods=['POST'])
 @login_required
 @admin_only
@@ -91,18 +95,24 @@ def api_master_photo_post(master_id):
 
     try:
         photo = request.files.get('photo')
-        name = '_' + str(master_id) + '.png'
+        api_master_photo_delete(master_id)
 
-        try:
-            os.remove(os.path.join(app.config['UPLOADED_PHOTOS_DEST'], name))
-        except FileNotFoundError:
-            pass
-
-        photos.save(photo, name=name)
+        photos.save(photo, name=generate_photo_name(master_id))
         return build_message_reply((True, 'Успішно оновлено фото майстра'))
 
     except UploadNotAllowed as e:
         return build_message_reply((False, 'Сталася помилка, некоректний формат'))
+
+
+@app.route('/api/masters/<int:master_id>/photo', methods=['DELETE'])
+@login_required
+@admin_only
+def api_master_photo_delete(master_id):
+    try:
+        os.remove(os.path.join(app.config['UPLOADED_PHOTOS_DEST'], generate_photo_name(master_id)))
+        return build_message_reply((True, 'Успішно видалено фото'))
+    except FileNotFoundError:
+        return build_message_reply((False, 'У майстра немає фото, окрім за замовченням'))
 
 
 @app.route('/api/masters/<int:master_id>', methods=['PUT'])
