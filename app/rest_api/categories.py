@@ -24,7 +24,7 @@ def api_categories_procedures_get():
 
     categories = []
     for category in categories_proxy:
-        procedures = db.engine.execute('SELECT id, name, info, price_min, price_max '
+        procedures = db.engine.execute('SELECT id, name, info, price_min, price_max, is_relevant '
                                        'FROM Procedure '
                                        'WHERE category_id = %s;',
                                        category['id']).fetchall()
@@ -33,7 +33,7 @@ def api_categories_procedures_get():
         categories.append(new_item)
 
     return jsonify({'status': True,
-                        'data': categories})
+                    'data': categories})
 
 
 @app.route('/api/categories/<int:category_id>', methods=['GET'])

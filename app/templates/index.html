@@ -134,6 +134,25 @@
     </div>
 
     <div class="row mb-5 " id="masters-wrapper">
+
+        {% for master in masters %}
+        <div class="сol-12 col-sm-6 col-md-4 mb-4"
+             onclick="showModal({{ master.id }});"
+             style="cursor: pointer;">
+            <div class="card">
+                <img class="card-img-top" src="api/masters/{{ master.id }}/photo" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ master.surname }}
+                        {{ master.first_name }}
+                        {% if master.second_name %}
+                        {{ master.second_name }}
+                        {% endif %}
+                    </h5>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
 
@@ -250,12 +269,11 @@
     const masterWrapper = $('#masters-wrapper');
     const modalMaster = $('#modalMaster');
     const modalMasterImg = modalMaster.find('img').eq(0);
-    const modalMasterInfo= $('#p-info');
+    const modalMasterInfo = $('#p-info');
     const modalMasterH4 = modalMaster.find('h4').eq(0);
     const modalMasterScheduleSpan = $('#p-schedule').find('span').eq(0);
 
-    function showModal(result) {
-        console.log(result.data)
+    function processShowModal(result) {
         modalMaster.modal('show');
         modalMasterImg.attr('src', 'api/masters/' + result.data.id + '/photo');
         modalMasterInfo.html(result.data.info);
@@ -267,48 +285,9 @@
         }
     }
 
-    function createMasterCard(data){
-        const cardWrapper = $('<div></div>');
-        cardWrapper.addClass('сol-12 col-sm-6 col-md-4 mb-4 master-card');
-        cardWrapper.css('cursor', 'pointer');
-
-        cardWrapper.off();
-        cardWrapper.on('click', function () {
-            sendRequestGetMaster(data.id, showModal);
-        })
-
-        const card = $('<div></div>');
-        card.addClass('card');
-        cardWrapper.append(card);
-
-        const img = $('<img>');
-        img.attr('src', 'api/masters/' + data.id + '/photo');
-        img.addClass('card-img-top');
-
-        const body = $('<div></div>');
-        body.addClass('card-body');
-
-        const h5 = $('<h5></h5>');
-        h5.addClass('card-title');
-        h5.html(data.surname + ' ' + data.first_name);
-        body.append(h5);
-
-        card.append(img);
-        card.append(body);
-
-        return cardWrapper;
+    function showModal(id){
+        sendRequestGetMaster(id, processShowModal);
     }
-
-    function fillMasterCards(result){
-        masterWrapper.html('');
-        $.each(result.data, function () {
-            masterWrapper.append(createMasterCard(this));
-        })
-    }
-
-    $(document).ready(function () {
-        sendRequestGetAllRelevantMasters(fillMasterCards);
-    });
 
 </script>
 {% endblock %}
