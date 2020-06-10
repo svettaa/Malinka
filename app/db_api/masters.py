@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy.exc import IntegrityError, OperationalError
+from sqlalchemy.exc import IntegrityError, OperationalError, DataError
 
 from app import db
 from app.db_api.utils import *
@@ -151,6 +151,9 @@ def update_master(master: Master):
     except OperationalError:
         session.rollback()
         return update_master(master)
+    except DataError:
+        session.rollback()
+        return False, 'Занадто довге значення'
     finally:
         session.close()
 
@@ -201,6 +204,9 @@ def add_master(master: Master):
         return True, 'Успішно додано майстра'
     except IntegrityError:
         return False, 'Вже існує такий майстер'
+    except DataError:
+        db.session.rollback()
+        return False, 'Занадто довге значення'
 
 
 def delete_master(master_id: int):

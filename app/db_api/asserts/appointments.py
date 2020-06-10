@@ -36,6 +36,16 @@ def assert_appointment_is_hired(appointment: Appointment, session: Session):
         raise AssertionError('Даний майстер звільнений')
 
 
+def assert_appointment_is_relevant(appointment: Appointment, session: Session):
+    if is_future_appointment(appointment) and \
+            not session.execute(""" SELECT is_relevant
+                                       FROM Procedure
+                                       WHERE id = :procedure_id;
+                                   """,
+                                {'procedure_id': appointment.procedure_id}).scalar():
+        raise AssertionError('Дана процедура не актуальна')
+
+
 def assert_appointment_no_overlaps_master(appointment: Appointment, session: Session):
     if session.execute(""" SELECT COUNT(*)
                                   FROM Appointment
