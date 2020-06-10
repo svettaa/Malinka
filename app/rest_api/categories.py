@@ -30,7 +30,28 @@ def api_categories_procedures_get():
                                        category['id']).fetchall()
         new_item = {'name': category['name'],
                     'procedures': json_list(procedures)}
-        categories.append(new_item)
+        if len(procedures) > 0:
+            categories.append(new_item)
+
+    return jsonify({'status': True,
+                    'data': categories})
+
+
+@app.route('/api/categories/procedures/relevant', methods=['GET'])
+def api_categories_procedures_relevant_get():
+    categories_proxy = db.engine.execute('SELECT id, name '
+                                         'FROM Category;').fetchall()
+
+    categories = []
+    for category in categories_proxy:
+        procedures = db.engine.execute('SELECT id, name, info, price_min, price_max, is_relevant '
+                                       'FROM Procedure '
+                                       'WHERE category_id = %s AND is_relevant = True;',
+                                       category['id']).fetchall()
+        new_item = {'name': category['name'],
+                    'procedures': json_list(procedures)}
+        if len(procedures) > 0:
+            categories.append(new_item)
 
     return jsonify({'status': True,
                     'data': categories})

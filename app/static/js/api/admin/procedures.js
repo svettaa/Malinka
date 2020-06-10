@@ -8,6 +8,14 @@ function sendRequestGetProceduresByCategories(callback) {
     });
 }
 
+function sendRequestGetAllRelevantProceduresByCategories(callback) {
+    $.ajax({
+        type: "GET",
+        url: "/api/categories/procedures/relevant",
+        success: callback
+    });
+}
+
 function sendRequestGetAllProcedure(callback) {
     $.ajax({
         type: "GET",

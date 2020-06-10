@@ -38,7 +38,7 @@ def get_client_password(client_id: int):
 
 
 def get_client_favourite_masters(client_id: int):
-    return db.engine.execute('SELECT Master.id, surname, first_name, second_name, phone '
+    return db.engine.execute('SELECT Master.id, surname, first_name, second_name '
                              'FROM (Favourite_Master INNER JOIN Master '
                              '     ON master_id = id) INNER JOIN Client '
                              '     ON Master.id = Client.id '
