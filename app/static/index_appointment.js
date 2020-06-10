@@ -153,6 +153,9 @@ function showFreeTime(result) {
             $.each(data, function(){
                 showMasterFreeTime(this);
             });
+            if (data.length == 0) {
+                $('#index-tabs').html('Немає майстрів на цю дату та процедуру');
+            }
         }
 }
 
