@@ -2,8 +2,9 @@ from flask import request
 from flask_login import login_required, current_user
 from werkzeug.security import check_password_hash
 
-from app import app, get_masters, get_procedures, get_client_future_appointments, get_client_past_appointments, \
-    delete_appointment_if_future, get_relevant_masters_short, get_relevant_procedures_short
+from app import app, get_client_future_appointments, get_client_past_appointments, \
+    delete_appointment_if_future, get_relevant_masters_short
+from app.db_api.procedures import get_relevant_procedures_short
 from app.forms import AdminClientForm, ChangePasswordForm, AddFavouriteMaster, AddFavouriteProcedure
 from app.db_api.clients import *
 from app.login import admin_only
