@@ -79,6 +79,7 @@ def add_appointment_paint(appointment_paint: AppointmentPaint):
 
     session = get_serializable_session()
     try:
+        assert_appointment_procedure_uses_paint(appointment_paint, session)
         assert_appointment_not_uses_paint(appointment_paint, session)
         session.execute('INSERT INTO Appointment_Paint (appointment_id, paint_id, volume_ml) '
                         'VALUES (:appointment_id, :paint_id, :volume_ml);',

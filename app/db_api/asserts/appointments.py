@@ -104,6 +104,19 @@ def assert_appointment_master_does_procedure(appointment: Appointment, session: 
         raise AssertionError('Даний майстер не вміє виконувати дану процедуру')
 
 
+def assert_appointment_new_procedure_uses_paints(appointment: Appointment, session: Session):
+    if not session.execute('SELECT uses_paints '
+                           'FROM Procedure '
+                           'WHERE id = :procedure_id; ',
+                           {'procedure_id': appointment.procedure_id}).scalar() \
+            and \
+            session.execute('SELECT COUNT(*) '
+                            'FROM Appointment_Paint '
+                            'WHERE appointment_id = :appointment_id; ',
+                            {'appointment_id': appointment.id}).scalar() > 0:
+        raise AssertionError('Запис використовує фарби, нова процедура не дозволяє цього')
+
+
 def assert_appointment_master_no_vacation(appointment: Appointment, session: Session):
     if session.execute('SELECT COUNT(*) '
                        'FROM Schedule_Change '

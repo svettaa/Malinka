@@ -106,6 +106,7 @@ def update_appointment(appointment: Appointment):
     try:
         assert_appointment_is_in_nearest_future(appointment)
         assert_appointment_master_does_procedure(appointment, session)
+        assert_appointment_new_procedure_uses_paints(appointment, session)
         session.execute('UPDATE Appointment '
                         'SET appoint_start = :appoint_start, '
                         '    appoint_end = :appoint_end, '
