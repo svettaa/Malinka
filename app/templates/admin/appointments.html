@@ -319,7 +319,6 @@
             const clickedValue = $(this).attr('value');
             currentAppointment = clickedValue;
             sendRequestGetAppointment(clickedValue, fillEditAppointmentForm);
-            sendRequestGetAppointmentPaints(clickedValue, buildAppointmentPaintsTable);
 
             clearMessagesBlock(modalEditMessageBlock);
             modalEditHeader.html(modalEditHeaderEditStr);
@@ -421,6 +420,10 @@
     }
 
     function fillEditAppointmentForm(result) {
+        if (result.data.uses_paints) {
+            sendRequestGetAppointmentPaints(result.data.id, buildAppointmentPaintsTable);
+        }
+
         modalEditMaster.val(result.data.master_id);
         modalEditMaster.attr('disabled', '');
         modalEditProcedure.val(result.data.procedure_id);
