@@ -57,7 +57,6 @@ function sendRequestDeleteMaster(id, callback) {
 }
 
 function sendRequestRefreshMasterPhoto(id, data, callback) {
-    console.log(data);
     $.ajax({
         type: "POST",
         url: "/api/masters/" + id + "/photo",

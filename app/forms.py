@@ -93,6 +93,7 @@ class AdminMasterForm2(BaseForm):
                                choices=[(1, 'Парний'), (0, 'Непарний')], coerce=int)
     is_hired = RadioField('Статус', validators=[InputRequired('Оберіть статус')],
                           choices=[(1, 'Працює'), (0, 'Звільнено')], coerce=int)
+    info = TextAreaField('Додаткова інформація', validators=[Optional()])
 
 
 class AdminScheduleChangeForm(BaseForm):

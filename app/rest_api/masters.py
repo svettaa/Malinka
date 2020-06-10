@@ -63,6 +63,9 @@ def api_master_post():
     master = Master()
     form.populate_obj(master)
 
+    if master.info.strip() == '':
+        master.info = None
+
     return build_message_reply(add_master(master))
 
 
@@ -109,6 +112,9 @@ def api_master_put(master_id):
 
     master = Master(id=master_id)
     form.populate_obj(master)
+
+    if master.info.strip() == '':
+        master.info = None
 
     return build_message_reply(update_master(master))
 

@@ -15,7 +15,7 @@ def get_masters():
 
 def get_master(master_id: int):
     return db.engine.execute('SELECT Master.id, surname, first_name, second_name, is_male, '
-                             '       phone, email, even_schedule, is_hired '
+                             '       phone, email, even_schedule, is_hired, info '
                              'FROM Client INNER JOIN Master ON Master.id = Client.id '
                              'WHERE Master.id = %s;',
                              master_id).fetchone()
@@ -118,10 +118,12 @@ def update_master(master: Master):
     try:
         session.execute('UPDATE Master '
                         'SET even_schedule =:even_schedule,'
-                        '    is_hired = :is_hired '
+                        '    is_hired = :is_hired, '
+                        '    info = :info '
                         'WHERE id = :id;',
                         {'even_schedule': bool(master.even_schedule),
                          'is_hired': bool(master.is_hired),
+                         'info': master.info,
                          'id': master.id})
         assert_master_is_hired(master, session)
         assert_master_even_schedule_or_working(master, session)
@@ -180,9 +182,9 @@ def update_master_procedures(master_id: int, procedures):
 
 def add_master(master: Master):
     try:
-        db.engine.execute('INSERT INTO Master (id, even_schedule, is_hired) '
-                          'VALUES (%s, %s, %s);',
-                          (master.id, bool(master.even_schedule), bool(master.is_hired)))
+        db.engine.execute('INSERT INTO Master (id, even_schedule, is_hired, info) '
+                          'VALUES (%s, %s, %s, %s);',
+                          (master.id, bool(master.even_schedule), bool(master.is_hired), master.info))
         return True, 'Успішно додано майстра'
     except IntegrityError:
         return False, 'Вже існує такий майстер'
