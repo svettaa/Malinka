@@ -16,6 +16,16 @@ def get_procedures():
                              'ORDER BY Category.id').fetchall()
 
 
+def get_relevant_procedures_short():
+    return db.engine.execute('SELECT Procedure.id, price_min, price_max, info, '
+                             '       Procedure.name AS procedure_name, '
+                             '       Category.name AS category_name '
+                             'FROM Procedure INNER JOIN Category '
+                             '     ON Procedure.category_id = Category.id '
+                             'WHERE is_relevant = True '
+                             'ORDER BY Category.id').fetchall()
+
+
 def get_procedure(procedure_id: int):
     return db.engine.execute('SELECT id, name, category_id, price_min, price_max, info, uses_paints, '
                              '       is_relevant '

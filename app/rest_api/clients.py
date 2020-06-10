@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import check_password_hash
 
 from app import app, get_masters, get_procedures, get_client_future_appointments, get_client_past_appointments, \
-    delete_appointment_if_future
+    delete_appointment_if_future, get_relevant_masters_short, get_relevant_procedures_short
 from app.forms import AdminClientForm, ChangePasswordForm, AddFavouriteMaster, AddFavouriteProcedure
 from app.db_api.clients import *
 from app.login import admin_only
@@ -59,6 +59,7 @@ def api_client_post():
 def api_client_put(client_id):
     if not current_user.is_admin() and current_user.id != client_id:
         return build_message_reply((False, 'Заборонено доступ'))
+
     form = AdminClientForm(data=request.args)
 
     if not form.validate():
@@ -82,10 +83,8 @@ def api_client_favourite_master_put(client_id):
         return build_message_reply((False, 'Заборонено доступ'))
 
     form = AddFavouriteMaster()
-    form.master_id.choices = [('', 'Не обрано')] + \
-                             [(str(master['id']),
-                               master['surname'] + ' ' + master['first_name'])
-                              for master in get_masters()]
+    form.master_id.choices = [str(master['id'])
+                              for master in get_relevant_masters_short()]
 
     if not form.validate_on_submit():
         return build_form_invalid_reply(form)
@@ -109,9 +108,8 @@ def api_client_favourite_procedure_put(client_id):
         return build_message_reply((False, 'Заборонено доступ'))
 
     form = AddFavouriteProcedure()
-    form.procedure_id.choices = [('', 'Не обрано')] + \
-                                [(str(procedure['id']), procedure['procedure_name'])
-                                 for procedure in get_procedures()]
+    form.procedure_id.choices = [str(procedure['id'])
+                                 for procedure in get_relevant_procedures_short()]
 
     if not form.validate_on_submit():
         return build_form_invalid_reply(form)

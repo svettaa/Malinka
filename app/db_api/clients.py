@@ -42,14 +42,14 @@ def get_client_favourite_masters(client_id: int):
                              'FROM (Favourite_Master INNER JOIN Master '
                              '     ON master_id = id) INNER JOIN Client '
                              '     ON Master.id = Client.id '
-                             'WHERE client_id = %s;',
+                             'WHERE client_id = %s AND is_hired = True;',
                              client_id).fetchall()
 
 
 def get_client_loves_master(client_id: int, master_id: int):
     return db.engine.execute('SELECT COUNT(*) '
-                             'FROM Favourite_Master  '
-                             'WHERE client_id = %s AND master_id = %s;',
+                             'FROM Favourite_Master INNER JOIN Master ON master_id = Master.id  '
+                             'WHERE client_id = %s AND master_id = %s AND is_hired = True;',
                              (client_id, master_id)).scalar() > 0
 
 
@@ -57,7 +57,7 @@ def get_client_favourite_procedures(client_id: int):
     return db.engine.execute('SELECT id, name '
                              'FROM Favourite_Procedure INNER JOIN Procedure '
                              '     ON procedure_id = id '
-                             'WHERE client_id = %s;',
+                             'WHERE client_id = %s AND is_relevant = True;',
                              client_id).fetchall()
 
 
