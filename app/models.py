@@ -39,6 +39,7 @@ class Master(db.Model):
     __tablename__ = 'master'
     even_schedule = db.Column(db.Boolean, nullable=False)
     is_hired = db.Column(db.Boolean, nullable=False)
+    info = db.Column(db.String(300))
 
     id = db.Column(
         db.Integer, db.ForeignKey('client.id', onupdate='RESTRICT', ondelete='RESTRICT'),
@@ -106,6 +107,7 @@ class Procedure(db.Model):
     price_min = db.Column(db.Numeric(precision=14, scale=2), nullable=False)
     price_max = db.Column(db.Numeric(precision=14, scale=2))
     info = db.Column(db.String(300))
+    uses_paints = db.Column(db.Boolean, nullable=False)
 
     category_id = db.Column(
         db.Integer, db.ForeignKey('category.id', onupdate='RESTRICT', ondelete='RESTRICT'), nullable=False)
