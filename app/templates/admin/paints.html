@@ -99,6 +99,7 @@
 {% block scripts %}
 {{ super() }}
 <script src="{{ url_for('static', filename='js/api/admin/paints.js') }}"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 <script>
 
     const addNewButton = $('.add-new');
@@ -134,6 +135,9 @@
             tr.append(createTd(this.code));
             tr.append(createTd(this.name));
             tr.append(createTd(this.left_ml));
+            if (this.left_ml < 100){
+                tr.css( "background-color", "#FF6262");
+            }
             tbody.append(tr);
         });
     }

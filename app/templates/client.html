@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+{% endblock %}
 
 {% block title %}
 {% if page_header %}
@@ -20,145 +24,567 @@
 
 
 {% block content %}
-<div class="row">
+{{ csrf_token }}
+<div id="modalAddFavouriteMaster" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Додати майстра</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messageEditAddMaster"></div>
+            </div>
+            <div class="modal-body">
+                <form id="add-master-form">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Оберіть майстра</label>
+                                <div class="col-lg-9">
+                                    <select data-live-search="true" title="Не обрано"
+                                            class="selectpicker form-control"
+                                            data-none-results-text="Немає результатів"
+                                            name="master_id" required="">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="add-master-form">Додати</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalAddFavouriteProcedure" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Додати процедуру</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messageEditAddProcedure"></div>
+            </div>
+            <div class="modal-body">
+                <form id="add-procedure-form">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Оберіть процедуру</label>
+                                <div class="col-lg-9">
+                                    <select data-live-search="true" title="Не обрано"
+                                            class="selectpicker form-control"
+                                            data-none-results-text="Немає результатів"
+                                            name="procedure_id" required="">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="add-procedure-form">Додати</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalChangePassword" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Змінити пароль</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messageChangePassword"></div>
+            </div>
+            <div class="modal-body">
+                <form id="change-password-form">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                                <div class="form-group row">
+                                    <label for="oldpassword" class="col-md-4 col-form-label">Старий пароль</label>
+                                    <div class="col-md-8">
+                                        <input type="password" class="form-control" id="oldpassword" name="oldpassword" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="newpassword" class="col-md-4 col-form-label">Новий пароль</label>
+                                    <div class="col-md-8">
+                                        <input type="password" class="form-control" id="newpassword" name="newpassword" required>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="confirmpassword" class="col-md-4 col-form-label">Підтвердіть пароль</label>
+                                    <div class="col-md-8">
+                                        <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" required>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" form="change-password-form">Зберегти</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalEdit" class="row">
     <div class="col-12 col-sm-10 mx-auto">
-        <form method="POST" action="{{ action }}">
-            {{ form.csrf_token }}
-            <div class="form-group row">
-                {{ form.surname.label(class="col-lg-2 col-form-label") }}
-                <div class="col-lg-10">
-                    {{ form.surname(class="form-control") }}
-                </div>
-            </div>
-            <div class="form-group row">
-                {{ form.first_name.label(class="col-lg-2 col-form-label") }}
-                <div class="col-lg-10">
-                    {{ form.first_name(class="form-control") }}
-                </div>
-            </div>
-            <div class="form-group row">
-                {{ form.second_name.label(class="col-lg-2 col-form-label") }}
-                <div class="col-lg-10">
-                    {{ form.second_name(class="form-control") }}
-                </div>
-            </div>
-            <div class="form-group row">
-                {{ form.is_male.label(class="col-lg-2 col-form-label") }}
-                <div class="col-lg-10">
-                    {% for option in form.is_male %}
-                    {{ option }}
-                    {{ option.label }}
-                    <br>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="form-group row">
-                {{ form.phone.label(class="col-lg-2 col-form-label") }}
-                <div class="col-lg-10">
-                    {{ form.phone(class="form-control") }}
-                </div>
-            </div>
-            <div class="form-group row">
-                {{ form.email.label(class="col-lg-2 col-form-label") }}
-                <div class="col-lg-10">
-                    {{ form.email(class="form-control") }}
-                </div>
-            </div>
-            <!--            <div class="form-group row">-->
-            <!--                <label for="clientPhoto" class="col-lg-2 col-form-label">Фото </label>-->
-            <!--                <div class="col-lg-10">-->
-            <!--                        <div class="custom-file">-->
-            <!--                            <input type="file" class="custom-file-input" id="clientPhoto">-->
-            <!--                            <label class="custom-file-label" for="clientPhoto">Choose file</label>-->
-            <!--                        </div>-->
+        <form id="edit-form">
+            <div class="row">
+                <div class="col-12 col-sm-10 mx-auto p-0 mb-3">
 
-            <!--                </div>-->
-            <!--            </div>-->
+                    <div class="form-group row">
+                        <label for="surname" class="col-md-3 col-form-label">Прізвище</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" id="surname" name="surname" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="firstname" class="col-md-3 col-form-label">Ім'я</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" id="firstname" name="firstname" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="lastname" class="col-md-3 col-form-label">По-батькові</label>
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" id="lastname" name="lastname">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-lg-3 col-form-label">Стать</label>
+                        <div class="col-lg-9">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="isman"
+                                       value="1" id="man">
+                                <label class="form-check-label" for="man">
+                                    Чоловіча
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="isman"
+                                       value="0" id="woman">
+                                <label class="form-check-label" for="woman">
+                                    Жіноча
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="phone" class="col-md-3 col-form-label">Телефон, +38</label>
+                        <div class="col-md-9">
+                            <input type="tel" id="phone" name="phone" class="form-control"
+                                   placeholder="1234567890"
+                                   pattern="[0-9]{10}" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="email" class="col-md-3 col-form-label">E-mail</label>
+                        <div class="col-md-9">
+                            <input type="tel" class="form-control" id="email" name="email"
+                                   placeholder="you@example.com">
+                        </div>
+                    </div>
 
-            <div class="form-group row mb-5">
-                <div class="col-lg-10 offset-lg-2">
-                    <button type="submit" class="btn btn-primary">Зберегти</button>
-                    <a href="{{ url_for('clients_get') }}">
-                        <button type="button" class="btn btn-secondary">Назад</button>
-                    </a>
-                    {% if client_id %}
-                    <button type="button" class="btn btn-danger" id="reset-password"
-                            value="{{ client_id }}">
-                        Скинути пароль
-                    </button>
-                    <button type="button" class="btn btn-danger" id="delete-password"
-                            value="{{ client_id }}">
-                        Видалити пароль
-                    </button>
-                    {% endif %}
-                    {% if user_view %}
-                    <a href="{{ url_for('change_user_password_get') }}">
-                        <button type="button" class="btn btn-danger">Змінити пароль</button>
-                    </a>
-                    {% endif %}
+                    <div class="form-group row pt-3">
+                        <button type="submit" form="edit-form" class="btn btn-danger col-md-3 mt-3 mx-auto confirm-changes">Зберегти зміни</button>
+                    </div>
                 </div>
             </div>
         </form>
-
-        <h2>Улюблені процедури</h2>
-        {% if not favourite_procedures %}
-        Немає улюблених процедур
-        {% else %}
-        {% for procedure in favourite_procedures %}
-        {% if user_view %}
-        <a href="{{ url_for('delete_favourite_procedure_get', procedure_id=procedure.id) }}">
-            <span class="fas fa-times"></span>
-        </a>
-        {% endif %}
-        {{ procedure.name }}
-        <br>
-        {% endfor %}
-        {% endif %}
-        {% if user_view %}
-        <div class="row">
-            <div class="col-md-10 offset-sm-1">
-                <a href="{{ url_for('new_favourite_procedure_get') }}">
-                    <button type="button" class="btn btn-primary">Додати</button>
-                </a>
-            </div>
-        </div>
-        {% endif %}
-
-        <h4>Улюблені майстри</h4>
-        {% if not favourite_masters %}
-        Немає улюблених майстрів
-        {% else %}
-        {% for master in favourite_masters %}
-        {% if user_view %}
-        <a href="{{ url_for('delete_favourite_master_get', master_id=master.id) }}">
-            <span class="fas fa-times"></span>
-        </a>
-        {% endif %}
-        {{ master.surname }} {{ master.first_name }}
-        {% if master.second_name %}{{ master.second_name }}{% endif %}
-        <br>
-        {% endfor %}
-        {% endif %}
-        {% if user_view %}
-        <div class="row">
-            <div class="col-md-10 offset-sm-1">
-                <a href="{{ url_for('new_favourite_master_get') }}">
-                    <button type="button" class="btn btn-primary">Додати</button>
-                </a>
-            </div>
-        </div>
-        {% endif %}
-
     </div>
+    <div class="col-12 col-sm-10 mx-auto">
+        <div id="favourite-masters" class="row mb-5">
+            <div class="col-12 col-sm-10 mx-auto">
+                <div class="row">
+                    <h4>Улюблені майстри</h4><br>
+                </div>
+                <div class="row">
+                    <ul id="ul-masters"></ul>
+                </div>
+                <div class="row">
+                    <div class="col-md-10 p-0">
+
+                        <button type="button" class="btn btn-sm btn-primary add-master">Додати</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="favourite-procedures" class="row">
+            <div class="col-12 col-sm-10 mx-auto">
+                <div class="row">
+                    <h4>Улюблені процедури</h4><br>
+                </div>
+                <div class="row">
+                    <ul id="ul-procedures"></ul>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-10 p-0">
+                        <button type="button" class="btn btn-sm btn-primary add-procedure">Додати</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-primary col-md-3 mx-auto change-password">Оновити пароль</button>
+        </div>
+    </div>
+</div>
 </div>
 
 
 {% endblock %}
 
+
 {% block scripts %}
 {{ super() }}
-{% if client_id %}
-<script src="{{ url_for('static', filename='utils_js.js') }}"></script>
-<script src="{{ url_for('static', filename='client_password.js') }}"></script>
-{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+<script src="{{ url_for('static', filename='js/api/admin/clients.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/masters.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/procedures.js') }}"></script>
+
+
+<script>
+
+    const clientId = {{current_user.id}};
+
+    const addNewMasterButton = $('.add-master');
+    const addNewProcedureButton = $('.add-procedure');
+    const changePasswordButton = $('.change-password');
+
+    const modalEditForm = $('#edit-form');
+    const modalAddFavouriteMasterForm = $('#add-master-form');
+    const modalAddFavouriteProcedureForm = $('#add-procedure-form');
+    const modalChangePasswordForm = $('#change-password-form');
+
+
+
+    const modalAddFavouriteMaster = $('#modalAddFavouriteMaster');
+    const modalAddFavouriteMasterId = modalAddFavouriteMaster.find('select[name="master_id"]').eq(0);
+    const modalAddFavouriteProcedure = $('#modalAddFavouriteProcedure');
+    const modalAddFavouriteProcedureId = modalAddFavouriteProcedure.find('select[name="procedure_id"]').eq(0);
+    const modalChangePassword = $('#modalChangePassword');
+    const modalEditOldPassword = modalChangePassword.find('input[name="oldpassword"]').eq(0);
+    const modalEditNewPassword = modalChangePassword.find('input[name="newpassword"]').eq(0);
+    const modalEditConfirmPassword = modalChangePassword.find('input[name="confirmpassword"]').eq(0);
+
+    const modalEdit = $('#modalEdit');
+    const modalEditSurname = modalEdit.find('input[name="surname"]').eq(0);
+    const modalEditFirstName = modalEdit.find('input[name="firstname"]').eq(0);
+    const modalEditSecondName = modalEdit.find('input[name="lastname"]').eq(0);
+    const modalEditPhone = modalEdit.find('input[name="phone"]').eq(0);
+    const modalEditEmail = modalEdit.find('input[name="email"]').eq(0);
+
+    const modalEditIsMan = modalEdit.find('input[name="isman"]').eq(0);
+    const modalEditIsManMan = modalEdit.find('#man').eq(0);
+    const modalEditIsManWoman = modalEdit.find('#woman').eq(0);
+
+
+    const favouriteMasters = $('#favourite-masters');
+    const favouriteMastersUl = $('#ul-masters');
+    const favouriteProcedures = $('#favourite-procedures');
+    const favouriteProceduresUl = $('#ul-procedures');
+
+    const modalEditMessageBlockAddMaster = $('#messageEditAddMaster');
+    const modalEditMessageBlockAddProcedure = $('#messageEditAddProcedure');
+    const modalEditMessageChangePassword = $('#messageChangePassword');
+    const csrfToken = $('input[name="csrf_token"]').eq(0);
+
+    const modalEditIsManSelector = 'input[name="isman"]:checked';
+
+
+
+    function initEditClientEvents() {
+
+        modalEditForm.off('submit');
+        modalEditForm.on('submit', function () {
+            sendRequestEditClient(clientId, getEditData(), processResponseEditClient);
+            return false;
+        });
+    }
+
+    function fillModalMastersSelect(result) {
+        modalAddFavouriteMasterId.html('');
+        $.each(result.data, function () {
+            const option = $('<option></option>');
+            option.val(this.id);
+            option.html(this.surname + ' ' + this.first_name + ', +38' + this.phone);
+            modalAddFavouriteMasterId.append(option);
+        })
+        modalAddFavouriteMasterId.selectpicker('refresh');
+    }
+
+    function fillModalProceduresByCategoriesSelect(result) {
+        modalAddFavouriteProcedureId.html('');
+        $.each(result.data, function () {
+            const optgroup = $('<optgroup></optgroup>');
+            optgroup.attr('label', this.name)
+            $.each(this.procedures, function () {
+                const option = $('<option></option>');
+                option.val(this.id);
+                option.html(this.name);
+                optgroup.append(option);
+            });
+            modalAddFavouriteProcedureId.append(optgroup);
+        })
+        modalAddFavouriteProcedureId.selectpicker('refresh');
+    }
+
+    function initAddFavouriteMasterEvent() {
+        addNewMasterButton.off();
+        addNewMasterButton.on('click', function () {
+            //modalEditFavouriteProcedures.hide();
+            clearAddFavouriteMasterForm();
+
+            modalAddFavouriteMaster.modal('show');
+
+            modalAddFavouriteMasterForm.off('submit');
+            modalAddFavouriteMasterForm.on('submit', function () {
+                sendRequestAddFavouriteMaster(clientId, getEditFavouriteMasterData(), processResponseAddFavouriteMaster);
+                return false;
+            });
+        });
+    }
+
+    function clearAddFavouriteMasterForm() {
+        modalAddFavouriteMasterId.val('');
+        modalAddFavouriteMasterId.selectpicker('refresh');
+    }
+
+    function initAddFavouriteProcedureEvent() {
+        addNewProcedureButton.off();
+        addNewProcedureButton.on('click', function () {
+            //modalEditFavouriteProcedures.hide();
+            clearAddFavouriteProcedureForm();
+
+            modalAddFavouriteProcedure.modal('show');
+
+            modalAddFavouriteProcedureForm.off('submit');
+            modalAddFavouriteProcedureForm.on('submit', function () {
+                sendRequestAddFavouriteProcedure(clientId, getEditFavouriteProcedureData(), processResponseAddFavouriteProcedure);
+                return false;
+            });
+        });
+    }
+
+    function clearAddFavouriteProcedureForm() {
+        modalAddFavouriteProcedureId.val('');
+        modalAddFavouriteProcedureId.selectpicker('refresh');
+    }
+
+
+    function initChangePasswordEvent() {
+        changePasswordButton.off();
+        changePasswordButton.on('click', function () {
+            clearChangePasswordForm();
+
+            modalChangePassword.modal('show');
+
+            modalChangePasswordForm.off('submit');
+            modalChangePasswordForm.on('submit', function () {
+                sendRequestChangePassword(clientId, getChangePasswordData(), processResponseChangePassword);
+                return false;
+            });
+        });
+    }
+
+    function clearChangePasswordForm() {
+        modalEditOldPassword.val('');
+        modalEditNewPassword.val('');
+        modalEditConfirmPassword.val('');
+    }
+
+
+    function fillEditClientForm(result) {
+        modalEditSurname.val(result.data.surname);
+        modalEditFirstName.val(result.data.first_name);
+        modalEditSecondName.val(result.data.second_name);
+        modalEditPhone.val(result.data.phone);
+        modalEditEmail.val(result.data.email);
+
+        modalEditIsMan.prop("checked", false);
+
+        if (result.data.is_male === true) {
+            modalEditIsManMan.prop('checked', true);
+        } else {
+            modalEditIsManWoman.prop('checked', true);
+        }
+
+        fillEditFavouritesForm(result);
+        initAddFavouriteMasterEvent();
+        initAddFavouriteProcedureEvent();
+        initChangePasswordEvent();
+        initEditClientEvents();
+
+
+        //modalChangePassword.show();
+        favouriteMasters.show();
+        favouriteProcedures.show();
+    }
+
+    function fillEditFavouritesForm(result) {
+        console.log(result);
+        if (result.data.favourite_masters.length === 0) {
+            favouriteMastersUl.html('Нема улюблених майстрів')
+        } else {
+            favouriteMastersUl.html('')
+            $.each(result.data.favourite_masters, function () {
+                const li = $('<li></li>');
+                li.css("list-style-type", "none");
+                const span = createIcon(this.id, "fas fa-times")
+                span.css("margin-right", "10px");
+                li.append(span);
+                li.append(this.surname + ' ' + this.first_name);
+
+                span.off();
+                span.on("click", function () {
+                    sendRequestDeleteFavouriteMaster(clientId, $(this).attr('value'), processResponseDeleteFavouriteMaster);
+                })
+                favouriteMastersUl.append(li);
+            })
+        }
+
+        if (result.data.favourite_procedures.length === 0) {
+            favouriteProceduresUl.html('Нема улюблених процедур')
+        } else {
+            favouriteProceduresUl.html('')
+            $.each(result.data.favourite_procedures, function () {
+                const li = $('<li></li>');
+                li.css("list-style-type", "none");
+                const span = createIcon(this.id, "fas fa-times")
+                span.css("margin-right", "10px");
+                li.append(span);
+                li.append(this.name);
+
+                span.off();
+                span.on("click", function () {
+                    sendRequestDeleteFavouriteProcedure(clientId, $(this).attr('value'), processResponseDeleteFavouriteProcedure);
+                });
+                favouriteProceduresUl.append(li);
+            })
+        }
+    }
+
+    function processResponseAddFavouriteMaster(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlockAddMaster, result.message);
+        } else {
+            modalAddFavouriteMaster.modal('hide');
+            showSuccess(result.message);
+            sendRequestGetClient(clientId, fillEditFavouritesForm);
+        }
+    }
+
+    function processResponseDeleteFavouriteMaster(result) {
+        if (result.status === false) {
+            showError(result.message);
+        } else {
+            showSuccess(result.message);
+            sendRequestGetClient(clientId, fillEditFavouritesForm);
+        }
+    }
+
+
+    function processResponseAddFavouriteProcedure(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlockAddProcedure, result.message);
+        } else {
+            modalAddFavouriteProcedure.modal('hide');
+            showSuccess(result.message);
+            sendRequestGetClient(clientId, fillEditFavouritesForm);
+        }
+    }
+
+    function processResponseDeleteFavouriteProcedure(result) {
+        if (result.status === false) {
+            showError(result.message);
+        } else {
+            showSuccess(result.message);
+            sendRequestGetClient(clientId, fillEditFavouritesForm);
+        }
+    }
+
+    function processResponseEditClient(result) {
+        if (result.status === false) {
+            showError(result.message);
+        } else {
+            showSuccess(result.message);
+            sendRequestGetClient(clientId, fillEditFavouritesForm);
+        }
+    }
+
+    function processResponseChangePassword(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageChangePassword, result.message);
+        } else {
+            showSuccessBlock(modalEditMessageChangePassword, result.message);
+        }
+    }
+
+
+    function getEditFavouriteMasterData() {
+        return {
+            'master_id': modalAddFavouriteMasterId.val(),
+            'csrf_token': csrfToken.val()
+        };
+    }
+
+    function getEditFavouriteProcedureData() {
+        return {
+            'procedure_id': modalAddFavouriteProcedureId.val(),
+            'csrf_token': csrfToken.val()
+        };
+    }
+
+    function getChangePasswordData(){
+        return{
+            'old_password': modalEditOldPassword.val(),
+            'new_password': modalEditNewPassword.val(),
+            'confirm_password': modalEditConfirmPassword.val(),
+            'csrf_token': csrfToken.val()
+        }
+    }
+
+    function getEditData() {
+        return {
+            'surname': modalEditSurname.val(),
+            'first_name': modalEditFirstName.val(),
+            'second_name': modalEditSecondName.val(),
+            'is_male': $(modalEditIsManSelector).val(),
+            'phone': modalEditPhone.val(),
+            'email': modalEditEmail.val(),
+            'csrf_token': csrfToken.val()
+        };
+    }
+
+    $(document).ready(function () {
+        sendRequestGetClient(clientId, fillEditClientForm);
+        sendRequestGetAllMasters(fillModalMastersSelect);
+        sendRequestGetProceduresByCategories(fillModalProceduresByCategoriesSelect);
+    });
+
+</script>
 {% endblock %}
