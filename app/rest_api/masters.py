@@ -1,7 +1,7 @@
 import os
 
 from flask import request, send_file
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flask_uploads import UploadNotAllowed
 
 from app import app, photos
@@ -19,12 +19,17 @@ def api_masters_get():
     return build_list_data_reply(get_masters())
 
 
+@app.route('/api/masters/relevant', methods=['GET'])
+def api_masters_get_relevant():
+    return build_list_data_reply(get_relevant_masters_short())
+
+
 @app.route('/api/masters/<int:master_id>', methods=['GET'])
-@login_required
-@admin_only
 def api_master_get(master_id):
-    return build_one_data_reply(get_master(master_id),
-                                {'favourite_clients_amount': (get_master_favourite_clients_amount(master_id))})
+    if current_user.is_authenticated and current_user.is_admin:
+        return build_one_data_reply(get_master(master_id),
+                                    {'favourite_clients_amount': (get_master_favourite_clients_amount(master_id))})
+    return build_one_data_reply(get_master_short(master_id))
 
 
 @app.route('/api/masters/<int:master_id>/procedures', methods=['GET'])

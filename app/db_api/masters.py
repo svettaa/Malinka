@@ -13,11 +13,24 @@ def get_masters():
                              'FROM Master INNER JOIN Client ON Master.id = Client.id;').fetchall()
 
 
+def get_relevant_masters_short():
+    return db.engine.execute('SELECT Master.id, surname, first_name, even_schedule '
+                             'FROM Master INNER JOIN Client ON Master.id = Client.id '
+                             'WHERE is_hired = True;').fetchall()
+
+
 def get_master(master_id: int):
     return db.engine.execute('SELECT Master.id, surname, first_name, second_name, is_male, '
                              '       phone, email, even_schedule, is_hired, info '
                              'FROM Client INNER JOIN Master ON Master.id = Client.id '
                              'WHERE Master.id = %s;',
+                             master_id).fetchone()
+
+
+def get_master_short(master_id: int):
+    return db.engine.execute('SELECT Master.id, surname, first_name, even_schedule, info '
+                             'FROM Client INNER JOIN Master ON Master.id = Client.id '
+                             'WHERE Master.id = %s AND is_hired = True;',
                              master_id).fetchone()
 
 

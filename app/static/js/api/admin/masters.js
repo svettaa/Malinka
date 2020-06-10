@@ -6,6 +6,14 @@ function sendRequestGetAllMasters(callback) {
     });
 }
 
+function sendRequestGetAllRelevantMasters(callback) {
+    $.ajax({
+        type: "GET",
+        url: "/api/masters/relevant",
+        success: callback
+    });
+}
+
 function sendRequestGetMasterProcedures(master_id, callback) {
     $.ajax({
         type: "GET",
