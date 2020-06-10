@@ -36,6 +36,7 @@ class AdminProcedureForm(BaseForm):
                                          NumberRange(min=0, message='Ціна не може бути від\'ємною')])
     info = TextAreaField('Додаткова інформація', validators=[Optional()])
     uses_paints = BooleanField('Використовує фарби', validators=[InputRequired('Не вказано чи використовує фарби')])
+    is_relevant = BooleanField('Актуальна', validators=[InputRequired('Не вказано чи актуальна')])
 
 
 class AdminPaintForm(BaseForm):
@@ -93,6 +94,7 @@ class AdminMasterForm2(BaseForm):
                                choices=[(1, 'Парний'), (0, 'Непарний')], coerce=int)
     is_hired = RadioField('Статус', validators=[InputRequired('Оберіть статус')],
                           choices=[(1, 'Працює'), (0, 'Звільнено')], coerce=int)
+    info = TextAreaField('Додаткова інформація', validators=[Optional()])
 
 
 class AdminScheduleChangeForm(BaseForm):

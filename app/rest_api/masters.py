@@ -1,7 +1,7 @@
 import os
 
 from flask import request, send_file
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flask_uploads import UploadNotAllowed
 
 from app import app, photos
@@ -19,12 +19,17 @@ def api_masters_get():
     return build_list_data_reply(get_masters())
 
 
+@app.route('/api/masters/relevant', methods=['GET'])
+def api_masters_get_relevant():
+    return build_list_data_reply(get_relevant_masters_short())
+
+
 @app.route('/api/masters/<int:master_id>', methods=['GET'])
-@login_required
-@admin_only
 def api_master_get(master_id):
-    return build_one_data_reply(get_master(master_id),
-                                {'favourite_clients_amount': (get_master_favourite_clients_amount(master_id))})
+    if current_user.is_authenticated and current_user.is_admin:
+        return build_one_data_reply(get_master(master_id),
+                                    {'favourite_clients_amount': (get_master_favourite_clients_amount(master_id))})
+    return build_one_data_reply(get_master_short(master_id))
 
 
 @app.route('/api/masters/<int:master_id>/procedures', methods=['GET'])
@@ -63,6 +68,9 @@ def api_master_post():
     master = Master()
     form.populate_obj(master)
 
+    if master.info.strip() == '':
+        master.info = None
+
     return build_message_reply(add_master(master))
 
 
@@ -74,6 +82,10 @@ def api_master_photo_get(master_id):
     return send_file(os.path.join('photos', 'default.png'))
 
 
+def generate_photo_name(master_id):
+    return '_' + str(master_id) + '.png'
+
+
 @app.route('/api/masters/<int:master_id>/photo', methods=['POST'])
 @login_required
 @admin_only
@@ -83,18 +95,24 @@ def api_master_photo_post(master_id):
 
     try:
         photo = request.files.get('photo')
-        name = '_' + str(master_id) + '.png'
+        api_master_photo_delete(master_id)
 
-        try:
-            os.remove(os.path.join(app.config['UPLOADED_PHOTOS_DEST'], name))
-        except FileNotFoundError:
-            pass
-
-        photos.save(photo, name=name)
+        photos.save(photo, name=generate_photo_name(master_id))
         return build_message_reply((True, 'Успішно оновлено фото майстра'))
 
     except UploadNotAllowed as e:
         return build_message_reply((False, 'Сталася помилка, некоректний формат'))
+
+
+@app.route('/api/masters/<int:master_id>/photo', methods=['DELETE'])
+@login_required
+@admin_only
+def api_master_photo_delete(master_id):
+    try:
+        os.remove(os.path.join(app.config['UPLOADED_PHOTOS_DEST'], generate_photo_name(master_id)))
+        return build_message_reply((True, 'Успішно видалено фото'))
+    except FileNotFoundError:
+        return build_message_reply((False, 'У майстра немає фото, окрім за замовченням'))
 
 
 @app.route('/api/masters/<int:master_id>', methods=['PUT'])
@@ -109,6 +127,9 @@ def api_master_put(master_id):
 
     master = Master(id=master_id)
     form.populate_obj(master)
+
+    if master.info.strip() == '':
+        master.info = None
 
     return build_message_reply(update_master(master))
 

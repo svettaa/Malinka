@@ -25,11 +25,12 @@ def index():
     for category in categories_proxy:
         procedures = db.engine.execute('SELECT id, name, info, price_min, price_max '
                                        'FROM Procedure '
-                                       'WHERE category_id = %s;',
+                                       'WHERE category_id = %s AND is_relevant = True;',
                                        category['id']).fetchall()
         new_item = {'name': category['name'],
                     'procedures': procedures}
-        categories.append(new_item)
+        if len(procedures) > 0:
+            categories.append(new_item)
 
     if current_user.is_authenticated:
         favourite_procedures = get_client_favourite_procedures(current_user.id)

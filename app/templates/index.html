@@ -10,6 +10,27 @@
 
 {% block content_wrapper %}
 
+<div id="modalMaster" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img style="width: 75%; display: block; margin: 10px auto">
+                <p id="p-info" style="text-align: center;"></p>
+                <p id="p-schedule" style="text-align: center;">Графік: <span></span> числа</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="modalConfirm" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -112,10 +133,12 @@
         </div>
     </div>
 
-    <div class="row mb-5 ">
+    <div class="row mb-5 " id="masters-wrapper">
 
         {% for master in masters %}
-        <div class="сol-12 col-sm-6 col-md-4 mb-4">
+        <div class="сol-12 col-sm-6 col-md-4 mb-4"
+             onclick="showModal({{ master.id }});"
+             style="cursor: pointer;">
             <div class="card">
                 <img class="card-img-top" src="api/masters/{{ master.id }}/photo" alt="Card image cap">
                 <div class="card-body">
@@ -126,16 +149,10 @@
                         {{ master.second_name }}
                         {% endif %}
                     </h5>
-                    <!--                <p class="card-text">Інформація про майстра</p>-->
                 </div>
-                <!--                <div class="card-footer">-->
-                <!--                    <a href="#" class="card-link text-info">Профіль</a><br>-->
-                <!--                    <a href="#" class="card-link text-info">Записатися до майстра</a>-->
-                <!--                </div>-->
             </div>
         </div>
         {% endfor %}
-
     </div>
 </div>
 
@@ -246,4 +263,31 @@
 <script src="{{ url_for('static', filename='input_date_utils.js') }}"></script>
 <script src="{{ url_for('static', filename='tabs_build_utils.js') }}"></script>
 <script src="{{ url_for('static', filename='index_appointment.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/masters.js') }}"></script>
+<script>
+
+    const masterWrapper = $('#masters-wrapper');
+    const modalMaster = $('#modalMaster');
+    const modalMasterImg = modalMaster.find('img').eq(0);
+    const modalMasterInfo = $('#p-info');
+    const modalMasterH4 = modalMaster.find('h4').eq(0);
+    const modalMasterScheduleSpan = $('#p-schedule').find('span').eq(0);
+
+    function processShowModal(result) {
+        modalMaster.modal('show');
+        modalMasterImg.attr('src', 'api/masters/' + result.data.id + '/photo');
+        modalMasterInfo.html(result.data.info);
+        modalMasterH4.html(result.data.surname + ' ' + result.data.first_name);
+        if(result.data.even_schedule){
+            modalMasterScheduleSpan.html('парні');
+        } else {
+            modalMasterScheduleSpan.html('непарні');
+        }
+    }
+
+    function showModal(id){
+        sendRequestGetMaster(id, processShowModal);
+    }
+
+</script>
 {% endblock %}

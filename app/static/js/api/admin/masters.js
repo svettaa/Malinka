@@ -6,6 +6,14 @@ function sendRequestGetAllMasters(callback) {
     });
 }
 
+function sendRequestGetAllRelevantMasters(callback) {
+    $.ajax({
+        type: "GET",
+        url: "/api/masters/relevant",
+        success: callback
+    });
+}
+
 function sendRequestGetMasterProcedures(master_id, callback) {
     $.ajax({
         type: "GET",
@@ -57,7 +65,6 @@ function sendRequestDeleteMaster(id, callback) {
 }
 
 function sendRequestRefreshMasterPhoto(id, data, callback) {
-    console.log(data);
     $.ajax({
         type: "POST",
         url: "/api/masters/" + id + "/photo",
@@ -65,6 +72,14 @@ function sendRequestRefreshMasterPhoto(id, data, callback) {
         cache: false,
         processData: false,
         data: data,
+        success: callback
+    });
+}
+
+function sendRequestDeleteMasterPhoto(id, callback) {
+    $.ajax({
+        type: "DELETE",
+        url: "/api/masters/" + id + "/photo",
         success: callback
     });
 }
