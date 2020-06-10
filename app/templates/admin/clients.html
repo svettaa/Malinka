@@ -16,7 +16,6 @@
 {% endblock %}
 
 
-
 {% block content %}
 {{ csrf_token }}
 
@@ -98,8 +97,8 @@
                                 <label for="phone" class="col-md-3 col-form-label">Телефон, +38</label>
                                 <div class="col-md-9">
                                     <input type="tel" id="phone" name="phone" class="form-control"
-                                           placeholder="050 000 0000"
-                                           pattern="[0-9]{10}"  required>
+                                           placeholder="1234567890"
+                                           pattern="[0-9]{10}" required>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -112,6 +111,34 @@
                         </div>
                     </div>
                 </form>
+                <div id="favourite-masters">
+                    <div class="row">
+                        <h4>Улюблені майстри</h4><br>
+                    </div>
+                    <div class="row">
+                        <ul id="ul-masters"></ul>
+                    </div>
+                </div>
+                <div id="favourite-procedures">
+                    <div class="row">
+                        <h4>Улюблені процедури</h4><br>
+                    </div>
+                    <div class="row">
+                        <ul id="ul-procedures"></ul>
+                    </div>
+                </div>
+                <div id="passwords">
+                    <div class="row">
+                        <button type="button" class="btn btn-danger" id="reset-password">
+                            Скинути пароль
+                        </button>
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn-danger" id="delete-password">
+                            Видалити пароль
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary submit" form="edit-form">Зберегти</button>
@@ -151,7 +178,7 @@
     const modalEdit = $('#modalEdit');
     const modalEditSurname = modalEdit.find('input[name="surname"]').eq(0);
     const modalEditFirstName = modalEdit.find('input[name="firstname"]').eq(0);
-    const modalEditSecondName = modalEdit.find('input[name="secondname"]').eq(0);
+    const modalEditSecondName = modalEdit.find('input[name="lastname"]').eq(0);
     const modalEditPhone = modalEdit.find('input[name="phone"]').eq(0);
     const modalEditEmail = modalEdit.find('input[name="email"]').eq(0);
 
@@ -163,7 +190,14 @@
     const modalEditHeaderEditStr = 'Змінити користувача';
     const modalEditHeaderNewStr = 'Додати користувача';
     const modalEditMessageBlock = $('#messageEdit');
-    const modalSelect = $('select');
+
+    const modalEditPasswords = $('#passwords');
+    const modalEditResetPassword = $('#reset-password');
+    const modalEditDeletePassword = $('#delete-password');
+    const modalEditFavouriteMasters = $('#favourite-masters');
+    const modalEditFavouriteMastersUl = $('#ul-masters');
+    const modalEditFavouriteProcedures = $('#favourite-procedures');
+    const modalEditFavouriteProceduresUl = $('#ul-procedures');
 
     const tableWrapper = $('#table-wrapper');
 
@@ -185,8 +219,8 @@
             tr.append(createTd(this.first_name));
             tr.append(createTd(this.second_name));
             tr.append(createTd(this.is_male ? 'Чол' : 'Жін'));
-            tr.append(createTd(this.phone));
-            tr.append(createTd(this.email));////
+            tr.append(createTd('+38' + this.phone));
+            tr.append(createTd(this.email));
             tbody.append(tr);
         });
     }
@@ -208,6 +242,9 @@
     function initEditClientEvents() {
         $(tableEditSpanSelector).off();
         $(tableEditSpanSelector).on('click', function () {
+            modalEditFavouriteMasters.hide();
+            modalEditFavouriteProcedures.hide();
+            modalEditPasswords.hide();
 
             const clickedValue = $(this).attr('value');
             sendRequestGetClient(clickedValue, fillEditClientForm);
@@ -221,12 +258,33 @@
                 sendRequestEditClient(clickedValue, getEditData(), processResponseAddOrEditClient);
                 return false;
             });
+
+            modalEditDeletePassword.off();
+            modalEditDeletePassword.on('click', function () {
+                sendRequestDeleteClientPassword(clickedValue, processPasswordResponse);
+            });
+
+            modalEditResetPassword.off();
+            modalEditResetPassword.on('click', function () {
+                sendRequestResetClientPassword(clickedValue, processPasswordResponse);
+            });
         });
+    }
+
+    function processPasswordResponse(result) {
+        if (result.status === false) {
+            showErrorBlock(modalEditMessageBlock, result.message);
+        } else {
+            showSuccessBlock(modalEditMessageBlock, result.message);
+        }
     }
 
     function initAddClientEvent() {
         addNewButton.off();
         addNewButton.on('click', function () {
+            modalEditFavouriteMasters.hide();
+            modalEditFavouriteProcedures.hide();
+            modalEditPasswords.hide();
             clearAddClientForm();
 
             clearMessagesBlock(modalEditMessageBlock);
@@ -254,8 +312,7 @@
 
     }
 
-    function processResponseGetAllClient(result) {
-        console.log(result);
+    function buildClientsTable(result) {
         const table = createHeaderTable(
             ['Прізвище', 'Ім`я', 'По-батькові', 'Стать', 'Номер телефону', 'E-mail']);
         tableWrapper.html(table);
@@ -281,6 +338,32 @@
         } else {
             modalEditIsManWoman.prop('checked', true);
         }
+
+        if (result.data.favourite_masters.length === 0) {
+            modalEditFavouriteMastersUl.html('Нема улюблених майстрів')
+        } else {
+            modalEditFavouriteMastersUl.html('')
+            $.each(result.data.favourite_masters, function () {
+                const li = $('<li></li>');
+                li.append(this.surname + ' ' + this.first_name);
+                modalEditFavouriteMastersUl.append(li);
+            })
+        }
+
+        if (result.data.favourite_procedures.length === 0) {
+            modalEditFavouriteProceduresUl.html('Нема улюблених процедур')
+        } else {
+            modalEditFavouriteProceduresUl.html('')
+            $.each(result.data.favourite_procedures, function () {
+                const li = $('<li></li>');
+                li.append(this.name);
+                modalEditFavouriteProceduresUl.append(li);
+            })
+        }
+
+        modalEditPasswords.show();
+        modalEditFavouriteMasters.show();
+        modalEditFavouriteProcedures.show();
     }
 
     function processResponseAddOrEditClient(result) {
@@ -289,7 +372,7 @@
         } else {
             modalEdit.modal('hide');
             showSuccess(result.message);
-            sendRequestGetAllClient(processResponseGetAllClient);
+            sendRequestGetClients(buildClientsTable);
         }
     }
 
@@ -299,7 +382,7 @@
             showError(result.message);
         } else {
             showSuccess(result.message);
-            sendRequestGetAllClient(processResponseGetAllClient);
+            sendRequestGetClients(buildClientsTable);
         }
     }
 
@@ -317,7 +400,7 @@
     }
 
     $(document).ready(function () {
-        sendRequestGetAllClient(processResponseGetAllClient);
+        sendRequestGetClients(buildClientsTable);
     });
 
 </script>

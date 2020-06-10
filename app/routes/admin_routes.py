@@ -54,8 +54,23 @@ def appointments_get():
 def supplies_get():
     return render_template('admin/supplies.html', csrf_token=AdminSupplyForm().csrf_token)
 
+
 @app.route('/masters', methods=['GET'])
 @login_required
 @admin_only
 def masters_get():
     return render_template('admin/masters.html', csrf_token=AdminMasterForm().csrf_token)
+
+
+@app.route('/schedules', methods=['GET'])
+@login_required
+@admin_only
+def schedules_get():
+    return render_template('admin/schedules.html', csrf_token=AdminScheduleChangeForm().csrf_token)
+
+
+@app.route('/clients', methods=['GET'])
+@login_required
+@admin_only
+def clients_get():
+    return render_template('admin/clients.html', csrf_token=AdminClientForm().csrf_token)

@@ -2,9 +2,9 @@ from flask import render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 
 from app import app
-from app.api.api_client import *
-from app.api.api_master import get_masters
-from app.api.api_procedure import get_procedures
+from app.db_api.clients import *
+from app.db_api.masters import get_masters
+from app.db_api.procedures import get_procedures
 from app.forms import AddFavouriteMaster, AddFavouriteProcedure
 
 

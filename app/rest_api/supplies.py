@@ -3,8 +3,8 @@ from flask_login import login_required
 
 from app import app
 from app.forms import AdminSupplyForm
-from app.api.api_supply import *
-from app.api.api_paint import *
+from app.db_api.supplies import *
+from app.db_api.paints import *
 from app.login import admin_only
 from app.rest_api.utils import *
 

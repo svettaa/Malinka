@@ -58,14 +58,6 @@
                         <div class="col-12 col-sm-10 mx-auto">
                             <div class="form-group row">
                                 <div id="procedures-table-wrapper">
-                                    <!--                                <label class="col-lg-3 col-form-label">Користувач</label>-->
-                                    <!--                                <div class="col-lg-9">-->
-                                    <!--                                    <select data-live-search="true" title="Не обрано"-->
-                                    <!--                                            class="selectpicker form-control"-->
-                                    <!--                                            data-none-results-text="Немає результатів"-->
-                                    <!--                                            name="client_id" required="">-->
-                                    <!--                                    </select>-->
-                                    <!--                                </div>-->
                                 </div>
                             </div>
                         </div>
@@ -159,6 +151,40 @@
     </div>
 </div>
 
+<div id="modalPhoto" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="row">
+                <div class="col-10 mx-auto" id="messagePhoto"></div>
+            </div>
+            <div class="modal-body">
+                <form id="photo-form">
+                    <div class="row">
+                        <div class="col-12 col-sm-10 mx-auto">
+                            <div class="form-group row">
+                                <label class="col-lg-3 col-form-label">Фото</label>
+                                <div class="col-lg-9">
+                                    <input type="file" name="photo" accept="image/*" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" form="photo-form" class="btn btn-primary submit">Зберегти</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Table - list of masters -->
 
@@ -219,7 +245,9 @@
         const tbody = table.find('tbody').eq(0);
         $.each(data, function () {
             const tr = $('<tr></tr>');
-            tr.append(createIconsTd(this.id, [tableEditSpanClassName, tableEditProcSpanClassName, tableDeleteSpanClassName]));
+            tr.append(createIconsTd(this.id,
+                [tableEditSpanClassName, tableEditProcSpanClassName,
+                    tableEditPhotoSpanClassName, tableDeleteSpanClassName]));
             tr.append(createTd(this.surname));
             tr.append(createTd(this.first_name));
             tr.append(createTd(this.second_name));
@@ -242,6 +270,7 @@
         initEditMasterEvents();
         initAddMasterEvent();
         initMasterProceduresEvent();
+        initMasterPhotosEvent();
     }
 
     function initDeleteMasterEvents() {
@@ -476,6 +505,56 @@
             }
         })
         return procedures;
+    }
+</script>
+<script>
+
+    const modalPhoto = $('#modalPhoto');
+    const modalPhotoMessage = $('#messagePhoto');
+    const modalPhotoForm = $('#photo-form');
+    const modalPhotoHeader = modalPhoto.find('h4').eq(0);
+
+    const tableEditPhotoSpanClassName = 'fas fa-user table-edit-photo-span';
+    const tableEditPhotoSpanSelector = '.table-edit-photo-span';
+
+    const masterPhotoInputSelector = 'input[name="photo"]';
+
+
+    function initMasterPhotosEvent() {
+        $(tableEditPhotoSpanSelector).off();
+        $(tableEditPhotoSpanSelector).on('click', function () {
+            const clickedValue = $(this).attr('value');
+
+            clearMessagesBlock(modalPhotoMessage);
+            modalPhotoHeader.html(getClickedMasterName(this));
+            modalPhoto.modal('show');
+            $(masterPhotoInputSelector).val('');
+
+            modalPhotoForm.off('submit');
+            modalPhotoForm.on('submit', function () {
+                sendRequestRefreshMasterPhoto(
+                    clickedValue, getPhotoData(), processResponseRefreshMasterPhoto
+                );
+                return false;
+            });
+        });
+    }
+
+
+    function processResponseRefreshMasterPhoto(result) {
+        if (result.status === false) {
+            showErrorBlock(modalPhotoMessage, result.message);
+        } else {
+            modalPhoto.modal('hide');
+            showSuccess(result.message);
+        }
+    }
+
+
+    function getPhotoData() {
+        const formData = new FormData();
+        formData.append('photo', modalPhoto.find(masterPhotoInputSelector)[0].files[0]);
+        return formData;
     }
 </script>
 <script>

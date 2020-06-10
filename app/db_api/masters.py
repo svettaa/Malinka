@@ -3,8 +3,8 @@ from datetime import datetime
 from sqlalchemy.exc import IntegrityError, OperationalError
 
 from app import db
-from app.api.utils import *
-from app.api.asserts.asserts_master import *
+from app.db_api.utils import *
+from app.db_api.asserts.masters import *
 
 
 def get_masters():

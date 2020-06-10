@@ -1,10 +1,13 @@
-from flask import request
-from flask_login import login_required
+import os
 
-from app import app
+from flask import request, send_file
+from flask_login import login_required
+from flask_uploads import UploadNotAllowed
+
+from app import app, photos
 from app.forms import AdminMasterForm2
-from app.api.api_client import *
-from app.api.api_master import *
+from app.db_api.clients import *
+from app.db_api.masters import *
 from app.login import admin_only
 from app.rest_api.utils import *
 
@@ -61,6 +64,37 @@ def api_master_post():
     form.populate_obj(master)
 
     return build_message_reply(add_master(master))
+
+
+@app.route('/api/masters/<int:master_id>/photo', methods=['GET'])
+def api_master_photo_get(master_id):
+    filename = '_' + str(master_id) + '.png'
+    if os.path.exists(os.path.join('.', 'app', 'photos', filename)):
+        return send_file(os.path.join('photos', filename))
+    return send_file(os.path.join('photos', 'default.png'))
+
+
+@app.route('/api/masters/<int:master_id>/photo', methods=['POST'])
+@login_required
+@admin_only
+def api_master_photo_post(master_id):
+    if 'photo' not in request.files:
+        return build_message_reply((False, 'Не вказано фото'))
+
+    try:
+        photo = request.files.get('photo')
+        name = '_' + str(master_id) + '.png'
+
+        try:
+            os.remove(os.path.join(app.config['UPLOADED_PHOTOS_DEST'], name))
+        except FileNotFoundError:
+            pass
+
+        photos.save(photo, name=name)
+        return build_message_reply((True, 'Успішно оновлено фото майстра'))
+
+    except UploadNotAllowed as e:
+        return build_message_reply((False, 'Сталася помилка, некоректний формат'))
 
 
 @app.route('/api/masters/<int:master_id>', methods=['PUT'])

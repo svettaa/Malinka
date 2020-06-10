@@ -3,7 +3,7 @@ from flask_login import current_user
 from datetime import datetime
 
 from app import app, db
-from app.api.api_client import get_client_favourite_procedures
+from app.db_api.clients import get_client_favourite_procedures
 
 
 @app.context_processor
@@ -14,7 +14,7 @@ def pass_default_parameters():
 
 @app.route('/')
 def index():
-    masters = db.engine.execute('SELECT surname, first_name, second_name '
+    masters = db.engine.execute('SELECT Master.id, surname, first_name, second_name '
                                 'FROM Master INNER JOIN Client ON Master.id = Client.id '
                                 'WHERE is_hired = True;').fetchall()
 
