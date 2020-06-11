@@ -280,6 +280,11 @@
     const tableEditSpanSelector = '.table-edit-span';
     const tableDeleteSpanSelector = '.table-delete-span';
 
+    const fullMastersSelect = [];
+    const relevantMastersSelect = [];
+    const fullProceduresSelect = [];
+    const relevantProceduresSelect = [];
+
     function fillTableWithRows(table, data) {
         const tbody = table.find('tbody').eq(0);
         $.each(data, function () {
@@ -351,6 +356,8 @@
     }
 
     function clearAddAppointmentForm() {
+        fillSelectWithList(modalEditMaster, relevantMastersSelect);
+        fillSelectWithList(modalEditProcedure, relevantProceduresSelect);
         modalEditMaster.val('');
         modalEditMaster.removeAttr('disabled');
         modalEditProcedure.val('');
@@ -387,9 +394,11 @@
             const option = $('<option></option>');
             option.val(this.id);
             option.html(this.surname + ' ' + this.first_name);
-            modalEditMaster.append(option);
+            if (this.is_hired === true) {
+                relevantMastersSelect.push(option);
+            }
+            fullMastersSelect.push(option);
         })
-        modalEditMaster.selectpicker('refresh');
     }
 
     function fillModalClientsSelect(result) {
@@ -406,23 +415,37 @@
     function fillModalProceduresByCategoriesSelect(result) {
         modalEditProcedure.html('');
         $.each(result.data, function () {
-            const optgroup = $('<optgroup></optgroup>');
-            optgroup.attr('label', this.name)
+            const optgroupFull = $('<optgroup></optgroup>');
+            const optgroupRelevant = $('<optgroup></optgroup>');
+            optgroupFull.attr('label', this.name)
+            optgroupRelevant.attr('label', this.name)
+
+            var added = false;
             $.each(this.procedures, function () {
                 const option = $('<option></option>');
                 option.val(this.id);
                 option.html(this.name);
-                optgroup.append(option);
+
+                if (this.is_relevant === true) {
+                    optgroupRelevant.append(option);
+                    added = true;
+                }
+                optgroupFull.append(option.clone());
             });
-            modalEditProcedure.append(optgroup);
+            fullProceduresSelect.push(optgroupFull);
+            if (added) {
+                relevantProceduresSelect.push(optgroupRelevant);
+            }
         })
-        modalEditProcedure.selectpicker('refresh');
     }
 
     function fillEditAppointmentForm(result) {
         if (result.data.uses_paints) {
             sendRequestGetAppointmentPaints(result.data.id, buildAppointmentPaintsTable);
         }
+
+        fillSelectWithList(modalEditMaster, fullMastersSelect);
+        fillSelectWithList(modalEditProcedure, fullProceduresSelect);
 
         modalEditMaster.val(result.data.master_id);
         modalEditMaster.attr('disabled', '');
@@ -626,11 +649,11 @@
         const procedureId = modalEditProcedure.val();
         const startTime = modalEditStart.val();
 
-        if(masterId === '' || procedureId === '') {
+        if (masterId === '' || procedureId === '') {
             return;
         }
 
-        if(!duration.hasOwnProperty(masterId) || !duration[masterId].hasOwnProperty(procedureId)){
+        if (!duration.hasOwnProperty(masterId) || !duration[masterId].hasOwnProperty(procedureId)) {
             showErrorBlock(modalEditMessageBlock, 'Даний майстер не виконує дану процедуру');
             return;
         }
@@ -639,19 +662,19 @@
         var h = Number(startTime.substring(0, dots));
         var m = Number(startTime.substring(dots + 1));
 
-        if (dots === -1 || isNaN(m) || isNaN(h) || !(h >= 0 && h <= 23) || !(m >= 0 && m <=59)) {
+        if (dots === -1 || isNaN(m) || isNaN(h) || !(h >= 0 && h <= 23) || !(m >= 0 && m <= 59)) {
             showErrorBlock(modalEditMessageBlock, 'Некоректний формат часу');
             return;
         }
 
         m += duration[masterId][procedureId];
 
-        while(m >= 60){
+        while (m >= 60) {
             m -= 60;
             h++;
         }
 
-        if(h >= 24) {
+        if (h >= 24) {
             h %= 24;
         }
 
