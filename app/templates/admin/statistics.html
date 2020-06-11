@@ -13,14 +13,13 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-12 col-sm-10 mx-auto">
+    <div class="col-12 col-md-7 mx-auto">
         <span class="fas fa-print" style="cursor:pointer;" id="print-icon"></span>
         <div id="print">
-            <div class="form-group row col-md-8 mx-auto" id="all-base"></div>
+            <div class="row mx-auto" id="all-base"></div>
             <br>
-            <div class="form-group row">
-                <div class="col-md-2"></div>
-                <div class="col-md-4">
+            <div class="row mx-auto">
+                <div class="col-md-6 pr-0 pr-md-2 pl-0">
                     <div class="form-group">
                         <div class="input-group date" id="statistics_start_datetimepicker" data-target-input="nearest">
                             <input class="form-control datetimepicker-input" id="statistics-start-input">
@@ -31,7 +30,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6 pl-0 pl-md-2 pr-0">
                     <div class="form-group">
                         <div class="input-group date" id="statistics_end_datetimepicker" data-target-input="nearest">
                             <input class="form-control datetimepicker-input" id="statistics-end-input">
@@ -44,10 +43,10 @@
                 </div>
             </div>
 
-            <div class="form-group row col-md-8 mx-auto" id="all-appointments"></div>
-            <div class="form-group row col-md-8 mx-auto" id="all-money"></div>
-            <div class="form-group row col-md-8 mx-auto" id="all-paints"></div>
-            <div class="form-group row col-md-8 mx-auto" id="all-supplies"></div>
+            <div class="row mx-auto" id="all-appointments"></div>
+            <div class="row mx-auto" id="all-money"></div>
+            <div class="row mx-auto" id="all-paints"></div>
+            <div class="row mx-auto" id="all-supplies"></div>
         </div>
     </div>
 </div>
@@ -80,17 +79,15 @@
         const table = $('<table></table>');
         table.addClass('table');
         table.addClass('table-bordered');
-        table.addClass('table-responsive-lg');
-        table.css('width', '100%');
         table.css('margin-top', '20px');
 
         const headerTr = $('<tr></tr>');
-        const headerTd = $('<td></td>');
-        headerTd.attr('colspan', '2');
-        headerTd.html('<h3>' + title + '</h3>');
-        headerTd.css('text-align', 'center');
+        const headerTh = $('<th></th>');
+        headerTh.attr('colspan', '2');
+        headerTh.html('<h3>' + title + '</h3>');
+        headerTh.css('text-align', 'center');
 
-        headerTr.append(headerTd);
+        headerTr.append(headerTh);
         table.append(headerTr);
 
         if (overall !== null) {
