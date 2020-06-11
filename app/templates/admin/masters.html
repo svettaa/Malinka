@@ -276,8 +276,10 @@
     }
 
     function buildMastersTable(result) {
-        const table = createHeaderTable(['Прізвище', 'Ім`я', 'По-батькові', 'Стать', 'Номер телефону',
-            'Графік', 'Працює']);
+        const table = createHeaderTableParamIconWidth('100px',
+            ['Прізвище', 'Ім`я', 'По-батькові', 'Стать', 'Номер телефону',
+            'Графік', 'Працює']
+        );
         tableWrapper.html(table);
         fillTableWithRows(table, result.data);
         initDataTable(table);

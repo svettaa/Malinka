@@ -43,7 +43,6 @@ function createIconsTd(id, iconClassNames) {
     const div = $('<div></div>');
     td.append(div);
 
-    div.css('width', '60px');
     div.addClass('d-flex');
     div.addClass('justify-content-between');
 
@@ -98,8 +97,9 @@ function createDateTimeTd(text) {
     return td;
 }
 
-function createIconTh() {
-    const th = $('<th style="width:60px;"></th>');
+function createIconTh(iconWidth) {
+    const th = $('<th></th>');
+    th.css('width', iconWidth);
     th.attr('scope', 'col');
     return th;
 }
@@ -112,6 +112,10 @@ function createTh(text) {
 }
 
 function createHeaderTable(headers) {
+    return createHeaderTableParamIconWidth('30px', headers)
+}
+
+function createHeaderTableParamIconWidth(iconWidth, headers) {
     const table = $('<table></table>');
     table.addClass('table');
     table.addClass('table-bordered');
@@ -125,7 +129,7 @@ function createHeaderTable(headers) {
     const tr = $('<tr></tr>');
     thead.append(tr);
 
-    tr.append(createIconTh());
+    tr.append(createIconTh(iconWidth));
     for (var i = 0; i < headers.length; i++) {
         tr.append(createTh(headers[i]));
     }
@@ -168,12 +172,12 @@ function getNearestTime() {
     var h = today.getHours();
     var m = today.getMinutes();
 
-    if(m !== 0){
+    if (m !== 0) {
         m = 0;
         h++;
     }
 
-    if(h >= 24){
+    if (h >= 24) {
         h %= 24;
     }
 
@@ -182,7 +186,7 @@ function getNearestTime() {
 
 function fillSelectWithList(select, list) {
     select.html('');
-    for(var i = 0; i < list.length; i++){
+    for (var i = 0; i < list.length; i++) {
         select.append(list[i]);
     }
     select.selectpicker('refresh');
