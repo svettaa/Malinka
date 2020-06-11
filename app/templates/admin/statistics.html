@@ -11,6 +11,30 @@
 {% endblock %}
 
 
+{% block styles %}
+{{ super() }}
+<style>
+    @media print {
+        * {
+            overflow: visible !important;
+        }
+
+        #print-icon{
+            display: none !important;
+        }
+
+        footer{
+            display: none !important;
+        }
+
+        table {
+            page-break-before: always !important;
+        }
+    }
+</style>
+{% endblock %}
+
+
 {% block content %}
 <div class="row">
     <div class="col-12 col-md-7 mx-auto">
