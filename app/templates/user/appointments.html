@@ -193,9 +193,13 @@
         if (result.status === false) {
             showError(result.message);
         } else {
-            location.reload();
+            location.replace("/profile/appointments?success=Успішно+видалено+запис");
         }
     }
+
+    $(document).ready(function () {
+        window.history.pushState("", "", '/profile/appointments');
+    })
 
 
 </script>
