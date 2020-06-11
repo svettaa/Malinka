@@ -441,7 +441,6 @@
         initEditClientEvents();
 
 
-        //modalChangePassword.show();
         favouriteMasters.show();
         favouriteProcedures.show();
     }
@@ -465,7 +464,7 @@
                     sendRequestDeleteFavouriteMaster(
                         clientId, $(this).attr('value'), processResponseDeleteFavouriteMasterOrProcedure
                     );
-                })
+                });
                 favouriteMastersUl.append(li);
             })
         }

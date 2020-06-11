@@ -13,6 +13,27 @@
 
 {% block content %}
 
+<div id="modalDelete" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Видалення запису</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Ви впевнені, що хочете видалити запис?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger submit">Видалити</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <ul class="nav nav-tabs mb-5" id="myTab" role="tablist">
     <li class="nav-item">
@@ -50,11 +71,12 @@
                         </h5>
                     </div>
                     <div class="col-2 col-sm-3">
-                        <a class="float-right"
-                           href="{{ url_for('delete_user_appointment_get',
-                                             appointment_id=appointment.appointment_id) }}">
-                            <span class="fa fa-trash"></span>
+                        <a class="float-right">
+                            <span class="fa fa-trash delete-card"
+                                  style="cursor: pointer"
+                                  onclick="initDeleteCard({{appointment.appointment_id}})"></span>
                         </a>
+
                     </div>
                 </div>
             </div>
@@ -137,5 +159,37 @@
     </div>
 </div>
 
+{% endblock %}
 
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/api/admin/appointments.js') }}"></script>
+
+<script>
+
+    const modalDelete = $('#modalDelete');
+    const modalDeleteSubmit = modalDelete.find('.submit').eq(0);
+
+
+    function initDeleteCard(card_id) {
+        modalDelete.modal('show');
+
+        modalDeleteSubmit.off();
+        modalDeleteSubmit.on('click', function () {
+            sendRequestDeleteAppointment(card_id, processRequestDeleteAppointCard);
+        });
+    }
+
+    function processRequestDeleteAppointCard(result) {
+        modalDelete.modal('hide');
+        if (result.status === false) {
+            showError(result.message);
+        } else {
+            location.reload();
+        }
+    }
+
+
+</script>
 {% endblock %}
