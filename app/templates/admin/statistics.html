@@ -14,38 +14,41 @@
 {% block content %}
 <div class="row">
     <div class="col-12 col-sm-10 mx-auto">
-        <div class="form-group row col-md-8 mx-auto" id="all-base"></div>
-        <br>
-        <div class="form-group row">
-            <div class="col-md-2"></div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <div class="input-group date" id="statistics_start_datetimepicker" data-target-input="nearest">
-                        <input class="form-control datetimepicker-input" id="statistics-start-input">
-                        <div class="input-group-append" data-target="#statistics_start_datetimepicker"
-                             data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+        <span class="fas fa-print" style="cursor:pointer;" id="print-icon"></span>
+        <div id="print">
+            <div class="form-group row col-md-8 mx-auto" id="all-base"></div>
+            <br>
+            <div class="form-group row">
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="input-group date" id="statistics_start_datetimepicker" data-target-input="nearest">
+                            <input class="form-control datetimepicker-input" id="statistics-start-input">
+                            <div class="input-group-append" data-target="#statistics_start_datetimepicker"
+                                 data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="input-group date" id="statistics_end_datetimepicker" data-target-input="nearest">
+                            <input class="form-control datetimepicker-input" id="statistics-end-input">
+                            <div class="input-group-append" data-target="#statistics_end_datetimepicker"
+                                 data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <div class="input-group date" id="statistics_end_datetimepicker" data-target-input="nearest">
-                        <input class="form-control datetimepicker-input" id="statistics-end-input">
-                        <div class="input-group-append" data-target="#statistics_end_datetimepicker"
-                             data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="form-group row col-md-8 mx-auto" id="all-appointments"></div>
-        <div class="form-group row col-md-8 mx-auto" id="all-money"></div>
-        <div class="form-group row col-md-8 mx-auto" id="all-paints"></div>
-        <div class="form-group row col-md-8 mx-auto" id="all-supplies"></div>
+            <div class="form-group row col-md-8 mx-auto" id="all-appointments"></div>
+            <div class="form-group row col-md-8 mx-auto" id="all-money"></div>
+            <div class="form-group row col-md-8 mx-auto" id="all-paints"></div>
+            <div class="form-group row col-md-8 mx-auto" id="all-supplies"></div>
+        </div>
     </div>
 </div>
 
@@ -55,6 +58,16 @@
 {{ super() }}
 <script src="{{ url_for('static', filename='input_date_utils.js') }}"></script>
 <script src="{{ url_for('static', filename='js/api/admin/statistics.js') }}"></script>
+<script>
+
+    const printBlock = $('#print');
+    const printIcon = $('#print-icon');
+
+    function doPrint() {
+        window.print();
+    }
+
+</script>
 <script>
 
     const baseBlock = $('#all-base');
@@ -207,6 +220,10 @@
         getIntervalData();
         $('#statistics-start-input').focusout(getIntervalData);
         $('#statistics-end-input').focusout(getIntervalData);
+
+        printIcon.on('click', function () {
+            doPrint();
+        })
 
     });
 
