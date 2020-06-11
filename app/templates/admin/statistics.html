@@ -14,67 +14,40 @@
 {% block content %}
 <div class="row">
     <div class="col-12 col-sm-10 mx-auto">
-        <div class="form-group row">
-            <div class="col-md-3 base-stat-label">Кількість користувачів</div>
-            <div class="col-md-9 base-stat-number" id="users-amount"></div>
-            <div class="col-md-3 base-stat-label">Кількість майстрів</div>
-            <div class="col-md-9 base-stat-number" id="masters-amount"></div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">Показати дані з</div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <div class="input-group date" id="statistics_start_datetimepicker" data-target-input="nearest">
-                        <input class="form-control datetimepicker-input" id="statistics-start-input">
-                        <div class="input-group-append" data-target="#statistics_start_datetimepicker"
-                             data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+        <span class="fas fa-print" style="cursor:pointer;" id="print-icon"></span>
+        <div id="print">
+            <div class="form-group row col-md-8 mx-auto" id="all-base"></div>
+            <br>
+            <div class="form-group row">
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="input-group date" id="statistics_start_datetimepicker" data-target-input="nearest">
+                            <input class="form-control datetimepicker-input" id="statistics-start-input">
+                            <div class="input-group-append" data-target="#statistics_start_datetimepicker"
+                                 data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="input-group date" id="statistics_end_datetimepicker" data-target-input="nearest">
+                            <input class="form-control datetimepicker-input" id="statistics-end-input">
+                            <div class="input-group-append" data-target="#statistics_end_datetimepicker"
+                                 data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-1">по</div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <div class="input-group date" id="statistics_end_datetimepicker" data-target-input="nearest">
-                        <input class="form-control datetimepicker-input" id="statistics-end-input">
-                        <div class="input-group-append" data-target="#statistics_end_datetimepicker"
-                             data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-
-        <div class="row" id="all-appointments">
-            <div class="col-md-12"><h3>Кількість записів</h3></div>
-            <div class="col-md-3 stat-label">Всього</div>
-            <div class="col-md-9 stat-number" id="appointments-amount"></div>
-        </div>
-
-        <hr align="center" color="#e5e5e5">
-
-        <div class="row " id="all-money">
-            <div class="col-md-12"><h3>Зароблено грошей</h3></div>
-            <div class="col-md-3 stat-label">Всього</div>
-            <div class="col-md-9 stat-number" id="money-amount"> </div>
-        </div>
-
-        <hr align="center" color="#e5e5e5">
-
-        <div class="row" id="all-paints">
-            <div class="col-md-12"><h3>Використано фарби</h3></div>
-            <div class="col-md-3 stat-label">Всього</div>
-            <div class="col-md-9 stat-number" id="paints-amount"></div>
-        </div>
-
-        <hr align="center" color="#e5e5e5">
-        <div class="row" id="all-supplies">
-            <div class="col-md-12"><h3>Закуплено фарби</h3></div>
-            <div class="col-md-3 stat-label">Всього</div>
-            <div class="col-md-9 stat-number" id="supplies-amount"></div>
+            <div class="form-group row col-md-8 mx-auto" id="all-appointments"></div>
+            <div class="form-group row col-md-8 mx-auto" id="all-money"></div>
+            <div class="form-group row col-md-8 mx-auto" id="all-paints"></div>
+            <div class="form-group row col-md-8 mx-auto" id="all-supplies"></div>
         </div>
     </div>
 </div>
@@ -87,115 +60,172 @@
 <script src="{{ url_for('static', filename='js/api/admin/statistics.js') }}"></script>
 <script>
 
-function fillBaseStatistics(result){
-        $('#message').html('');
+    const printBlock = $('#print');
+    const printIcon = $('#print-icon');
 
-        var status = result['status'];
-        var message = result['message'];
-        var data = result['data'];
+    function doPrint() {
+        window.print();
+    }
 
-        $('#users-amount').html(data['users']);
-        $('#masters-amount').html(data['masters']);
-}
+</script>
+<script>
 
-function fillIntervalStatistics(result){
+    const baseBlock = $('#all-base');
+    const appointmentsBlock = $('#all-appointments');
+    const moneyBlock = $('#all-money');
+    const paintsBlock = $('#all-paints');
+    const suppliesBlock = $('#all-supplies');
 
-        $('.added-block').remove();
-        $('.stat-number').html('-');
+    function createStatisticsTable(title, overall) {
+        const table = $('<table></table>');
+        table.addClass('table');
+        table.addClass('table-bordered');
+        table.addClass('table-responsive-lg');
+        table.css('width', '100%');
+        table.css('margin-top', '20px');
+
+        const headerTr = $('<tr></tr>');
+        const headerTd = $('<td></td>');
+        headerTd.attr('colspan', '2');
+        headerTd.html('<h3>' + title + '</h3>');
+        headerTd.css('text-align', 'center');
+
+        headerTr.append(headerTd);
+        table.append(headerTr);
+
+        if (overall !== null) {
+            const overallTr = $('<tr></tr>');
+            overallTr.css('font-weight', 'bold');
+
+            const overallTdTitle = $('<td></td>');
+            const overallTdValue = $('<td></td>');
+            overallTdValue.css('width', '50px');
+            overallTdValue.css('text-align', 'right');
+
+            overallTdTitle.html('Всього');
+            overallTdValue.html(overall);
+
+            overallTr.append(overallTdTitle);
+            overallTr.append(overallTdValue);
+            table.append(overallTr);
+        }
+
+        return table;
+
+    }
+
+    function appendTrToStatisticsTable(table, title, value) {
+        const tr = $('<tr></tr>');
+        const tdTitle = $('<td></td>');
+        const tdValue = $('<td></td>');
+        tdValue.css('width', '50px');
+        tdValue.css('text-align', 'right');
+
+        tdTitle.html(title);
+        tdValue.html(value);
+
+        tr.append(tdTitle);
+        tr.append(tdValue);
+        table.append(tr);
+    }
+
+    function fillBaseStatistics(result) {
+        clearMessages();
+        const data = result['data'];
+
+        baseBlock.html('');
+        const baseTable = createStatisticsTable('Загальна статистика', null);
+        baseBlock.append(baseTable);
+        appendTrToStatisticsTable(baseTable, 'Кількість користувачів', data['users']);
+        appendTrToStatisticsTable(baseTable, 'Кількість майстрів', data['masters']);
+    }
+
+    function fillIntervalStatistics(result) {
+
         clearMessages();
 
         var status = result['status'];
         var message = result['message'];
         var data = result['data'];
 
-        if(status == false){
+        appointmentsBlock.html('');
+        moneyBlock.html('');
+        paintsBlock.html('');
+        suppliesBlock.html('');
+
+        if (status === false) {
             showError(message);
         } else {
 
-            $('#appointments-amount').html(data['appointments']);
-            $('#money-amount').html(data['money']);
-            $('#paints-amount').html(data['paints']);
-            $('#supplies-amount').html(data['supplies']);
+            const appointmentsTable = createStatisticsTable('Кількість записів', data['appointments']);
+            appointmentsBlock.append(appointmentsTable);
+            $.each(data['appointments-by-master'], function () {
+                appendTrToStatisticsTable(
+                    appointmentsTable,
+                    this['surname'] + ' ' + this['first_name'],
+                    this['amount']
+                );
+            });
 
-            $.each(data['appointments-by-master'], function(){
-                $('#all-appointments').append(
-                '<div class="col-md-3 stat-label added-block">' +
-                this['surname'] + ' ' + this['first_name'] +
-                '</div>' +
-                '<div class="col-md-9 stat-number added-block">' +
-                this['amount'] +
-                '</div>');
+            const moneyTable = createStatisticsTable('Заробіток, грн', data['money']);
+            moneyBlock.append(moneyTable);
+            $.each(data['money-by-master'], function () {
+                appendTrToStatisticsTable(
+                    moneyTable,
+                    this['surname'] + ' ' + this['first_name'],
+                    this['sum_price']
+                );
             });
-            $.each(data['money-by-master'], function(){
-                $('#all-money').append(
-                '<div class="col-md-3 stat-label added-block">' +
-                this['surname'] + ' ' + this['first_name'] +
-                '</div>' +
-                '<div class="col-md-9 stat-number added-block">' +
-                this['sum_price'] +
-                '</div>');
+
+            const paintsTable = createStatisticsTable('Використано фарби, мл', data['paints']);
+            paintsBlock.append(paintsTable);
+            $.each(data['paints-by-paints'], function () {
+                appendTrToStatisticsTable(
+                    paintsTable,
+                    this['code'] + ' ' + this['name'],
+                    this['amount']
+                );
             });
-            $.each(data['paints-by-paints'], function(){
-                $('#all-paints').append(
-                '<div class="col-md-3 stat-label added-block">' +
-                this['code'] + ' ' + this['name'] +
-                '</div>' +
-                '<div class="col-md-9 stat-number added-block">' +
-                this['amount'] +
-                '</div>');
-            });
-            $.each(data['supplies-by-paints'], function(){
-                $('#all-supplies').append(
-                '<div class="col-md-3 stat-label added-block">' +
-                this['code'] + ' ' + this['name'] +
-                '</div>' +
-                '<div class="col-md-9 stat-number added-block">' +
-                this['amount'] +
-                '</div>');
+
+            const suppliesTable = createStatisticsTable('Закуплено фарби, мл', data['supplies']);
+            suppliesBlock.append(suppliesTable);
+            $.each(data['supplies-by-paints'], function () {
+                appendTrToStatisticsTable(
+                    suppliesTable,
+                    this['code'] + ' ' + this['name'],
+                    this['amount']
+                );
             });
         }
-}
+    }
 
-function getBaseData() {
-    $.ajax({
-                    type: "GET",
-                    url: "/get_base_statistics",
-                    data: {},
-                    success: fillBaseStatistics,
-                    error: function(error) {
-                        console.log(error);
-                    }
+    function getBaseData() {
+        sendRequestGetBaseStatistics(fillBaseStatistics);
+    }
+
+    function getIntervalData() {
+        var start = $('#statistics-start-input').val();
+        var end = $('#statistics-end-input').val();
+
+        sendRequestGetIntervalStatistics(start, end, fillIntervalStatistics);
+    }
+
+    $(document).ready(function () {
+
+        getBaseData();
+
+        setMonthStartVal($('#statistics-start-input'));
+        setCurrentDateVal($('#statistics-end-input'));
+
+        getIntervalData();
+        $('#statistics-start-input').focusout(getIntervalData);
+        $('#statistics-end-input').focusout(getIntervalData);
+
+        printIcon.on('click', function () {
+            doPrint();
+        })
+
     });
-}
-
-function getIntervalData() {
-    var start = $('#statistics-start-input').val();
-    var end = $('#statistics-end-input').val();
-
-    $.ajax({
-                    type: "GET",
-                    url: "/get_interval_statistics",
-                    data: {'date_start': start, 'date_end': end},
-                    success: fillIntervalStatistics,
-                    error: function(error) {
-                        console.log(error);
-                    }
-    });
-}
-
-$(document).ready(function () {
-
-    getBaseData();
-
-    setMonthStartVal($('#statistics-start-input'));
-    setCurrentDateVal($('#statistics-end-input'));
-
-    getIntervalData();
-    $('#statistics-start-input').focusout(getIntervalData);
-    $('#statistics-end-input').focusout(getIntervalData);
-
-});
-
 
 </script>
 {% endblock %}

@@ -1,6 +1,6 @@
 
 
-function getBaseData(callback) {
+function sendRequestGetBaseStatistics(callback) {
     $.ajax({
         type: "GET",
         url: "/get_base_statistics",
@@ -9,7 +9,7 @@ function getBaseData(callback) {
     });
 }
 
-function getIntervalData(start, end, callback) {
+function sendRequestGetIntervalStatistics(start, end, callback) {
     $.ajax({
         type: "GET",
         url: "/get_interval_statistics",
