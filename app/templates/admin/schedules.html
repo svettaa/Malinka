@@ -209,6 +209,9 @@
 
     const modalEditWorkStatusSelector = 'input[name="works"]:checked';
 
+    const fullMastersSelect = [];
+    const relevantMastersSelect = [];
+
     function fillTableWithRows(table, data) {
         const tbody = table.find('tbody').eq(0);
         $.each(data, function () {
@@ -273,6 +276,7 @@
     }
 
     function clearAddScheduleForm() {
+        fillSelectWithList(modalEditMaster, relevantMastersSelect);
         modalEditMaster.val('');
         modalEditMaster.removeAttr('disabled');
         modalEditMaster.selectpicker('refresh');
@@ -283,8 +287,6 @@
 
         modalEditWorkStatus.prop("checked", true);
         modalEditWorkStatus.prop("checked", false);
-
-
     }
 
     function processResponseGetAllSchedule(result) {
@@ -300,6 +302,7 @@
     }
 
     function fillEditScheduleForm(result) {
+        fillSelectWithList(modalEditMaster, fullMastersSelect);
         modalEditMaster.val(result.data.master_id);
         modalEditMaster.attr('disabled', '');
         modalEditMaster.selectpicker('refresh');
@@ -323,9 +326,11 @@
             const option = $('<option></option>');
             option.val(this.id);
             option.html(this.surname + ' ' + this.first_name + ', +38' + this.phone);
-            modalEditMaster.append(option);
+            if (this.is_hired === true) {
+                relevantMastersSelect.push(option);
+            }
+            fullMastersSelect.push(option);
         })
-        modalEditMaster.selectpicker('refresh');
     }
 
     function processResponseAddOrEditSchedule(result) {

@@ -180,3 +180,11 @@ function getNearestTime() {
     return String(h) + ':' + String(m).padStart(2, '0');
 }
 
+function fillSelectWithList(select, list) {
+    select.html('');
+    for(var i = 0; i < list.length; i++){
+        select.append(list[i]);
+    }
+    select.selectpicker('refresh');
+}
+
