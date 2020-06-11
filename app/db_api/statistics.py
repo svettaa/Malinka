@@ -33,7 +33,8 @@ def get_interval_used_paints(date_start: datetime, date_end: datetime):
     return db.engine.execute('SELECT COALESCE(SUM(volume_ml), 0) '
                              'FROM Appointment INNER JOIN Appointment_Paint '
                              '     ON Appointment.id = appointment_id '
-                             'WHERE (Date(appoint_start) BETWEEN %s AND %s);',
+                             'WHERE (Date(appoint_start) BETWEEN %s AND %s) '
+                             '       AND appoint_end <= now();',
                              (date_start, date_end)).scalar()
 
 
@@ -45,25 +46,23 @@ def get_interval_supply_amount(date_start: datetime, date_end: datetime):
 
 
 def get_interval_appointments_amount_by_master(date_start: datetime, date_end: datetime):
-    return db.engine.execute('SELECT surname, first_name, '
-                             '       (SELECT COUNT(*)'
-                             '        FROM Appointment '
-                             '        WHERE (Date(appoint_start) BETWEEN %s AND %s) AND '
-                             '               master_id = Master.id) '
-                             '        AS amount '
-                             'FROM Master INNER JOIN Client ON Master.id = Client.id '
+    return db.engine.execute('SELECT surname, first_name, COUNT(*) AS amount '
+                             'FROM (Master INNER JOIN Client ON Master.id = Client.id) '
+                             '      INNER JOIN Appointment ON master_id = Master.id '
+                             'WHERE (Date(appoint_start) BETWEEN %s AND %s) '
+                             'GROUP BY surname, first_name '
                              'ORDER BY surname, first_name;',
                              (date_start, date_end)).fetchall()
 
 
 def get_interval_appointments_earned_money_by_master(date_start: datetime, date_end: datetime):
-    return db.engine.execute('SELECT surname, first_name, '
-                             '       (SELECT COALESCE(SUM(price), 0) '
-                             '        FROM Appointment '
-                             '        WHERE (Date(appoint_start) BETWEEN %s AND %s) AND '
-                             '               master_id = Master.id AND appoint_end <= now() '
-                             '        ) AS sum_price '
-                             'FROM Master INNER JOIN Client ON Master.id = Client.id '
+    return db.engine.execute('SELECT surname, first_name, COALESCE(SUM(price), 0) AS sum_price '
+                             'FROM (Master INNER JOIN Client ON Master.id = Client.id) '
+                             '      INNER JOIN Appointment ON master_id = Master.id '
+                             'WHERE (Date(appoint_start) BETWEEN %s AND %s) '
+                             '       AND appoint_end <= now() '
+                             '       AND price IS NOT NULL '
+                             'GROUP BY surname, first_name '
                              'ORDER BY surname, first_name;',
                              (date_start, date_end)).fetchall()
 
@@ -73,7 +72,8 @@ def get_interval_used_paints_by_paints(date_start: datetime, date_end: datetime)
                              'FROM (Appointment INNER JOIN Appointment_Paint '
                              '     ON Appointment.id = appointment_id) INNER JOIN Paint '
                              '     ON paint_id = Paint.id '
-                             'WHERE (Date(appoint_start) BETWEEN %s AND %s) '
+                             'WHERE (Date(appoint_start) BETWEEN %s AND %s)  '
+                             '       AND appoint_end <= now() '
                              'GROUP BY code, name '
                              'ORDER BY code, name;',
                              (date_start, date_end)).fetchall()
