@@ -37,7 +37,6 @@ photos = UploadSet('photos', IMAGES)
 configure_uploads(app, (photos,))
 
 from app.routes import *
-from app.user_routes import *
 from app.socket_io import *
 from app.rest_api import *
 from app.models import *
