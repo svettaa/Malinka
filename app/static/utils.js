@@ -163,3 +163,20 @@ function getCurrentDay() {
     return dd + '.' + mm + '.' + yyyy;
 }
 
+function getNearestTime() {
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+
+    if(m !== 0){
+        m = 0;
+        h++;
+    }
+
+    if(h >= 24){
+        h %= 24;
+    }
+
+    return String(h) + ':' + String(m).padStart(2, '0');
+}
+

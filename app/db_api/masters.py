@@ -119,6 +119,12 @@ def get_all_procedures_join_master(master_id: int):
                              master_id).fetchall()
 
 
+def get_all_masters_doing_procedures():
+    return db.engine.execute('SELECT  master_id, procedure_id, duration '
+                             'FROM Master_Procedure '
+                             'ORDER BY master_id;').fetchall()
+
+
 def get_master_favourite_clients_amount(master_id: int):
     return db.engine.execute('SELECT COUNT(*) '
                              'FROM Favourite_Master '

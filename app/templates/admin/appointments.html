@@ -357,7 +357,7 @@
         modalEditClient.val('');
         modalEditClient.removeAttr('disabled');
         modalEditDay.val(getCurrentDay());
-        modalEditStart.val('');
+        modalEditStart.val(getNearestTime());
         modalEditEnd.val('');
         modalEditPreferences.val('');
         modalEditPrice.val('');
@@ -616,12 +616,79 @@
 </script>
 <script>
 
+    const duration = {};
+
+    function tryToRefreshEndTime() {
+        clearMessagesBlock(modalEditMessageBlock);
+        modalEditEnd.val('');
+
+        const masterId = modalEditMaster.val();
+        const procedureId = modalEditProcedure.val();
+        const startTime = modalEditStart.val();
+
+        if(masterId === '' || procedureId === '') {
+            return;
+        }
+
+        if(!duration.hasOwnProperty(masterId) || !duration[masterId].hasOwnProperty(procedureId)){
+            showErrorBlock(modalEditMessageBlock, 'Даний майстер не виконує дану процедуру');
+            return;
+        }
+
+        const dots = startTime.indexOf(':');
+        var h = Number(startTime.substring(0, dots));
+        var m = Number(startTime.substring(dots + 1));
+
+        if (dots === -1 || isNaN(m) || isNaN(h) || !(h >= 0 && h <= 23) || !(m >= 0 && m <=59)) {
+            showErrorBlock(modalEditMessageBlock, 'Некоректний формат часу');
+            return;
+        }
+
+        m += duration[masterId][procedureId];
+
+        while(m >= 60){
+            m -= 60;
+            h++;
+        }
+
+        if(h >= 24) {
+            h %= 24;
+        }
+
+        modalEditEnd.val(String(h) + ':' + String(m).padStart(2, '0'));
+    }
+
+    function processMastersProcedures(result) {
+        $.each(result.data, function () {
+            if (!duration.hasOwnProperty(this.master_id)) {
+                duration[this.master_id] = {};
+            }
+            duration[this.master_id][this.procedure_id] = this.duration;
+        });
+
+        modalEditMaster.on('change', function () {
+            tryToRefreshEndTime();
+        });
+
+        modalEditProcedure.on('change', function () {
+            tryToRefreshEndTime();
+        });
+
+        modalEditStart.focusout(function () {
+            tryToRefreshEndTime();
+        });
+    }
+
+</script>
+<script>
+
     $(document).ready(function () {
         sendRequestGetAllAppointments(buildAppointmentsTable);
         sendRequestGetAllMasters(fillModalMastersSelect);
         sendRequestGetClients(fillModalClientsSelect);
         sendRequestGetProceduresByCategories(fillModalProceduresByCategoriesSelect);
         sendRequestGetAllPaints(fillModalAppointmentPaintsSelect);
+        sendRequestRefreshGetMastersDoingProcedures(processMastersProcedures);
 
         initDatePicker(modalEditDayPicker);
         initTimePicker(modalEditStartPicker);

@@ -14,6 +14,14 @@ function sendRequestGetAllRelevantMasters(callback) {
     });
 }
 
+function sendRequestRefreshGetMastersDoingProcedures(callback) {
+    $.ajax({
+        type: "GET",
+        url: "/api/masters/procedures",
+        success: callback
+    });
+}
+
 function sendRequestGetMasterProcedures(master_id, callback) {
     $.ajax({
         type: "GET",

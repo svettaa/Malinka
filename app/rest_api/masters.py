@@ -32,6 +32,13 @@ def api_master_get(master_id):
     return build_one_data_reply(get_master_short(master_id))
 
 
+@app.route('/api/masters/procedures', methods=['GET'])
+@login_required
+@admin_only
+def api_all_masters_procedures_get():
+    return build_list_data_reply(get_all_masters_doing_procedures())
+
+
 @app.route('/api/masters/<int:master_id>/procedures', methods=['GET'])
 @login_required
 @admin_only
