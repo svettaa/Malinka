@@ -8,7 +8,7 @@
 
     function buildTable() {
         var newTable = $(
-            '<table class="table table-bordered table-responsive-lg">' +
+            '<table class="table table-bordered">' +
             '</table>'
         );
         return newTable;
