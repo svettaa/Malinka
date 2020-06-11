@@ -146,7 +146,9 @@
                     </div>
                 </form>
                 <div class="row" id="favourites-amount">
+                    <div class="col-12 col-sm-10 mx-auto">
                     <p>Улюблений у <span></span> користувачів(а)</p>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -174,12 +176,11 @@
                     <div class="row">
                         <div class="col-12 col-sm-10 mx-auto">
                             <div class="form-group row">
-<!--                                <div class="col-lg-12">-->
-<!--                                    <img style="width: 75%; max-width: 200px; display: block; margin: 10px auto;">-->
-<!--                                </div>-->
-                                <label class="col-lg-3 col-form-label">Фото</label>
+
+                                <label for="photo" class="col-lg-3 col-form-label pt-0">Фото</label>
+
                                 <div class="col-lg-9">
-                                    <input type="file" name="photo" accept="image/*" required>
+                                    <input id="photo" type="file" name="photo" accept="image/*" required>
                                 </div>
                                 <div class="col-lg-12"><br><br>
                                     <button type="button" id="delete-photo" class="btn btn-danger">
