@@ -34,7 +34,6 @@
 </div>
 
 
-
 <ul class="nav nav-tabs mb-5" id="myTab" role="tablist">
     <li class="nav-item">
         <a class="nav-link active" id="active-tab" data-toggle="tab" href="#active" role="tab" aria-controls="active"
@@ -118,6 +117,14 @@
         {% else %}
         Немає актуальних записів
         {% endif %}
+
+
+        <div class="row">
+            <button type="button" class="btn btn-primary col-md-3 mx-auto"
+                    onclick="window.location.href = '/#appointment-jumbotron';">
+                Записатися
+            </button>
+        </div>
 
     </div>
     <div class="tab-pane" id="prev" role="tabpanel" aria-labelledby="prev-tab">
