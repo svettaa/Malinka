@@ -47,6 +47,10 @@ def api_client_post():
     client = Client()
     form.populate_obj(client)
 
+    if client.surname.strip() == '':
+        return build_message_reply((False, 'Порожнє прізвище'))
+    if client.first_name.strip() == '':
+        return build_message_reply((False, 'Порожнє ім\'я'))
     if client.second_name.strip() == '':
         client.second_name = None
     if client.email.strip() == '':
@@ -69,6 +73,10 @@ def api_client_put(client_id):
     client = Client(id=client_id)
     form.populate_obj(client)
 
+    if client.surname.strip() == '':
+        return build_message_reply((False, 'Порожнє прізвище'))
+    if client.first_name.strip() == '':
+        return build_message_reply((False, 'Порожнє ім\'я'))
     if client.second_name.strip() == '':
         client.second_name = None
     if client.email.strip() == '':
