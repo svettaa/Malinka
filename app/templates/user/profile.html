@@ -26,10 +26,10 @@
 {% block content %}
 {{ csrf_token }}
 <div id="modalAddFavouriteMaster" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4>Додати майстра</h4>
+                <h4>Додати улюбленого майстра</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -42,7 +42,7 @@
                     <div class="row">
                         <div class="col-12 col-sm-10 mx-auto">
                             <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Оберіть майстра</label>
+                                <label class="col-lg-3 col-form-label">Майстер *</label>
                                 <div class="col-lg-9">
                                     <select data-live-search="true" title="Не обрано"
                                             class="selectpicker form-control"
@@ -64,10 +64,10 @@
 </div>
 
 <div id="modalAddFavouriteProcedure" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4>Додати процедуру</h4>
+                <h4>Додати улюблену процедуру</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -80,7 +80,7 @@
                     <div class="row">
                         <div class="col-12 col-sm-10 mx-auto">
                             <div class="form-group row">
-                                <label class="col-lg-3 col-form-label">Оберіть процедуру</label>
+                                <label class="col-lg-3 col-form-label">Процедура *</label>
                                 <div class="col-lg-9">
                                     <select data-live-search="true" title="Не обрано"
                                             class="selectpicker form-control"
@@ -118,19 +118,19 @@
                     <div class="row">
                         <div class="col-12 col-sm-10 mx-auto">
                                 <div class="form-group row">
-                                    <label for="oldpassword" class="col-md-4 col-form-label">Старий пароль</label>
+                                    <label for="oldpassword" class="col-md-4 col-form-label">Старий пароль *</label>
                                     <div class="col-md-8">
                                         <input type="password" class="form-control" id="oldpassword" name="oldpassword" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="newpassword" class="col-md-4 col-form-label">Новий пароль</label>
+                                    <label for="newpassword" class="col-md-4 col-form-label">Новий пароль *</label>
                                     <div class="col-md-8">
                                         <input type="password" class="form-control" id="newpassword" name="newpassword" required>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="confirmpassword" class="col-md-4 col-form-label">Підтвердіть пароль</label>
+                                    <label for="confirmpassword" class="col-md-4 col-form-label">Підтвердіть пароль *</label>
                                     <div class="col-md-8">
                                         <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" required>
                                     </div>
@@ -154,13 +154,13 @@
                 <div class="col-12 col-sm-10 mx-auto p-0 mb-3">
 
                     <div class="form-group row">
-                        <label for="surname" class="col-md-3 col-form-label">Прізвище</label>
+                        <label for="surname" class="col-md-3 col-form-label">Прізвище *</label>
                         <div class="col-md-9">
                             <input type="text" class="form-control" id="surname" name="surname" required>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="firstname" class="col-md-3 col-form-label">Ім'я</label>
+                        <label for="firstname" class="col-md-3 col-form-label">Ім'я *</label>
                         <div class="col-md-9">
                             <input type="text" class="form-control" id="firstname" name="firstname" required>
                         </div>
@@ -191,7 +191,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="phone" class="col-md-3 col-form-label">Телефон, +38</label>
+                        <label for="phone" class="col-md-3 col-form-label">Телефон *, +38</label>
                         <div class="col-md-9">
                             <input type="tel" id="phone" name="phone" class="form-control"
                                    placeholder="1234567890"
@@ -201,7 +201,7 @@
                     <div class="form-group row">
                         <label for="email" class="col-md-3 col-form-label">E-mail</label>
                         <div class="col-md-9">
-                            <input type="tel" class="form-control" id="email" name="email"
+                            <input type="email" class="form-control" id="email" name="email"
                                    placeholder="you@example.com">
                         </div>
                     </div>
