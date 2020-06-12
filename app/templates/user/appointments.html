@@ -172,11 +172,14 @@
 {% block scripts %}
 {{ super() }}
 <script src="{{ url_for('static', filename='js/api/admin/appointments.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/clients.js') }}"></script>
 
 <script>
 
     const modalDelete = $('#modalDelete');
     const modalDeleteSubmit = modalDelete.find('.submit').eq(0);
+
+    const userId = {{ current_user.id }};
 
 
     function initDeleteCard(card_id) {
@@ -184,7 +187,7 @@
 
         modalDeleteSubmit.off();
         modalDeleteSubmit.on('click', function () {
-            sendRequestDeleteAppointment(card_id, processRequestDeleteAppointCard);
+            sendRequestDeleteClientAppointment(userId, card_id, processRequestDeleteAppointCard);
         });
     }
 

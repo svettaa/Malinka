@@ -62,6 +62,14 @@ function sendRequestDeleteClient(id, callback) {
     });
 }
 
+function sendRequestDeleteClientAppointment(client_id, appointment_id, callback) {
+    $.ajax({
+        type: "DELETE",
+        url: '/api/clients/' + client_id + '/appointments/' + appointment_id,
+        success: callback
+    });
+}
+
 function sendRequestAddFavouriteMaster(id, data, callback) {
     $.ajax({
         type: "POST",
