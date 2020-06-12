@@ -156,3 +156,13 @@ def assert_appointment_is_in_nearest_future(appointment: Appointment):
     max_possible_start = now + relativedelta(months=2)
     if appoint_start > max_possible_start:
         raise AssertionError('Запис має бути протягом двох місяців від сьогодні')
+
+
+def assert_appointment_not_future_if_uses_paints(appointment: Appointment, session: Session):
+    if not is_future_appointment(appointment):
+        return
+    if session.execute('SELECT COUNT(*) '
+                       'FROM Appointment_Paint '
+                       'WHERE appointment_id = :appointment_id;',
+                       {'appointment_id': appointment.id}).scalar() > 0:
+        raise AssertionError('Неможливо змінити дату на майбутнє, вже використано фарби')

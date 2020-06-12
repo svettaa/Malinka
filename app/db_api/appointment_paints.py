@@ -1,6 +1,7 @@
 from sqlalchemy.exc import IntegrityError, OperationalError
 
 from app import db
+from app.db_api.appointments import *
 from app.db_api.utils import *
 from app.db_api.asserts.paints import *
 
@@ -79,6 +80,7 @@ def add_appointment_paint(appointment_paint: AppointmentPaint):
 
     session = get_serializable_session()
     try:
+        assert_appointment_not_future_for_paints(appointment_paint, session)
         assert_appointment_procedure_uses_paint(appointment_paint, session)
         assert_appointment_not_uses_paint(appointment_paint, session)
         session.execute('INSERT INTO Appointment_Paint (appointment_id, paint_id, volume_ml) '

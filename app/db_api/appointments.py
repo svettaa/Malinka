@@ -106,6 +106,7 @@ def update_appointment(appointment: Appointment):
     session = get_serializable_session()
     try:
         assert_appointment_is_in_nearest_future(appointment)
+        assert_appointment_not_future_if_uses_paints(appointment, session)
         assert_appointment_master_does_procedure(appointment, session)
         assert_appointment_new_procedure_uses_paints(appointment, session)
         session.execute('UPDATE Appointment '

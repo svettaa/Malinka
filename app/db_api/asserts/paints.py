@@ -36,6 +36,14 @@ def assert_appointment_not_uses_paint(appointment_paint: AppointmentPaint, sessi
         raise AssertionError('В даному записі вже використовується дана фарба')
 
 
+def assert_appointment_not_future_for_paints(appointment_paint: AppointmentPaint, session: Session):
+    if session.execute('SELECT appoint_start > now() '
+                       'FROM Appointment '
+                       'WHERE id = :id;',
+                       {'id': appointment_paint.appointment_id}).scalar():
+        raise AssertionError('Неможливо додати фарби до запису, що не відбувся')
+
+
 def assert_appointment_procedure_uses_paint(appointment_paint: AppointmentPaint, session: Session):
     if not session.execute('SELECT uses_paints '
                            'FROM Appointment INNER JOIN Procedure ON procedure_id = Procedure.id '
