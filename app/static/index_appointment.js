@@ -47,7 +47,7 @@ function getNumArrayFromStrTime(timeStr){
 }
 
 function normalizeTime(timeArray){
-    if(timeArray[1] >= 60){
+    while(timeArray[1] >= 60){
         timeArray[0]++;
         timeArray[1] -= 60;
     }
