@@ -69,7 +69,7 @@
 
 {% block content %}
 <div class="page-header" style="text-align: center">
-    <h4>Статистика</h4>
+    <h4>Звіт салону "Malinka"</h4>
     <p>з <span id="print-date-start"></span> до <span id="print-date-end"></span></p>
 </div>
 
@@ -271,13 +271,6 @@
                     this['amount']
                 );
             });
-            for(var i = 0; i < 250; i++){
-                appendTrToStatisticsTable(
-                    appointmentsTable,
-                    'test',
-                    'test',
-                );
-            }
 
             const moneyTable = createStatisticsTable('Заробіток, грн', data['money']);
             moneyBlock.append(moneyTable);
