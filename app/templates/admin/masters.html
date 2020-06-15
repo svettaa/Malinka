@@ -214,6 +214,21 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-12 col-md-10 mx-auto">
+        <br><br>
+        Оберіть категорію, аби дізнатися, які майстри виконують усі процедури з неї:
+        <br><br>
+        <select data-live-search="true" title="Не обрано"
+                class="selectpicker form-control"
+                data-none-results-text="Немає результатів"
+                id="check-categories"></select>
+    </div>
+    <div class="col-12 col-md-10 mx-auto">
+        <br><ul id="check-masters-list"></ul>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -221,6 +236,45 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 <script src="{{ url_for('static', filename='js/api/admin/masters.js') }}"></script>
 <script src="{{ url_for('static', filename='js/api/admin/clients.js') }}"></script>
+<script src="{{ url_for('static', filename='js/api/admin/categories.js') }}"></script>
+<script>
+
+    const checkCategoriesSelect = $('#check-categories');
+    const checkMastersList = $('#check-masters-list');
+
+    function fillCheckCategoriesSelect(result) {
+        $.each(result.data, function () {
+            const option = $('<option></option>');
+            option.val(this.id);
+            option.html(this.name);
+            checkCategoriesSelect.append(option);
+        })
+        checkCategoriesSelect.selectpicker('refresh');
+    }
+
+    function refreshMastersDoingWholeCategory(result) {
+        if (result.data.length === 0) {
+            checkMastersList.html('Немає таких майстрів');
+        } else {
+            checkMastersList.html('');
+            $.each(result.data, function () {
+                const li = $('<li></li>');
+                li.html(this.surname + ' ' + this.first_name);
+                checkMastersList.append(li);
+            })
+        }
+    }
+
+    $(document).ready(function () {
+        sendRequestGetAllCategories(fillCheckCategoriesSelect);
+        checkCategoriesSelect.on('change', function () {
+            sendRequestRefreshGetMastersDoingWholeCategory(
+                checkCategoriesSelect.val(), refreshMastersDoingWholeCategory
+            );
+        })
+    })
+
+</script>
 <script>
 
     const addNewButton = $('.add-new');
@@ -278,7 +332,7 @@
     function buildMastersTable(result) {
         const table = createHeaderTableParamIconWidth('100px',
             ['Прізвище', 'Ім`я', 'По-батькові', 'Стать', 'Номер телефону',
-            'Графік', 'Працює']
+                'Графік', 'Працює']
         );
         tableWrapper.html(table);
         fillTableWithRows(table, result.data);

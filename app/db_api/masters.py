@@ -13,6 +13,20 @@ def get_masters():
                              'FROM Master INNER JOIN Client ON Master.id = Client.id;').fetchall()
 
 
+def get_masters_does_all_procedures_in_category(category_id: int):
+    return db.engine.execute('SELECT M.id, surname, first_name, second_name, is_male, '
+                             '       phone, email, even_schedule, is_hired '
+                             'FROM Master M INNER JOIN Client ON M.id = Client.id '
+                             'WHERE NOT EXISTS (SELECT * '
+                             '                  FROM Procedure P '
+                             '                  WHERE category_id = %s AND '
+                             '                        NOT EXISTS (SELECT * '
+                             '                                    FROM Master_Procedure MP '
+                             '                                    WHERE MP.master_id = M.id AND '
+                             '                                          MP.procedure_id = P.id));',
+                             category_id).fetchall()
+
+
 def get_relevant_masters_short():
     return db.engine.execute('SELECT Master.id, surname, first_name, even_schedule '
                              'FROM Master INNER JOIN Client ON Master.id = Client.id '

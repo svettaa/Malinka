@@ -14,6 +14,14 @@ function sendRequestGetAllRelevantMasters(callback) {
     });
 }
 
+function sendRequestRefreshGetMastersDoingWholeCategory(category_id, callback) {
+    $.ajax({
+        type: "GET",
+        url: "/api/masters/categories/" + category_id,
+        success: callback
+    });
+}
+
 function sendRequestRefreshGetMastersDoingProcedures(callback) {
     $.ajax({
         type: "GET",
