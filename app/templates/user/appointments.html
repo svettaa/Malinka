@@ -147,13 +147,18 @@
                     {% for appointment in past_appointments %}
                     <tr>
 
-                        <td>{{ appointment.appoint_start.strftime('%d.%m.%Y') }}</td>
+                        <td>
+                            <div style="display: none;">
+                                {{ appointment.appoint_start.strftime('%Y.%m.%d') }}
+                            </div>
+                            {{ appointment.appoint_start.strftime('%d.%m.%Y') }}
+                        </td>
                         <td>{{ appointment.procedure_name }}</td>
                         <td>
                             {{ appointment.master_surname }}
                             {{ appointment.master_first_name }}
                         </td>
-                        <td>{{ appointment.price }}</td>
+                        <td>{% if appointment.price %}{{ appointment.price }}{% endif %}</td>
                     </tr>
                     {% endfor %}
 
@@ -203,6 +208,7 @@
     $(document).ready(function () {
         window.history.pushState("", "", '/profile/appointments');
     })
+
 
 
 </script>
