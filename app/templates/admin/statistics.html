@@ -7,86 +7,169 @@
 
 
 {% block header %}
-Статистика
+<div id="header">Статистика</div>
 {% endblock %}
 
 
 {% block styles %}
 {{ super() }}
 <style>
+    .page-header, .page-header-space {
+        height: 100px;
+    }
+
+    .page-footer, .page-footer-space {
+        height: 50px;
+    }
+
+    .page-footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        border-top: 1px solid black;
+    }
+
+    .page-header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        border-bottom: 1px solid black;
+    }
+
+    @page {
+        margin: 20mm;
+    }
+
+    @media screen {
+        .page-footer, .page-header, .page-header-space, .page-footer-space{
+            display: none;
+        }
+    }
+
+
     @media print {
-        * {
+        *{
             overflow: visible !important;
         }
 
-        #print-icon{
+        #datetimepicker_row,
+        #print-icon, #header, footer {
             display: none !important;
         }
 
-        footer{
-            display: none !important;
-        }
+        thead {display: table-header-group;}
+        tfoot {display: table-footer-group;}
 
-        table {
-            page-break-before: always !important;
-        }
+        body {margin: 0;}
+
     }
 </style>
 {% endblock %}
 
 
 {% block content %}
-<div class="row">
-    <div class="col-12 col-md-7 mx-auto">
-        <span class="fas fa-print" style="cursor:pointer;" id="print-icon"></span>
-        <div id="print">
-            <div class="row mx-auto" id="all-base"></div>
-            <br>
-            <div class="row mx-auto">
-                <div class="col-md-6 pr-0 pr-md-2 pl-0">
-                    <div class="form-group">
-                        <div class="input-group date" id="statistics_start_datetimepicker" data-target-input="nearest">
-                            <input class="form-control datetimepicker-input" id="statistics-start-input">
-                            <div class="input-group-append" data-target="#statistics_start_datetimepicker"
-                                 data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+<div class="page-header" style="text-align: center">
+    <h4>Статистика</h4>
+    <p>з <span id="print-date-start"></span> до <span id="print-date-end"></span></p>
+</div>
+
+<div class="page-footer">
+    <p style="margin-top: 20px; text-align: center" id="print-date"></p>
+</div>
+
+<table style="width: 100%; margin: 0">
+
+    <thead>
+    <tr>
+        <td>
+            <!--place holder for the fixed-position header-->
+            <div class="page-header-space"></div>
+        </td>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+        <td>
+
+
+
+            <div class="row">
+                <div class="col-12 col-md-9 mx-auto">
+                    <span class="fas fa-print" style="cursor:pointer;" id="print-icon"></span>
+                    <div id="print">
+                        <div class="row mx-auto" id="all-base"></div>
+                        <br>
+                        <div id="datetimepicker_row" class="row mx-auto">
+                            <div class="col-md-6 pr-0 pr-md-2 pl-0">
+                                <div class="form-group">
+                                    <div class="input-group date" id="statistics_start_datetimepicker" data-target-input="nearest">
+                                        <input class="form-control datetimepicker-input" id="statistics-start-input">
+                                        <div class="input-group-append" data-target="#statistics_start_datetimepicker"
+                                             data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 pl-0 pl-md-2 pr-0">
+                                <div class="form-group">
+                                    <div class="input-group date" id="statistics_end_datetimepicker" data-target-input="nearest">
+                                        <input class="form-control datetimepicker-input" id="statistics-end-input">
+                                        <div class="input-group-append" data-target="#statistics_end_datetimepicker"
+                                             data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="row mx-auto" id="all-appointments"></div>
+                        <div class="row mx-auto" id="all-money"></div>
+                        <div class="row mx-auto" id="all-paints"></div>
+                        <div class="row mx-auto" id="all-supplies"></div>
                     </div>
-                </div>
-                <div class="col-md-6 pl-0 pl-md-2 pr-0">
-                    <div class="form-group">
-                        <div class="input-group date" id="statistics_end_datetimepicker" data-target-input="nearest">
-                            <input class="form-control datetimepicker-input" id="statistics-end-input">
-                            <div class="input-group-append" data-target="#statistics_end_datetimepicker"
-                                 data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 
-            <div class="row mx-auto" id="all-appointments"></div>
-            <div class="row mx-auto" id="all-money"></div>
-            <div class="row mx-auto" id="all-paints"></div>
-            <div class="row mx-auto" id="all-supplies"></div>
-        </div>
-    </div>
-</div>
+
+
+
+        </td>
+    </tr>
+    </tbody>
+
+    <tfoot>
+    <tr>
+        <td>
+            <!--place holder for the fixed-position footer-->
+            <div class="page-footer-space"></div>
+        </td>
+    </tr>
+    </tfoot>
+
+</table>
+
+
+
 
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 <script src="{{ url_for('static', filename='input_date_utils.js') }}"></script>
+<script src="{{ url_for('static', filename='utils.js') }}"></script>
 <script src="{{ url_for('static', filename='js/api/admin/statistics.js') }}"></script>
 <script>
 
     const printBlock = $('#print');
     const printIcon = $('#print-icon');
+    let printDate = $('#print-date');
 
     function doPrint() {
+        printDate.html(getCurrentDay());
         window.print();
     }
 
@@ -137,6 +220,7 @@
 
     function appendTrToStatisticsTable(table, title, value) {
         const tr = $('<tr></tr>');
+        tr.css('margin', '100px');
         const tdTitle = $('<td></td>');
         const tdValue = $('<td></td>');
         tdValue.css('width', '50px');
@@ -187,6 +271,13 @@
                     this['amount']
                 );
             });
+            for(var i = 0; i < 250; i++){
+                appendTrToStatisticsTable(
+                    appointmentsTable,
+                    'test',
+                    'test',
+                );
+            }
 
             const moneyTable = createStatisticsTable('Заробіток, грн', data['money']);
             moneyBlock.append(moneyTable);
@@ -225,8 +316,16 @@
     }
 
     function getIntervalData() {
-        var start = $('#statistics-start-input').val();
-        var end = $('#statistics-end-input').val();
+        let start = $('#statistics-start-input').val();
+        let end = $('#statistics-end-input').val();
+
+
+        let dateStart = $('#print-date-start');
+        let dateEnd = $('#print-date-end');
+
+        dateStart.html(start);
+        dateEnd.html(end);
+
 
         sendRequestGetIntervalStatistics(start, end, fillIntervalStatistics);
     }
