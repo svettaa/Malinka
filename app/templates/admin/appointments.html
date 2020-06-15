@@ -462,6 +462,8 @@
         modalEditClient.selectpicker('refresh');
         modalEditProcedure.selectpicker('refresh');
         modalEditMaster.selectpicker('refresh');
+
+        oldStartTime = modalEditStart.val();
     }
 
     function processResponseAddOrEditAppointment(result) {
@@ -640,6 +642,55 @@
 <script>
 
     const duration = {};
+    var oldStartTime;
+
+    function getArrayFromTimeStr(timeStr) {
+
+        const dots = timeStr.indexOf(':');
+        var h = Number(timeStr.substring(0, dots));
+        var m = Number(timeStr.substring(dots + 1));
+
+        if (dots === -1 || isNaN(m) || isNaN(h) || !(h >= 0 && h <= 23) || !(m >= 0 && m <= 59)) {
+            showErrorBlock(modalEditMessageBlock, 'Некоректний формат часу');
+            return null;
+        }
+
+        return [h, m];
+    }
+
+    function generateEndTime(startTime, delta) {
+
+        const timeArr = getArrayFromTimeStr(startTime);
+        if (timeArr === null) {
+            return;
+        }
+
+        h = timeArr[0];
+        m = timeArr[1];
+
+        m += delta;
+
+        while (m >= 60) {
+            m -= 60;
+            h++;
+        }
+
+        while (m < 0) {
+            m += 60;
+            h--;
+        }
+
+        if (h >= 24) {
+            h %= 24;
+        }
+
+        while (h < 0) {
+            h += 24;
+        }
+
+        const newVal = String(h) + ':' + String(m).padStart(2, '0');
+        modalEditEnd.val(newVal);
+    }
 
     function tryToRefreshEndTime() {
         clearMessagesBlock(modalEditMessageBlock);
@@ -648,6 +699,7 @@
         const masterId = modalEditMaster.val();
         const procedureId = modalEditProcedure.val();
         const startTime = modalEditStart.val();
+        oldStartTime = startTime;
 
         if (masterId === '' || procedureId === '') {
             return;
@@ -658,27 +710,36 @@
             return;
         }
 
-        const dots = startTime.indexOf(':');
-        var h = Number(startTime.substring(0, dots));
-        var m = Number(startTime.substring(dots + 1));
+        generateEndTime(startTime, duration[masterId][procedureId]);
+    }
 
-        if (dots === -1 || isNaN(m) || isNaN(h) || !(h >= 0 && h <= 23) || !(m >= 0 && m <= 59)) {
-            showErrorBlock(modalEditMessageBlock, 'Некоректний формат часу');
-            return;
+    function subtractTime(newTime, oldTime) {
+        newArr = getArrayFromTimeStr(newTime);
+        oldArr = getArrayFromTimeStr(oldTime);
+
+        if (newArr === null || oldArr === null) {
+            return null;
         }
 
-        m += duration[masterId][procedureId];
+        deltaH = newArr[0] - oldArr[0];
+        deltaM = newArr[1] - oldArr[1];
 
-        while (m >= 60) {
-            m -= 60;
-            h++;
+        return deltaH * 60 + deltaM;
+    }
+
+    function tryToMoveTime() {
+        const startTime = modalEditStart.val();
+        const endTime = modalEditEnd.val();
+
+        if (endTime === '') {
+            tryToRefreshEndTime();
         }
 
-        if (h >= 24) {
-            h %= 24;
+        const delta = subtractTime(startTime, oldStartTime);
+        oldStartTime = startTime;
+        if (delta !== null) {
+            generateEndTime(endTime, delta);
         }
-
-        modalEditEnd.val(String(h) + ':' + String(m).padStart(2, '0'));
     }
 
     function processMastersProcedures(result) {
@@ -698,7 +759,7 @@
         });
 
         modalEditStart.focusout(function () {
-            tryToRefreshEndTime();
+            tryToMoveTime();
         });
     }
 
